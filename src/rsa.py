@@ -16,14 +16,19 @@ def phi(n):
     return result
 
 
+e = 0
+d = 0
+
 message = "a"
 print('input:  ' + message)
-
-p = 11
-q = 13
+# check if prime (randomly generate)
+# sqrt(p)
+p = 53
+q = 59
+k = 5
 
 M = int.from_bytes(message.encode('utf-8'), 'little')
-print(M)
+print('message# in: ' + str(M))
 n = p * q
 
 if (M > n):
@@ -31,20 +36,26 @@ if (M > n):
 
 Φ = (p - 1) * (q - 1)
 
-e = phi(Φ) - 1
-if (gcd(e, Φ) != 1):
-    print('creating e failed')
-
-d = 1
-for d in range(2, Φ):
-    if (d * e % Φ == 1):
+for i in range(1, int(Φ / 2)):
+    e = 2 * i + 1
+    if (gcd(e, Φ) == 1):
         break
-print(d)
+
+print('encryption key: ' + str(e))
+
+# print('creating encryption key failed')
+
+d = int((k * Φ + 1) / e)
+if (d * e % Φ != 1):
+    print('creating decryption key failed')
+
+print('decryption key: ' + str(d))
+# break
 
 C = M**e % n
 M = C**d % n
 
-print(M)
+print('message# out: ' + str(M))
 
 decrypted = M.to_bytes((M.bit_length() + 7) // 8, 'little').decode('utf-8')
 
