@@ -15,14 +15,26 @@ def phi(n):
             result += 1
     return result
 
+# %%
+def lr_binary(M, e, n):
+    h = len(format(e, 'b'))
 
+    C = M if format(e, 'b')[h-1] == 1 else 1
+
+    for i in range(h-2, -1, -1):
+        C = (C * C) % n
+        if (format(e, 'b')[i] == 1):
+            C = (C * M) % n
+    return C
+
+print(lr_binary(22, 10201, 156))
+#%%
 e = 0
 d = 0
 
 message = "a"
 print('input:  ' + message)
 # check if prime (randomly generate)
-# sqrt(p)
 p = 53
 q = 59
 k = 5
