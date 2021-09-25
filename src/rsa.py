@@ -11,26 +11,6 @@ Attributes:
 """
 
 from secrets import randbits
-from math import floor
-
-
-def find_d(n, e):
-    """Find decryption key
-
-    Args:
-        n (int): modulus
-        e (int): encryption key
-
-    Returns:
-        int: decryption key
-    """
-    d = 0
-    k = 1
-    while d < n:
-        d = floor((k * Φ + 1) / e)
-        k += 1
-        if (modmult(d, e, Φ) == 1):
-            return d
 
 
 # extended euclidian algorithm
@@ -191,10 +171,10 @@ b = 256     # bit size of n
 
 e = 65537   # encryption key
 
-(p, q) = genprimes(b, e)   # randomly generate primes
+# p, q = genprimes(b, e)   # randomly generate primes
 
-# p = 1090660992520643446103273789680343
-# q = 1162435056374824133712043309728653
+p = 1090660992520643446103273789680343
+q = 1162435056374824133712043309728653
 
 print(p)
 print(q)
@@ -210,7 +190,7 @@ m = int.from_bytes(message.encode('utf-8'), 'little')   # message turned to int
 print('message# in: ' + str(m))
 
 if (m > n):
-    print('message to large (max :' + str(n/8) + 'characters)')
+    print('message to large (max :' + str(n / 8) + 'characters)')
 
 Φ = (p - 1) * (q - 1)  # easy way to find phi(n)
 
@@ -223,32 +203,28 @@ if (m > n):
 print('encryption key: ' + str(e))
 
 # find integer d decryption key
-d = find_d(n, e)
+g, d, f = egcd(e, Φ)
 
-if d is None:
-    g, d, f = egcd(e, Φ)
-
-
-if (modmult(d, e, Φ) != 1) or (d > n) or (d <= e):
-    g, d, f = egcd(e, Φ)
+while d < 0:
+    d += Φ  # make positive integer
 
 print(len(format(d, 'b')))
 print('decryption key: ' + str(d))
 
-if (modmult(d, e, Φ) != 1) or (d > n) or (d <= e):
-    print('should be equal to 1: ' + str(modmult(d, e, Φ)))
-    print(Φ)
-    print('creating decryption key failed')
-else:
-    # c = m**e % n
-    c = modexp(m, e, n)     # encrypt message m
+# if (modmult(d, e, Φ) != 1) or (d > n) or (d <= e):
+#     print('should be equal to 1: ' + str(modmult(d, e, Φ)))
+#     print(Φ)
+#     print('creating decryption key failed')
+# else:
+# c = m**e % n
+c = modexp(m, e, n)     # encrypt message m
 
-    # m = c**d % n
-    m = modexp(c, d, n)     # decrypt cipher c
+# m = c**d % n
+m = modexp(c, d, n)     # decrypt cipher c
 
-    print('message# out: ' + str(m))
+print('message# out: ' + str(m))
 
-    # encode integer to utf-8 string
-    decrypted = m.to_bytes((m.bit_length() + 7) // 8, 'little').decode('utf-8')
+# encode integer to utf-8 string
+decrypted = m.to_bytes((m.bit_length() + 7) // 8, 'little').decode('utf-8')
 
-    print('output: ' + decrypted)
+print('output: ' + decrypted)
