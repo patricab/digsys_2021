@@ -67,10 +67,8 @@ def genprime(b, e):
         int: Prime
     """
     p = 4
-    notprime = True
-    while notprime or (gcd(e, p - 1) != 1):
+    while not isPrime(p) or (p % e == 1):
         p = 2**b + 2**(b - 1) + 2 * randbits(b - 2) + 1
-        notprime = not isPrime(p)
     return p
 
 
@@ -146,7 +144,7 @@ def modmult(a, b, n):
     return p
 
 
-def modexp(m, key, n):
+def rl_binary(m, key, n):
     """Modular exponentiation
 
     Args:
@@ -165,6 +163,18 @@ def modexp(m, key, n):
             c = modmult(c, p, n)
         p = modmult(p, p, n)
     return c
+
+
+def lr_binary(M, key, n):
+    key = format(key, 'b')
+    C = 1
+    if key[-1] == '1':
+        C = M
+    for i in range(1, len(key)):
+        C = modmult(C, C, n)
+        if (key[i] == '1'):
+            C = modmult(C, M, n)
+    return C
 
 
 b = 256     # bit size of n
@@ -217,10 +227,10 @@ print('decryption key: ' + str(d))
 #     print('creating decryption key failed')
 # else:
 # c = m**e % n
-c = modexp(m, e, n)     # encrypt message m
+c = lr_binary(m, e, n)     # encrypt message m
 
 # m = c**d % n
-m = modexp(c, d, n)     # decrypt cipher c
+m = lr_binary(c, d, n)     # decrypt cipher c
 
 print('message# out: ' + str(m))
 
