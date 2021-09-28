@@ -145,15 +145,17 @@ def modmult(a, b, n):
 
 
 def rl_binary(m, key, n):
-    """Modular exponentiation
+    """Modular exponentiation right to left
+
+    m^key mod n
 
     Args:
-        m (int): base (text/cipher)
+        m (int): base (plain/cipher-text)
         key (int): exponent (key)
         n (int): modulus
 
     Returns:
-        int: product (cipher/text)
+        int: product (cipher/plain-text)
     """
     key = format(key, 'b')
     c = 1
@@ -165,16 +167,28 @@ def rl_binary(m, key, n):
     return c
 
 
-def lr_binary(M, key, n):
+def lr_binary(m, key, n):
+    """Modular exponentioation left to right
+
+    m^key mod n
+
+    Args:
+        m (int): base (plain/cipher-text)
+        key (int): exponent (en/de-cryption key)
+        n (int): modulus (cipher/text)
+
+    Returns:
+        int: product (cipher/plain-text)
+    """
     key = format(key, 'b')
-    C = 1
+    c = 1
     if key[-1] == '1':
-        C = M
+        c = m
     for i in range(1, len(key)):
-        C = modmult(C, C, n)
+        c = modmult(c, c, n)
         if (key[i] == '1'):
-            C = modmult(C, M, n)
-    return C
+            c = modmult(c, m, n)
+    return c
 
 
 b = 256     # bit size of n
