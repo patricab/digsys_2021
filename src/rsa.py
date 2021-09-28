@@ -124,6 +124,9 @@ def phi(n):
 
 def modmult(a, b, n):
     """Modular multiplication
+       Interleaving multiplication and reduction
+
+    p = a * b mod n
 
     Args:
         a (int): factor
