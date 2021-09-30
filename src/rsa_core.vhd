@@ -1,5 +1,9 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 entity rsa_core is
-  port (
+	port (
 		clk : in std_logic;
 
 		-- RSA reg I/O
@@ -17,12 +21,12 @@ entity rsa_core is
 		msgout_ready  : in  std_logic;
 		msgout_last   : out std_logic;
 		msgout_data   : out std_logic_vector(255 downto 0);
-  );
+	);
 end rsa_core;
 
-architecture behavioral_arch of rsa_core is
+architecture rtl of rsa_core is
 
-	signal
+	signal start, done : std_logic;
 
 begin
 
@@ -34,8 +38,11 @@ begin
 
 		msgout_ready => msgout_ready,
 		msgout_data  => msgout_data,
+
+		start => start,
+		done  => done,
 	);
 
 
 
-end architecture ; -- behavioral_arch
+end architecture; -- rtl
