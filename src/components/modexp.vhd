@@ -12,9 +12,9 @@ entity modexp is
 		msgout_ready    : out std_logic
 		msgout_data     : out std_logic_vector(255 downto 0);
 		-- control
+		-- rsa_status     : out std_logic_vector(7 downto 0);
 		input_reg_en    : in  std_logic;
-		output_reg_en   : in  std_logic;
-		output_reg_load : in  std_logic;
+		output_reg_en   : out std_logic
   );
 end modexp;
 
@@ -35,7 +35,7 @@ begin
 				c := modmult(c, msgin_data, key_n);
 			end if;
 		end loop; -- modexp
-		done <= '1';
+		output_reg_en <= '1';
 	end process; -- lr_binary
 
 
