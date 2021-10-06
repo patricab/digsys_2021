@@ -4,16 +4,17 @@ use ieee.numeric_std.all;
 
 entity modexp is
   port (
-		clk, reset_n : in  std_logic;
+		clk, reset_n    : in  std_logic;
 		-- msg in
-		msgin_ready  : in  std_logic;
-		msgin_data   : in  std_logic_vector(255 downto 0);
+		msgin_ready     : in  std_logic;
+		msgin_data      : in  std_logic_vector(255 downto 0);
 		-- msg out
-		msgout_data  : out std_logic_vector(255 downto 0);
-		msgout_ready : out std_logic
+		msgout_ready    : out std_logic
+		msgout_data     : out std_logic_vector(255 downto 0);
 		-- control
-		start        : in  std_logic;
-		done         : out std_logic;
+		input_reg_en    : in  std_logic;
+		output_reg_en   : in  std_logic;
+		output_reg_load : in  std_logic;
   );
 end modexp;
 

@@ -26,7 +26,9 @@ end rsa_core;
 
 architecture rtl of rsa_core is
 
-	signal start, done : std_logic;
+	signal input_reg_en std_logic;
+	signal output_reg_en std_logic;
+	signal ouyput_reg_load std_logic;
 
 begin
 
