@@ -5,6 +5,8 @@ use ieee.numeric_std.all;
 entity modexp is
   port (
 		clk, reset_n : in  std_logic;
+		-- reg I/O
+		key_n, key_e : in std_logic_vector(255 downto 0);
 		-- msg in
 		msgin_ready  : in  std_logic;
 		msgin_data   : in  std_logic_vector(255 downto 0);
@@ -12,12 +14,39 @@ entity modexp is
 		msgout_data  : out std_logic_vector(255 downto 0);
 		msgout_ready : out std_logic
 		-- control
-		start        : in  std_logic;
-		done         : out std_logic;
+		valid        : in  std_logic;
+		ready        : out std_logic;
   );
 end modexp;
 
-architecture behavioral of modexp is
+architecture rl_binary of modexp is
+
+	signal
+
+begin
+
+	rl_binary : process(clk, reset_n, msgin_ready)
+	variable : c unsigned(255 downto 0) := 1;
+	variable : p unsigned(255 downto 0) := msgin_data;
+	begin
+		if reset_n = '0' then
+		-- reset
+		elsif rising_edge(clk) then
+			for i in 0 to 255 loop
+				if key_e(255-i) then
+					c := modmult(c, p, key_n);
+				end if ;
+				p := modmult(p, p, key_n);
+			end loop;
+		end if;
+	end process; -- rl_binary
+
+end rl_binary; -- rl_binary
+
+
+
+
+architecture lr_binary of modexp is
 
 
 begin

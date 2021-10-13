@@ -14,20 +14,20 @@ architecture behavioral of modmult is
 begin
 
 	function modmult(a, b, n : in unsigned(255 downto 0))
-	return unsigned(255 downto 0) is
-	variable p : unsigned(255 downto 0) := 0;
-begin
-	loop : for i in 0 to 255 loop
-		p := 2 * p + a * b(i);
-		if p >= n then
-			p = p - n;
-		end if;
-		if p >= n then
-			p = p - n;
-		end if;
-	end loop ; -- loop
-	return p;
-end function;
+		return unsigned(255 downto 0) is
+		variable p : unsigned(255 downto 0) := 0;
+	begin
+		loop : for i in 0 to 255 loop
+			p := 2 * p + a * b(i);
+			if p >= n then
+				p = p - n;
+				if p >= n then
+					p = p - n;
+				end if;
+			end if;
+		end loop; -- loop
+		return p;
+	end function;
 
 	-- modmult : process(clk, reset_n)
 	-- variable p := 0;
