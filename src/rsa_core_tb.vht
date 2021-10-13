@@ -60,8 +60,21 @@ begin
 		wait for clk_period * 2;
 
 		reset_n <= '1';
+		key_n <= 13*17;
+		key_e <= 3;
 
 		wait for clk_period * 10;
+		msgin_data <= 50;
+			-- <= x"0123456789ABCDEF" & x"0123456789ABCDEF"
+			--  & x"0123456789ABCDEF" & x"0123456789ABCDEF";
+		msgin_valid <= '1';
+		msgout_ready <= '0';
+		msgin_last <='0';
+
+		wait for clk_period * 1;
+		msgout_ready <= '1';
+
+
 		assert false
 			report "Replace this with your test cases"
 			severity failure;

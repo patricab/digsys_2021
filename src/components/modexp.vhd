@@ -8,14 +8,15 @@ entity modexp is
 		-- reg I/O
 		key_n, key_e : in std_logic_vector(255 downto 0);
 		-- msg in
-		msgin_ready  : in  std_logic;
-		msgin_data   : in  std_logic_vector(255 downto 0);
+		msgin_ready     : in  std_logic;
+		msgin_data      : in  std_logic_vector(255 downto 0);
 		-- msg out
-		msgout_data  : out std_logic_vector(255 downto 0);
-		msgout_ready : out std_logic
+		msgout_ready    : out std_logic
+		msgout_data     : out std_logic_vector(255 downto 0);
 		-- control
-		valid        : in  std_logic;
-		ready        : out std_logic;
+		-- rsa_status     : out std_logic_vector(7 downto 0);
+		input_reg_en    : in  std_logic;
+		output_reg_en   : out std_logic
   );
 end modexp;
 
@@ -63,7 +64,7 @@ begin
 				c := modmult(c, msgin_data, key_n);
 			end if;
 		end loop; -- modexp
-		done <= '1';
+		output_reg_en <= '1';
 	end process; -- lr_binary
 
 
