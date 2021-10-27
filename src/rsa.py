@@ -11,6 +11,7 @@ Attributes:
 """
 
 from secrets import randbits
+from time import time
 
 
 # extended euclidian algorithm
@@ -122,7 +123,7 @@ def phi(n):
     return result
 
 
-def modmult(a, b, n):
+def blakely(a, b, n):
     """Modular multiplication
        Interleaving multiplication and reduction
 
@@ -142,10 +143,35 @@ def modmult(a, b, n):
         p = 2 * p + a * int(b[i])
         if p >= n:
             p -= n
-        if p >= n:
-            p -= n
+            if p >= n:
+                p -= n
     return p
 
+"""m-ary method
+
+ s = len(key) / r
+64 = 256 / 4
+
+
+"""
+def mary(m, key, n):
+    key = format(key, '0' + str(b) + 'b')
+    r = 4
+    k = len(key)
+    s = int(k / r)
+    M = [1, m] + [0] * (k-2)
+    F = [None] * s
+    for w in range(2, k-2):
+        M[w] = blakely(M[w-1], m, n)
+    for j in range(0, s):
+        F[j] = int(key[j*r]+key[j*r+1]+key[j*r+2]+key[j*r+3], 2)
+    c = M[F[0]]
+    for i in range(1, s): # flipped in string
+        for k in range(0, r):
+            c = blakely(c, c, n)
+        if (F[i] != 0):
+            c = blakely(c, M[F[i]], n)
+    return c
 
 def rl_binary(m, key, n):
     """Modular exponentiation right to left
@@ -165,8 +191,8 @@ def rl_binary(m, key, n):
     p = m
     for i in range(0, len(key)):
         if (key[-1 - i] == '1'):
-            c = modmult(c, p, n)
-        p = modmult(p, p, n)
+            c = blakely(c, p, n)
+        p = blakely(p, p, n)
     return c
 
 
@@ -188,9 +214,9 @@ def lr_binary(m, key, n):
     if key[-1] == '1':
         c = m
     for i in range(1, len(key)):
-        c = modmult(c, c, n)
+        c = blakely(c, c, n)
         if (key[i] == '1'):
-            c = modmult(c, m, n)
+            c = blakely(c, m, n)
     return c
 
 
@@ -238,20 +264,26 @@ while d < 0:
 print(len(format(d, 'b')))
 print('decryption key: ' + str(d))
 
-# if (modmult(d, e, Φ) != 1) or (d > n) or (d <= e):
-#     print('should be equal to 1: ' + str(modmult(d, e, Φ)))
+# if (blakely(d, e, Φ) != 1) or (d > n) or (d <= e):
+#     print('should be equal to 1: ' + str(blakely(d, e, Φ)))
 #     print(Φ)
 #     print('creating decryption key failed')
 # else:
 # c = m**e % n
-c = lr_binary(m, e, n)     # encrypt message m
-
+t0 = time()
+c = mary(m, e, n)     # encrypt message m
+t1 = time()
 # m = c**d % n
-m = lr_binary(c, d, n)     # decrypt cipher c
-
+m = mary(c, d, n)     # decrypt cipher c
+t2 = time()
 print('message# out: ' + str(m))
 
 # encode integer to utf-8 string
 decrypted = m.to_bytes((m.bit_length() + 7) // 8, 'little').decode('utf-8')
 
 print('output: ' + decrypted)
+
+enc = str((t1-t0)*1000)
+dec = str((t2-t1)*1000)
+print('encryption: ' + enc + 'ms\n'
+      'decryption: ' + dec + 'ms')
