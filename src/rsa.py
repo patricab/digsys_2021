@@ -154,23 +154,23 @@ def blakely(a, b, n):
 
 
 """
-def mary(m, key, n):
-    key = format(key, '0' + str(b) + 'b')
+def mary(M, e, n):
+    e = format(e, '0' + str(b) + 'b')
     r = 4
-    k = len(key)
+    k = len(e)
     s = int(k / r)
-    M = [1, m] + [0] * (k-2)
+    m = [1, M] + [0] * (2**r-2)
     F = [None] * s
-    for w in range(2, k-2):
-        M[w] = blakely(M[w-1], m, n)
+    for w in range(2, 2**r):
+        m[w] = blakely(m[w-1], M, n)
     for j in range(0, s):
-        F[j] = int(key[j*r]+key[j*r+1]+key[j*r+2]+key[j*r+3], 2)
-    c = M[F[0]]
+        F[j] = int(e[j*r]+e[j*r+1]+e[j*r+2]+e[j*r+3], 2)
+    c = m[F[0]]
     for i in range(1, s): # flipped in string
         for k in range(0, r):
             c = blakely(c, c, n)
         if (F[i] != 0):
-            c = blakely(c, M[F[i]], n)
+            c = blakely(c, m[F[i]], n)
     return c
 
 def rl_binary(m, key, n):

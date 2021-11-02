@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 entity exponentiation is
 	generic (
@@ -39,7 +40,206 @@ begin
 	valid_out <= valid_in;
 end expBehave;
 
-architecture mary of exponentiation is
+
+
+architecture rl_binary_rtl of exponentiation is
+
+	variable log_size : integer := log2(C_block_size);
+
+	signal start, en : std_logic;
+
+	signal cnt : std_logic_vector(8 downto 0);
+	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
+	signal c_en, p_en : std_logic;
+
+begin
+
+	ready_in <= cnt(log_size);
+	start <= ready_in and valid_in;
+
+	main : process( clk, reset_n )
+	begin
+		if( reset_n = '0' ) then
+			c <= 0;
+			p <= 0;
+		elsif( rising_edge(clk) ) then
+			if c_en then
+				c <= c_d;
+			end if;
+			if p_en then
+				p <= p_d;
+			end if;
+		end if; then
+	end process; -- main
+
+	key_sel_counter: entity work.counter(rtl)
+	generic map (bit => log_size + 1);
+	port map(
+		clk  => clk,
+		!rst => reset_n,
+		en   => start,
+		val  => cnt;
+	);
+
+	key_mux: entity work.mux(rtl)
+	generic map (C_block_size => bit);
+	port map (
+		input  => key,
+		sel    => cnt,
+		output => en
+	);
+
+	mod_mult: entity work.mod_mult(blakeley)
+	generic map (C_block_size => C_block_size);
+	port map (
+		clk     => clk,
+		reset_n => reset_n,
+		n       => modulus,
+		a       => c_q,
+		b       => p_q,
+		valid   => c_en,
+		c       => c_d
+	);
+
+	mod_mult: entity work.mod_mult(blakeley)
+	generic map (C_block_size => C_block_size);
+	port map (
+		clk     => clk,
+		reset_n => reset_n,
+		n       => modulus,
+		a       => p_q,
+		b       => p_q,
+		valid   => p_en,
+		c       => p_d
+	);
+
+end architecture;
+
+
+
+architecture mary_rtl of exponentiation is
+
+	constant r : integer := 4;
+	constant s : integer := C_block_size / r;
+	constant log_size : integer := log2(s);
+
+	signal start, en : std_logic;
+
+	signal m is array of std_logic_vector(C_block_size-1 downto 0);
+
+	signal f : std_logic_vector(r-1 downto 0);
+
+	signal mf : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+
+	signal cnt : std_logic_vector(log_size downto 0);
+	signal c, c_d, c_q : std_logic_vector(C_block_size-1 downto 0);
+	signal c_en : std_logic;
+
+begin
+
+	ready_in <= cnt(log_size);
+	start <= ready_in and valid_in;
+
+	main : process( clk, reset_n )
+	begin
+		if( reset_n = '0' ) then
+			c <= 0;
+		elsif( rising_edge(clk) ) then
+			if c_en then
+				c <= c_d;
+			end if;
+		end if;
+	end process; -- main
+
+	m_reg_demux : entity work.demux(rtl)
+	generic map (
+		inbit  => C_block_size,
+		selbit => (1 sll r),
+		outbit => C_block_size * (1 sll r)
+	);
+	port map (
+		input  => c,
+		sel    => ,
+		output => m
+	);
+
+	c_sel_mux: entity work.mux(rtl)
+	generic map (
+		inbit  => C_block_size * 2,
+		selbit => 1,
+		outbit => C_block_size
+	);
+	port map (
+		input  => (mf, c),
+		sel    => ,
+		output => c_d
+	);
+
+	key_sel_counter: entity work.counter(rtl)
+	generic map (
+		bit => log_size -- 64 => 6bit
+	);
+	port map(
+		clk  => clk,
+		!rst => reset_n,
+		en   => start,
+		val  => cnt;
+	);
+
+	mod_mult_inp_sel_Counter: entity work.counter(rtl)
+	generic map (
+		bit => log2(r) + 1 -- 4 => 2bit +1
+	);
+	port map(
+		clk  => clk,
+		!rst => reset_n,
+		en   => start,
+		val  => cnt;
+	);
+
+	key_mux: entity work.mux(rtl)
+	generic map (
+		inbit  => C_block_size,
+		selbit => s,
+		outbit => r
+	);
+	port map (
+		input  => key,
+		sel    => cnt,
+		output => f
+	);
+
+	key_mux2: entity work.mux(rtl)
+	generic map (
+		inbit => C_block_size * (1 sll r),
+		selbit => r,
+		outbit => C_block_size
+	);
+	port map (
+		input => m,
+		sel   => f,
+		output => mf
+	)
+
+	mod_mult: entity work.mod_mult(blakeley)
+	generic map (
+		C_block_size => C_block_size
+	);
+	port map (
+		clk     => clk,
+		reset_n => reset_n,
+		n       => modulus,
+		a       => c_q,
+		b       => mux_out,
+		valid   => c_en,
+		c       => c
+	);
+
+end architecture;
+
+
+
+architecture mary_behave of exponentiation is
 
 	-- signal
 	function modmult(a, b, n : in unsigned(C_block_size-1 downto 0))
