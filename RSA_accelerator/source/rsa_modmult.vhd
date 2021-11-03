@@ -19,6 +19,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
 --------------------------------------------------------------------------------
 entity rsa_modmult is
     generic (
@@ -34,7 +35,7 @@ entity rsa_modmult is
         
         clk: in std_logic;
         reset_n: in std_logic;
-        overflow: out std_logic);
+        overflow: inout std_logic);
 
 end rsa_modmult;
 --------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ signal counter: std_logic_vector(C_Block_size-1 downto 0);
 begin
 
 -- modmult structure:
-process(clk,p,a,n,b,overflow,reset_n) 
+process(clk,a,n,b,reset_n) 
     begin
         if(reset_n = '0') then
             p_1 <= (others => '0');
@@ -57,7 +58,7 @@ process(clk,p,a,n,b,overflow,reset_n)
             if(counter = C_Block_size + 1) then
                 overflow <= '1';
             else
-                p_1 <= (p_1(C_Block_size-2 downto 0) & '0') + a * b; -- 2*p + a * b
+                p_1 <= (p_1(C_Block_size-2 downto 0) & '0') + (a * b); -- 2*p + a * b
 
                 if(p_1 >= n) then
                     p_1 <= p_1 - n;
@@ -66,6 +67,7 @@ process(clk,p,a,n,b,overflow,reset_n)
                     p_1 <= p_1 - n;
                 end if;
                 counter <= counter + 1;
+        end if;
         end if;
         p <= p_1(C_Block_size-1 downto 0);
 end process;
