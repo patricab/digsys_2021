@@ -1,5 +1,4 @@
-
-
+*.code-workspace
 RSA_accelerator/RSA_accelerator/
 RSA_accelerator/IP/
 Exponentiation/Exponentiation/
