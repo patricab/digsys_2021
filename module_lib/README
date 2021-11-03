@@ -1,0 +1,24 @@
+
+-------------------------------------------------------------------------------
+Directory structure
+-------------------------------------------------------------------------------
+
++---<module_name_1>      : Name of module
+|   +---doc              : Documentation (Word)
+|   +---model            : Python model if appliccable
+|   +---rtl              : RTL code (VHDL)
+|   +---tb               : Testbench code
+|   +---vivado           : Folder for the vivado project. Only store the 
+|                          project file and constraint files.
+|
+|
++---<module_name_2>
+|   +---doc
+|   +---model
+|   +---rtl
+|   +---tb
+|   +---vivado 
+|
+|
+
+-------------------------------------------------------------------------------
