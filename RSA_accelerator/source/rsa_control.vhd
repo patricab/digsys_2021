@@ -150,7 +150,6 @@ end entity rsa_control;
 architecture structural of rsa_control is
 	signal sr_i, or_y, d_i, sr_en :std_logic;
 begin
-	msgout_last <= msgin_last;
 	
 	sr_i <= msgin_valid and msgin_ready;
 	sr_48: entity work.shift_register(rtl)
