@@ -79,7 +79,7 @@ architecture rl_binary_rtl of exponentiation is
 	shared variable log_size : integer := 8;
 	-- log_size := to_integer(log2(real(C_block_size)));
 
-	signal key_array : slv_array_t(C_block_size-1 downto 0)(0 downto 0);
+	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
 	signal start : std_logic;
 	signal en : std_logic_vector(0 downto 0);
@@ -195,24 +195,32 @@ architecture mary_rtl of exponentiation is
 	constant r  : integer := 4;
 	constant r2 : integer := 16; -- r^2
 	constant s  : integer := C_block_size / r;
-	constant log_size : integer := to_integer(log2(s));
+	constant log_size : integer := 6;-- integer(log2(s));
 
 	signal start, en : std_logic;
 
 	signal m : slv_array_t(0 to r2)(C_block_size-1 downto 0);
 
-	signal f : std_logic_vector(r-1 downto 0);
+	signal f : unsigned(r-1 downto 0); -- range 0 to r-1;
 
 	signal mf : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 
-	signal cnt : std_logic_vector(log_size downto 0);
+	signal cnt : unsigned(log_size downto 0);
 	signal c, c_d, c_q : std_logic_vector(C_block_size-1 downto 0);
 	signal c_en : std_logic;
+
+	signal key_array : slv_array_t(0 to s-1)(r-1 downto 0);
+
+	signal mux_out : std_logic_vector(C_block_size downto 0);
 
 	signal temp1 : natural := 16;
 	signal temp2 : natural := 2;
 
 begin
+
+	key_gen : for i in 0 to s-1 generate
+		key_array(i) <= key(i*r + r-1 downto i*r);
+	end generate; -- key_gen
 
 	ready_in <= cnt(log_size);
 	start <= ready_in and valid_in;
@@ -220,7 +228,7 @@ begin
 	main : process( clk, reset_n )
 	begin
 		if( reset_n = '0' ) then
-			c <= 0;
+			c <= (others => '0');
 		elsif( rising_edge(clk) ) then
 			if c_en then
 				c <= c_d;
@@ -260,7 +268,7 @@ begin
 		);
 
 	mod_mult_inp_sel_Counter: entity work.counter(rtl)
-		generic map (bit => to_integer(log2(r)) + 1) -- 4 => 2bit +1
+		generic map (bit => 3) -- integer(log2(r))4 => 2bit +1
 		port map (
 			clk => clk,
 			rst => reset_n,
@@ -274,9 +282,9 @@ begin
 			bit => r
 		)
 		port map (
-			input  => key,
-			sel    => cnt,
-			output => f
+			input  => key_array,
+			sel    => to_integer(cnt),
+			std_logic_vector(output) => f
 		);
 
 	key_mux2: entity work.mux(rtl)
@@ -286,11 +294,11 @@ begin
 		)
 		port map (
 			input  => m,
-			sel    => f,
+			sel    => to_integer(f),
 			output => mf
 		);
 
-	mod_mult: entity work.mod_mult(blakeley)
+	C_mod_mult: entity work.mod_mult(blakeley)
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
