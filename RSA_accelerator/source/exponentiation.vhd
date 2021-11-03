@@ -183,13 +183,21 @@ architecture mary_rtl of exponentiation is
 		);
 	end component;
 
-	component mod_mult
-		generic (C_block_size : integer := 256);
-		port (
-			clk, reset_n : in  std_logic;
-			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
-			c            : out std_logic_vector(C_block_size-1 downto 0)
+	component modmult is
+		generic (
+			C_Block_size: integer := 256
 		);
+		port (
+	
+			b: in std_logic_vector(C_Block_size-1 downto 0);
+			a: in std_logic_vector(C_Block_size-1 downto 0);
+			n: in std_logic_vector(C_Block_size-1 downto 0);
+	
+			p: out std_logic_vector(C_Block_size-1 downto 0)
+			
+			clk: in std_logic;
+			overflow: out std_logic);
+	
 	end component;
 
 	constant r  : integer := 4;
@@ -302,16 +310,16 @@ begin
 			output => mf
 		);
 
-	C_mod_mult: entity work.mod_mult(blakeley)
+	C_mod_mult: entity work.rsa_modmult(modmult_arch)
 		generic map (C_block_size => C_block_size)
 		port map (
-			clk     => clk,
-			reset_n => reset_n,
-			n       => modulus,
-			a       => c_q,
-			b       => mux_out,
-			valid   => c_en,
-			c       => c
+			clk     	=> clk,
+			--reset_n 	=> reset_n,
+			n       	=> modulus,
+			a       	=> c_q,
+			b       	=> mux_out,
+			overflow   	=> c_en,
+			p       	=> c
 		);
 
 end architecture;
