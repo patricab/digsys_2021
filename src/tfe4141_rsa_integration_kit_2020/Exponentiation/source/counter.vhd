@@ -16,16 +16,18 @@ end counter;
 
 architecture rtl of counter is
 
+	signal value : unsigned(bit-1 downto 0);
+
 begin
 
 	counter : process( clk, rst )
 	begin
 		if( rst = '0' ) then
-			val <= (others => '0');
+			value <= (others => '0');
 		elsif( rising_edge(clk) ) then
-			val <= val + 1;
+			value <= value + 1;
 		end if;
+		val <= value;
 	end process; -- counter
-
 
 end architecture;
