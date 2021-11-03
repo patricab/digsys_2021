@@ -1,0 +1,21 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/pab/projects/digsys_2021/RSA_control/source/rsa_control.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'rsa_control'
+INFO: [VRFC 10-3107] analyzing entity 'OR_n'
+INFO: [VRFC 10-3107] analyzing entity 'dff'
+INFO: [VRFC 10-3107] analyzing entity 'shift_register'
+INFO: [VRFC 10-3107] analyzing entity 'shift_register_256'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'rsa_control_tb'
+ERROR: [VRFC 10-4982] syntax error near ';' [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:13]
+ERROR: [VRFC 10-3353] formal port 'x' has no actual or default value [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:11]
+ERROR: [VRFC 10-2989] 'x' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:19]
+ERROR: [VRFC 10-2989] 'y' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:20]
+ERROR: [VRFC 10-2989] 'x' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:21]
+ERROR: [VRFC 10-4982] syntax error near 'loop' [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:22]
+ERROR: [VRFC 10-2989] 'n' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:27]
+ERROR: [VRFC 10-4982] syntax error near 'loop' [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:28]
+ERROR: [VRFC 10-2989] 'x' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:29]
+ERROR: [VRFC 10-2989] 'y' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:30]
+ERROR: [VRFC 10-2989] 'x' is not declared [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:31]
+ERROR: [VRFC 10-3782] unit 'behaviour' ignored due to previous errors [/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd:8]
+INFO: [VRFC 10-3070] VHDL file '/home/pab/projects/digsys_2021/RSA_control/testbench/rsa_control_tb.vhd' ignored due to errors
