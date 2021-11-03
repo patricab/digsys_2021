@@ -3,7 +3,7 @@
 --
 -- Description:
 -- - High speed modular multiplier module for RSA Cryptography based on Blakley
--- - algorithm. 
+--   algorithm. 
 --
 --------------------------------------------------------------------------------
 -- Author(s)    : Jacob Kristiansen
@@ -22,14 +22,15 @@ use ieee.numeric_std.all;
 --------------------------------------------------------------------------------
 entity modmult is
     generic (
-        BLOCK_SIZE: integer := 256
+        C_Block_size: integer := 256
     );
     port (
-        b: in std_logic_vector(BLOCK_SIZE-1 downto 0);
-        a: in std_logic_vector(BLOCK_SIZE-1 downto 0);
-        n: in std_logic_vector(BLOCK_SIZE-1 downto 0);
 
-        p: out std_logic_vector(BLOCK_SIZE-1 downto 0)
+        b: in std_logic_vector(C_Block_size-1 downto 0);
+        a: in std_logic_vector(C_Block_size-1 downto 0);
+        n: in std_logic_vector(C_Block_size-1 downto 0);
+
+        p: out std_logic_vector(C_Block_size-1 downto 0)
         
         clk: in std_logic;
         overflow: out std_logic);
@@ -38,11 +39,32 @@ end modmult;
 --------------------------------------------------------------------------------
 architecture modmult_arch of modmult is
 -- signal declaration:
+signal p_1: std_logic_vector(C_Block_size-1 downto 0);
+
+signal counter: std_logic_vector(C_Block_size-1 downto 0);
 
 begin
-    -- modmult structure:
-    p <= 
+    
+-- modmult structure:
+modmult: process(clk,p,a,n,b,overflow) is
 
 
+    if(overflow = '0' and rising_edge(clk)) then
+        if(counter = C_Block_size + 1) then
+            overflow <= '1';
+        else
+            p_1 <= (p_1(C_Block_size-2 downto 0) & '0') + a * b; -- 2*p + a * b
+
+            if(p_1 >= n) then
+                p_1 <= p_1 - n;
+            end if;
+            if(p_1 >= n) then
+                p_1 <= p_1 - n;
+            end if;
+            counter <= counter + 1;
+    end if;
+    p <= p_1(C_Block_size-1 downto 0);
+end process modmult;
+                
 end modmult_arch;
 --------------------------------------------------------------------------------
