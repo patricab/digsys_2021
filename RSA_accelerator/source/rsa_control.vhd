@@ -152,7 +152,7 @@ architecture structural of rsa_control is
 begin
 	
 	sr_i <= msgin_valid and msgin_ready;
-	sr_48: entity work.shift_register(rtl)
+	sr_48: entity work.shift_register
 		generic map (
 			REGISTER_WIDTH => 48)
 		port map (
@@ -161,7 +161,7 @@ begin
 			d => sr_i,
 			q => rl_valid);
 
-	OR_n: entity work.or_n(behavioral)
+	OR_n: entity work.or_n
 		generic map (
 			REGISTER_WIDTH => 48)
 		port map(
