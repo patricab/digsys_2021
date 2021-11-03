@@ -1,17 +1,24 @@
 library ieee;
 use ieee.std_logic_1164.all;
+
+package slv_arr_p is
+	type slv_array_t is array (natural range <>) of std_logic_vector;
+end package;
+
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.slv_arr_p.all;
 
 entity mux is
 	generic (
-		inbit  : integer := 32;
-		selbit : integer :=  4;
-		outbit : integer :=  2
+		num : natural := 32;
+		bit : natural :=  1
 	);
 	port (
-		input  : in  std_logic_vector( inbit-1 downto 0);
-		sel    : in  std_logic_vector(selbit-1 downto 0);
-		output : out std_logic_vector(outbit-1 downto 0)
+		input  : in  slv_array_t(0 to num-1)(bit-1 downto 0);
+		sel    : in  natural range 0 to num-1;
+		output : out std_logic_vector(bit-1 downto 0)
 	);
 end mux;
 
@@ -19,7 +26,7 @@ architecture rtl of mux is
 
 begin
 
-	output <= input(integer(sel)*outbit downto integer(sel)*outbit-outbit);
+	output <= input(sel);
 
 end architecture;
 
@@ -28,17 +35,17 @@ end architecture;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.slv_arr_p.all;
 
 entity demux is
 	generic (
-		inbit  : integer :=  2;
-		selbit : integer :=  4;
-		outbit : integer := 32
+		num : natural := 32;
+		bit : natural :=  1
 	);
 	port (
-		input  : in  std_logic_vector( inbit-1 downto 0);
-		sel    : in  std_logic_vector(selbit-1 downto 0);
-		output : out std_logic_vector(outbit-1 downto 0)
+		input  : in  std_logic_vector(bit-1 downto 0);
+		sel    : in  natural range 0 to num-1;
+		output : out slv_array_t(0 to num-1)(bit-1 downto 0)
 	);
 end demux;
 
@@ -46,6 +53,6 @@ architecture rtl of demux is
 
 begin
 
-	output <= input(integer(sel)*inbit downto integer(sel)*inbit-inbit);
+	output(sel) <= input;
 
 end architecture;

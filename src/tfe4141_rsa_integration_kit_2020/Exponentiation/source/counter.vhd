@@ -8,9 +8,9 @@ entity counter is
 	);
 	port (
 		clk	: in 	std_logic;
-		!rst	: in 	std_logic;
+		rst	: in 	std_logic;
 		en 	: in 	std_logic;
-		val	: out	std_logic_vector(bit-1 downto 0)
+		val	: out	unsigned(bit-1 downto 0)
 	);
 end counter;
 
@@ -18,16 +18,14 @@ architecture rtl of counter is
 
 begin
 
-	counter : process( clk, !rst )
-		variable value : unsigned(bit-1 downto 0) := 0;
+	counter : process( clk, rst )
 	begin
-		if( !rst = '0' ) then
-			value := 0;
+		if( rst = '0' ) then
+			val <= (others => '0');
 		elsif( rising_edge(clk) ) then
-			value += 1;
+			val <= val + 1;
 		end if;
 	end process; -- counter
 
-	val <= std_logic_vector(value);
 
 end architecture;

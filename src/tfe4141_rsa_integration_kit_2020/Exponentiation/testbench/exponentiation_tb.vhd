@@ -27,7 +27,7 @@ architecture expBehave of exponentiation_tb is
 	signal reset_n  	: STD_LOGIC;
 
 begin
-	i_exponentiation : entity work.exponentiation(mary)
+	i_exponentiation : entity work.exponentiation(rl_binary_rtl)
 		port map (
 			message   => message  ,
 			key       => key      ,
