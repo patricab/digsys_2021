@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="rr_bit_scanner_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="rr_bit_scanner_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="6" />
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/reset_n" type="logic">
+      <obj_property name="ElementShortName">reset_n</obj_property>
+      <obj_property name="ObjectShortName">reset_n</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/req" type="array">
+      <obj_property name="ElementShortName">req[3:0]</obj_property>
+      <obj_property name="ObjectShortName">req[3:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/gnt" type="array">
+      <obj_property name="ElementShortName">gnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">gnt[3:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/CLK_PERIOD" type="other">
+      <obj_property name="ElementShortName">CLK_PERIOD</obj_property>
+      <obj_property name="ObjectShortName">CLK_PERIOD</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/rr_bit_scanner_tb/N" type="other">
+      <obj_property name="ElementShortName">N</obj_property>
+      <obj_property name="ObjectShortName">N</obj_property>
+   </wvobject>
+</wave_config>
