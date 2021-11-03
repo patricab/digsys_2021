@@ -33,6 +33,7 @@ entity modmult is
         p: out std_logic_vector(C_Block_size-1 downto 0)
         
         clk: in std_logic;
+        reset_n: in std_logic;
         overflow: out std_logic);
 
 end modmult;
@@ -44,11 +45,13 @@ signal p_1: std_logic_vector(C_Block_size-1 downto 0);
 signal counter: std_logic_vector(C_Block_size-1 downto 0);
 
 begin
-    
+
 -- modmult structure:
-modmult: process(clk,p,a,n,b,overflow) is
-
-
+modmult: process(clk,p,a,n,b,overflow,reset_n) is
+    if(reset_n = '0') then
+        p_1 <= (others => '0');
+        overflow <= '0';
+    end if;
     if(overflow = '0' and rising_edge(clk)) then
         if(counter = C_Block_size + 1) then
             overflow <= '1';

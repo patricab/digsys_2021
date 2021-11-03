@@ -314,7 +314,7 @@ begin
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     	=> clk,
-			--reset_n 	=> reset_n,
+			reset_n 	=> reset_n,
 			n       	=> modulus,
 			a       	=> c_q,
 			b       	=> mux_out,
