@@ -14,8 +14,8 @@ entity exponentiation is
 		ready_in		: out STD_LOGIC;
 
 		-- input data
-		message 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
-		key 			: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
+		message 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		key 			: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
 		-- ouput control
 		ready_out	: in  STD_LOGIC;
@@ -43,119 +43,119 @@ end expBehave;
 
 
 
--- architecture rl_binary_rtl of exponentiation is
+architecture rl_binary_rtl of exponentiation is
 
--- 	component counter
--- 		generic (bit : integer := 8);
--- 		port (
--- 			clk	: in 	std_logic;
--- 			rst	: in 	std_logic;
--- 			en 	: in 	std_logic;
--- 			val	: out	std_logic_vector(bit-1 downto 0)
--- 		);
--- 	end component;
+	component counter
+		generic (bit : integer := 8);
+		port (
+			clk	: in 	std_logic;
+			rst	: in 	std_logic;
+			en 	: in 	std_logic;
+			val	: out	std_logic_vector(bit-1 downto 0)
+		);
+	end component;
 
--- 	component mux
--- 		generic (
--- 			num : natural := 32;
--- 			bit : natural :=  1
--- 		);
--- 		port (
--- 			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
--- 			sel    : in  natural range 0 to num-1;
--- 			output : out std_logic_vector(bit-1 downto 0)
--- 		);
--- 	end component;
+	component mux
+		generic (
+			num : natural := 32;
+			bit : natural :=  1
+		);
+		port (
+			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
+			sel    : in  natural range 0 to num-1;
+			output : out std_logic_vector(bit-1 downto 0)
+		);
+	end component;
 
--- 	component mod_mult
--- 		generic (C_block_size : integer := 256);
--- 		port (
--- 			clk, reset_n : in  std_logic;
--- 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
--- 			c            : out std_logic_vector(C_block_size-1 downto 0)
--- 		);
--- 	end component;
+	component mod_mult
+		generic (C_block_size : integer := 256);
+		port (
+			clk, reset_n : in  std_logic;
+			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
+			c            : out std_logic_vector(C_block_size-1 downto 0)
+		);
+	end component;
 
--- 	shared variable log_size : integer := 8;
--- 	-- log_size := to_integer(log2(real(C_block_size)));
+	shared variable log_size : integer := 8;
+	-- log_size := to_integer(log2(real(C_block_size)));
 
--- 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
+	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
--- 	signal start : std_logic;
--- 	signal en : std_logic_vector(0 downto 0);
--- 	signal cnt : unsigned(8 downto 0);
--- 	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
--- 	signal c_en, p_en : std_logic;
+	signal start : std_logic;
+	signal en : std_logic_vector(0 downto 0);
+	signal cnt : unsigned(8 downto 0);
+	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
+	signal c_en, p_en : std_logic;
 
--- begin
+begin
 
--- 	key_gen : for i in 0 to C_block_size-1 generate
--- 		key_array(i) <= key(i);
--- 	end generate; -- key_gen
+	key_gen : for i in 0 to C_block_size-1 generate
+		key_array(i) <= key(i downto i);
+	end generate; -- key_gen
 
--- 	ready_in <= cnt(log_size);
--- 	start <= ready_in and valid_in;
+	ready_in <= cnt(log_size);
+	start <= ready_in and valid_in;
 
--- 	main : process( clk, reset_n )
--- 	begin
--- 		if( reset_n = '0' ) then
--- 			c <= (others => '0');
--- 			p <= (others => '0');
--- 		elsif( rising_edge(clk) ) then
--- 			if c_en then
--- 				c <= c_d;
--- 			end if;
--- 			if p_en then
--- 				p <= p_d;
--- 			end if;
--- 		end if;
--- 	end process; -- main
+	main : process( clk, reset_n )
+	begin
+		if( reset_n = '0' ) then
+			c <= (others => '0');
+			p <= (others => '0');
+		elsif( rising_edge(clk) ) then
+			if c_en then
+				c <= c_d;
+			end if;
+			if p_en then
+				p <= p_d;
+			end if;
+		end if;
+	end process; -- main
 
--- 	key_sel_counter: entity work.counter(rtl)
--- 		generic map (bit => log_size + 1)
--- 		port map (
--- 			clk => clk,
--- 			rst => reset_n,
--- 			en  => start,
--- 			val => cnt
--- 		);
+	key_sel_counter: entity work.counter(rtl)
+		generic map (bit => log_size + 1)
+		port map (
+			clk => clk,
+			rst => reset_n,
+			en  => start,
+			val => cnt
+		);
 
--- 	key_mux: entity work.mux(rtl)
--- 		generic map (
--- 			num => C_block_size,
--- 			bit => 1
--- 		)
--- 		port map (
--- 			input  => key_array,
--- 			sel    => to_integer(cnt),
--- 			output => en
--- 		);
+	key_mux: entity work.mux(rtl)
+		generic map (
+			num => C_block_size,
+			bit => 1
+		)
+		port map (
+			input  => key_array,
+			sel    => to_integer(cnt),
+			output => en
+		);
 
--- 	C_mult: entity work.mod_mult(blakeley)
--- 		generic map (C_block_size => C_block_size)
--- 		port map (
--- 			clk     => clk,
--- 			reset_n => reset_n,
--- 			n       => modulus,
--- 			a       => c_q,
--- 			b       => p_q,
--- 			valid   => c_en,
--- 			c       => c_d
--- 		);
+	C_mult: entity work.mod_mult(blakeley)
+		generic map (C_block_size => C_block_size)
+		port map (
+			clk     => clk,
+			reset_n => reset_n,
+			n       => modulus,
+			a       => c_q,
+			b       => p_q,
+			valid   => c_en,
+			c       => c_d
+		);
 
--- 	P_mult: entity work.mod_mult(blakeley)
--- 		generic map (C_block_size => C_block_size)
--- 		port map (
--- 			clk     => clk,
--- 			reset_n => reset_n,
--- 			n       => modulus,
--- 			a       => p_q,
--- 			b       => p_q,
--- 			valid   => p_en,
--- 			c       => p_d
--- 		);
+	P_mult: entity work.mod_mult(blakeley)
+		generic map (C_block_size => C_block_size)
+		port map (
+			clk     => clk,
+			reset_n => reset_n,
+			n       => modulus,
+			a       => p_q,
+			b       => p_q,
+			valid   => p_en,
+			c       => p_d
+		);
 
--- end architecture;
+end architecture;
 
 
 
@@ -188,16 +188,16 @@ architecture mary_rtl of exponentiation is
 			C_Block_size: integer := 256
 		);
 		port (
-	
+
 			b: in std_logic_vector(C_Block_size-1 downto 0);
 			a: in std_logic_vector(C_Block_size-1 downto 0);
 			n: in std_logic_vector(C_Block_size-1 downto 0);
-	
+
 			p: out std_logic_vector(C_Block_size-1 downto 0);
-			
+
 			clk: in std_logic;
 			overflow: out std_logic);
-	
+
 	end component;
 
 	constant r  : integer := 4;
@@ -222,9 +222,6 @@ architecture mary_rtl of exponentiation is
 	signal mux_out : std_logic_vector(C_block_size-1 downto 0);
 
 	signal c_sel : slv_array_t(0 to 1)(C_block_size-1 downto 0);
-
-	signal temp1 : natural := 16;
-	signal temp2 : natural := 2;
 
 begin
 
@@ -255,7 +252,7 @@ begin
 		)
 		port map (
 			input  => c,
-			sel    => temp1,
+			sel    => to_integer(cnt(3 downto 0)),
 			output => m
 		);
 
@@ -266,7 +263,7 @@ begin
 		)
 		port map (
 			input  => c_sel,
-			sel    => temp2,
+			sel    => to_integer(unsigned'('0' & start)),
 			output => c_d
 		);
 
@@ -284,7 +281,7 @@ begin
 		port map (
 			clk => clk,
 			rst => reset_n,
-			en  => start,
+			en  => to_integer(start),
 			val => cnt(2 downto 0)
 		);
 
@@ -313,13 +310,13 @@ begin
 	C_mod_mult: entity work.rsa_modmult(modmult_arch)
 		generic map (C_block_size => C_block_size)
 		port map (
-			clk     	=> clk,
-			reset_n 	=> reset_n,
-			n       	=> modulus,
-			a       	=> c_q,
-			b       	=> mux_out,
-			overflow   	=> c_en,
-			p       	=> c
+			clk      => clk,
+			reset_n  => reset_n,
+			n        => modulus,
+			a        => c_q,
+			b        => mux_out,
+			overflow => c_en,
+			p        => c
 		);
 
 end architecture;

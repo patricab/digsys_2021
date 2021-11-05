@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 
 entity exponentiation_tb is
 	generic (
-		C_block_size : integer := 32 -- 256
+		C_block_size : integer := 256 -- 256
 	);
 end exponentiation_tb;
 
@@ -41,7 +41,7 @@ begin
 			reset_n   => reset_n
 		);
 
-	-- 100MHz Clock
+	-- 50MHz Clock
 	Clock : process is
 	begin
 		clk <= '1';
@@ -59,27 +59,31 @@ begin
 		wait;
 	end process ; -- Reset
 
-	-- Static
-	key     <= x"00010001"; -- e 65537
-
-	message <= x"0A0C0E0F";
-
-	modulus <= x"00002010";
-
-	valid_in  <= '1';
-	ready_in  <= '1';
-	ready_out <= '1';
-	restart   <= '0';
-
 
 	Test : process(clk, reset_n)
+	constant period : time := 2560 ns;
 	begin
-		if(reset_n = '0') then
-		--	reset
-		elsif(rising_edge(clk)) then
+		-- static
+		valid_in  <= '1';
+		ready_in  <= '1';
+		ready_out <= '1';
+		restart   <= '0';
 
+		key     <= x"00000011"; -- e 65537
+		modulus <= x"00000021";
+		message <= x"00000007";
 
-		end if;
+		wait for period;
+		assert (result = x"0000000D") -- if false
+			report "wrong result";
+
+		message <= x"0000000D";
+
+		wait for period;
+		assert (result = x"000000007")
+			report "wrong result";
+
+		wait;
 	end process; -- Test
 
 end expBehave;
