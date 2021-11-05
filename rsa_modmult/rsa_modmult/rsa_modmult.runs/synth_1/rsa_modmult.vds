@@ -1,0 +1,284 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Fri Nov  5 12:06:21 2021
+# Process ID: 14604
+# Current directory: C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/rsa_modmult/rsa_modmult.runs/synth_1
+# Command line: vivado.exe -log rsa_modmult.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source rsa_modmult.tcl
+# Log file: C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/rsa_modmult/rsa_modmult.runs/synth_1/rsa_modmult.vds
+# Journal file: C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/rsa_modmult/rsa_modmult.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source rsa_modmult.tcl -notrace
+Command: synth_design -top rsa_modmult -part xc7z020clg400-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 8792
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1026.250 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'rsa_modmult' [C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/source/rsa_modmult.vhd:42]
+	Parameter C_Block_size bound to: 256 - type: integer 
+WARNING: [Synth 8-614] signal 'overflow' is read in the process but is not in the sensitivity list [C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/source/rsa_modmult.vhd:51]
+INFO: [Synth 8-256] done synthesizing module 'rsa_modmult' (1#1) [C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/source/rsa_modmult.vhd:42]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:30 ; elapsed = 00:00:31 . Memory (MB): peak = 1026.250 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 1026.250 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 1026.250 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:10 ; elapsed = 00:01:06 . Memory (MB): peak = 1483.891 ; gain = 457.641
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input  256 Bit       Adders := 256   
+	   3 Input  256 Bit       Adders := 257   
+	   3 Input  255 Bit       Adders := 255   
++---Registers : 
+	              256 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input  256 Bit        Muxes := 515   
+	   2 Input  255 Bit        Muxes := 255   
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[17] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[20] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[23] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[24] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[25] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[26] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[27] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[28] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[29] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[30] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[31] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[32] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[33] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[34] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[35] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[36] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[37] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[38] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[39] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[40] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[41] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[42] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[43] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[44] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[45] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[46] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[47] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[48] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[49] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[50] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[51] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[52] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[53] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[54] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[55] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[56] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[57] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[58] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[59] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[60] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[61] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[62] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[63] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[64] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[65] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[66] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[67] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[68] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[69] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[70] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[71] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[72] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[73] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[74] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[75] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[76] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[77] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[78] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[79] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[80] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[81] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[82] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[83] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[84] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[85] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[86] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[87] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[88] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[89] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[90] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[91] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[92] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[93] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[94] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[95] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[96] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[97] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[98] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_0/\counter_reg[99] )
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:27 ; elapsed = 00:06:16 . Memory (MB): peak = 1764.930 ; gain = 738.680
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:06:44 ; elapsed = 00:07:35 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:06:44 ; elapsed = 00:07:35 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |OBUF |   257|
++------+-----+------+
+
+Report Instance Areas: 
++------+---------+-------+------+
+|      |Instance |Module |Cells |
++------+---------+-------+------+
+|1     |top      |       |   257|
++------+---------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:06:48 ; elapsed = 00:07:39 . Memory (MB): peak = 1824.543 ; gain = 798.293
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:06:48 ; elapsed = 00:07:40 . Memory (MB): peak = 1824.543 ; gain = 798.293
+Synthesis Optimization Complete : Time (s): cpu = 00:06:48 ; elapsed = 00:07:40 . Memory (MB): peak = 1824.543 ; gain = 798.293
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1824.543 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1824.543 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+114 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:06:56 ; elapsed = 00:07:47 . Memory (MB): peak = 1824.543 ; gain = 798.293
+INFO: [Common 17-1381] The checkpoint 'C:/Users/jacob/Elsys/21_H/TFE4141_Digsys/Digsys_project/digsys_2021/rsa_modmult/rsa_modmult/rsa_modmult.runs/synth_1/rsa_modmult.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file rsa_modmult_utilization_synth.rpt -pb rsa_modmult_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Fri Nov  5 12:14:14 2021...
