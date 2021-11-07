@@ -10,26 +10,24 @@ entity exponentiation is
 	);
 	port (
 		-- input control
-		valid_in		: in  STD_LOGIC;
-		ready_in		: out STD_LOGIC;
+		valid_in    	: in  STD_LOGIC;
+		ready_in    	: out STD_LOGIC;
 
 		-- input data
-		message 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		key 			: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		message, key	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
 		-- ouput control
-		ready_out	: in  STD_LOGIC;
-		valid_out	: out STD_LOGIC;
+		ready_out   	: in  STD_LOGIC;
+		valid_out   	: out STD_LOGIC;
 
 		-- output data
-		result		: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
 		-- modulus
-		modulus 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
 		-- utility
-		clk 			: in STD_LOGIC;
-		reset_n 		: in STD_LOGIC
+		clk, reset_n	: in STD_LOGIC
 	);
 end exponentiation;
 
@@ -51,7 +49,7 @@ architecture rl_binary_rtl of exponentiation is
 			clk	: in 	std_logic;
 			rst	: in 	std_logic;
 			en 	: in 	std_logic;
-			val	: out	std_logic_vector(bit-1 downto 0)
+			val	: out	unsigned(bit-1 downto 0)
 		);
 	end component;
 
@@ -72,7 +70,9 @@ architecture rl_binary_rtl of exponentiation is
 		port (
 			clk, reset_n : in  std_logic;
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
-			c            : out std_logic_vector(C_block_size-1 downto 0)
+			p            : out std_logic_vector(C_block_size-1 downto 0);
+			ready        : in  std_logic;
+			valid        : out std_logic
 		);
 	end component;
 
@@ -81,7 +81,7 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal start : std_logic;
+	signal run, done : std_logic;
 	signal en : std_logic_vector(0 downto 0);
 	signal cnt : unsigned(8 downto 0);
 	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
@@ -93,35 +93,46 @@ begin
 		key_array(i) <= key(i downto i);
 	end generate; -- key_gen
 
-	ready_in <= cnt(log_size);
-	start <= ready_in and valid_in;
-
-	main : process( clk, reset_n )
+	main : process(all)
 	begin
 		if( reset_n = '0' ) then
-			cnt(log_size) <= '1';
+			ready_in <= '1';
 			c <= (others => '0');
 			p <= (others => '0');
 		elsif( rising_edge(clk) ) then
+
+			done <= cnt(log_size);
+			ready_in <= done;
+			if (ready_in and valid_in) then
+				run <= '1';
+				ready_in <= '0';
+			end if;
+			if (done = '1') then
+				run <= '0';
+				ready_in <= '1';
+			end if;
+
 			if c_en then
 				c <= c_d;
 			end if;
 			if p_en then
 				p <= p_d;
 			end if;
+
+
 		end if;
 	end process; -- main
 
-	key_sel_counter: entity work.counter(rtl)
+	key_sel_counter: counter
 		generic map (bit => log_size + 1)
 		port map (
 			clk => clk,
 			rst => reset_n,
-			en  => start,
+			en  => run,
 			val => cnt
 		);
 
-	key_mux: entity work.mux(rtl)
+	key_mux: mux
 		generic map (
 			num => C_block_size,
 			bit => 1
@@ -132,28 +143,30 @@ begin
 			output => en
 		);
 
-	C_mult: entity work.rsa_modmult(modmult_arch)
+	C_mult: mod_mult
 		generic map (C_block_size => C_block_size)
 		port map (
-			clk      => clk,
-			reset_n  => reset_n,
-			n        => modulus,
-			a        => c_q,
-			b        => p_q,
-			overflow => c_en,
-			p        => c_d
+			clk     => clk,
+			reset_n => reset_n,
+			n       => modulus,
+			a       => c_q,
+			b       => p_q,
+			ready   => run,
+			valid   => c_en,
+			p       => c_d
 		);
 
-	P_mult: entity work.rsa_modmult(modmult_arch)
+	P_mult: mod_mult
 		generic map (C_block_size => C_block_size)
 		port map (
-			clk      => clk,
-			reset_n  => reset_n,
-			n        => modulus,
-			a        => p_q,
-			b        => p_q,
-			overflow => p_en,
-			p        => p_d
+			clk     => clk,
+			reset_n => reset_n,
+			n       => modulus,
+			a       => p_q,
+			b       => p_q,
+			ready   => run,
+			valid   => p_en,
+			p       => p_d
 		);
 
 end architecture;
@@ -308,7 +321,7 @@ end architecture;
 -- 			output => mf
 -- 		);
 
--- 	C_mod_mult: entity work.rsa_modmult(modmult_arch)
+-- 	C_mod_mult: entity work.mod_mult(modmult_arch)
 -- 		generic map (C_block_size => C_block_size)
 -- 		port map (
 -- 			clk      => clk,
