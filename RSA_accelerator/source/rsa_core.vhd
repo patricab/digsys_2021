@@ -71,7 +71,7 @@ architecture rtl of rsa_core is
 	signal rl_valid :std_logic_vector(47 downto 0);
 	signal ready_in :std_logic_vector(47 downto 0);
 	signal ready_out :std_logic_vector(47 downto 0);
-	
+
 	component exponentiation is
 		generic (
 			C_block_size : integer := 256
@@ -107,8 +107,8 @@ begin
 	-- 		reset_n   => reset_n
 	-- 	);
 	gen: for i in 0 to 47 generate
-		
-		element: exponentiation port map(
+
+		element: entity work.exponentiation(rl_binary_rtl) port map(
 			message   => msgin_data  ,
 			key       => key_e_d     ,
 			valid_in  => rl_valid(i) ,

@@ -34,12 +34,12 @@ entity exponentiation is
 end exponentiation;
 
 
-architecture expBehave of exponentiation is
-begin
-	result <= message xor modulus;
-	ready_in <= ready_out;
-	valid_out <= valid_in;
-end expBehave;
+-- architecture expBehave of exponentiation is
+-- begin
+-- 	result <= message xor modulus;
+-- 	ready_in <= ready_out;
+-- 	valid_out <= valid_in;
+-- end expBehave;
 
 
 
@@ -99,6 +99,7 @@ begin
 	main : process( clk, reset_n )
 	begin
 		if( reset_n = '0' ) then
+			cnt(log_size) <= '1';
 			c <= (others => '0');
 			p <= (others => '0');
 		elsif( rising_edge(clk) ) then
@@ -131,7 +132,7 @@ begin
 			output => en
 		);
 
-	C_mult: entity work.mod_mult(blakeley)
+	C_mult: entity work.rsa_modmult(modmult_arch)
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
@@ -143,7 +144,7 @@ begin
 			c       => c_d
 		);
 
-	P_mult: entity work.mod_mult(blakeley)
+	P_mult: entity work.rsa_modmult(modmult_arch)
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
@@ -159,167 +160,167 @@ end architecture;
 
 
 
-architecture mary_rtl of exponentiation is
+-- architecture mary_rtl of exponentiation is
 
-	component counter
-		generic (bit : integer := 8);
-		port (
-			clk	: in 	std_logic;
-			rst	: in 	std_logic;
-			en 	: in 	std_logic;
-			val	: out	std_logic_vector(bit-1 downto 0)
-		);
-	end component;
+-- 	component counter
+-- 		generic (bit : integer := 8);
+-- 		port (
+-- 			clk	: in 	std_logic;
+-- 			rst	: in 	std_logic;
+-- 			en 	: in 	std_logic;
+-- 			val	: out	std_logic_vector(bit-1 downto 0)
+-- 		);
+-- 	end component;
 
-	component mux
-		generic (
-			num : natural := 32;
-			bit : natural :=  1
-		);
-		port (
-			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
-			sel    : in  natural range 0 to num-1;
-			output : out std_logic_vector(bit-1 downto 0)
-		);
-	end component;
+-- 	component mux
+-- 		generic (
+-- 			num : natural := 32;
+-- 			bit : natural :=  1
+-- 		);
+-- 		port (
+-- 			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
+-- 			sel    : in  natural range 0 to num-1;
+-- 			output : out std_logic_vector(bit-1 downto 0)
+-- 		);
+-- 	end component;
 
-	component modmult is
-		generic (
-			C_Block_size: integer := 256
-		);
-		port (
+-- 	component modmult is
+-- 		generic (
+-- 			C_Block_size: integer := 256
+-- 		);
+-- 		port (
 
-			b: in std_logic_vector(C_Block_size-1 downto 0);
-			a: in std_logic_vector(C_Block_size-1 downto 0);
-			n: in std_logic_vector(C_Block_size-1 downto 0);
+-- 			b: in std_logic_vector(C_Block_size-1 downto 0);
+-- 			a: in std_logic_vector(C_Block_size-1 downto 0);
+-- 			n: in std_logic_vector(C_Block_size-1 downto 0);
 
-			p: out std_logic_vector(C_Block_size-1 downto 0);
+-- 			p: out std_logic_vector(C_Block_size-1 downto 0);
 
-			clk: in std_logic;
-			overflow: out std_logic);
+-- 			clk: in std_logic;
+-- 			overflow: out std_logic);
 
-	end component;
+-- 	end component;
 
-	constant r  : integer := 4;
-	constant r2 : integer := 16; -- r^2
-	constant s  : integer := C_block_size / r;
-	constant log_size : integer := 6;-- integer(log2(s));
+-- 	constant r  : integer := 4;
+-- 	constant r2 : integer := 16; -- r^2
+-- 	constant s  : integer := C_block_size / r;
+-- 	constant log_size : integer := 6;-- integer(log2(s));
 
-	signal start, en : std_logic;
+-- 	signal start, en : std_logic;
 
-	signal m : slv_array_t(0 to r2-1)(C_block_size-1 downto 0);
+-- 	signal m : slv_array_t(0 to r2-1)(C_block_size-1 downto 0);
 
-	signal f : unsigned(r-1 downto 0); -- range 0 to r-1;
+-- 	signal f : unsigned(r-1 downto 0); -- range 0 to r-1;
 
-	signal mf : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+-- 	signal mf : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 
-	signal cnt : unsigned(log_size downto 0);
-	signal c, c_d, c_q : std_logic_vector(C_block_size-1 downto 0);
-	signal c_en : std_logic;
+-- 	signal cnt : unsigned(log_size downto 0);
+-- 	signal c, c_d, c_q : std_logic_vector(C_block_size-1 downto 0);
+-- 	signal c_en : std_logic;
 
-	signal key_array : slv_array_t(0 to s-1)(r-1 downto 0);
+-- 	signal key_array : slv_array_t(0 to s-1)(r-1 downto 0);
 
-	signal mux_out : std_logic_vector(C_block_size-1 downto 0);
+-- 	signal mux_out : std_logic_vector(C_block_size-1 downto 0);
 
-	signal c_sel : slv_array_t(0 to 1)(C_block_size-1 downto 0);
+-- 	signal c_sel : slv_array_t(0 to 1)(C_block_size-1 downto 0);
 
-begin
+-- begin
 
-	key_gen : for i in 0 to s-1 generate
-		key_array(i) <= key(i*r + r-1 downto i*r);
-	end generate; -- key_gen
+-- 	key_gen : for i in 0 to s-1 generate
+-- 		key_array(i) <= key(i*r + r-1 downto i*r);
+-- 	end generate; -- key_gen
 
-	c_sel <= (mf, c);
+-- 	c_sel <= (mf, c);
 
-	ready_in <= cnt(log_size);
-	start <= ready_in and valid_in;
+-- 	ready_in <= cnt(log_size);
+-- 	start <= ready_in and valid_in;
 
-	main : process( clk, reset_n )
-	begin
-		if( reset_n = '0' ) then
-			c <= (others => '0');
-		elsif( rising_edge(clk) ) then
-			if c_en then
-				c <= c_d;
-			end if;
-		end if;
-	end process; -- main
+-- 	main : process( clk, reset_n )
+-- 	begin
+-- 		if( reset_n = '0' ) then
+-- 			c <= (others => '0');
+-- 		elsif( rising_edge(clk) ) then
+-- 			if c_en then
+-- 				c <= c_d;
+-- 			end if;
+-- 		end if;
+-- 	end process; -- main
 
-	m_reg_demux : entity work.demux(rtl)
-		generic map (
-			num => r2,
-			bit => C_block_size
-		)
-		port map (
-			input  => c,
-			sel    => to_integer(cnt(3 downto 0)),
-			output => m
-		);
+-- 	m_reg_demux : entity work.demux(rtl)
+-- 		generic map (
+-- 			num => r2,
+-- 			bit => C_block_size
+-- 		)
+-- 		port map (
+-- 			input  => c,
+-- 			sel    => to_integer(cnt(3 downto 0)),
+-- 			output => m
+-- 		);
 
-	c_sel_mux: entity work.mux(rtl)
-		generic map (
-			num => 2,
-			bit => C_block_size
-		)
-		port map (
-			input  => c_sel,
-			sel    => to_integer(unsigned'('0' & start)),
-			output => c_d
-		);
+-- 	c_sel_mux: entity work.mux(rtl)
+-- 		generic map (
+-- 			num => 2,
+-- 			bit => C_block_size
+-- 		)
+-- 		port map (
+-- 			input  => c_sel,
+-- 			sel    => to_integer(unsigned'('0' & start)),
+-- 			output => c_d
+-- 		);
 
-	key_sel_counter: entity work.counter(rtl)
-		generic map (bit => log_size) -- 64 => 6bit
-		port map(
-			clk => clk,
-			rst => reset_n,
-			en  => start,
-			val => cnt(log_size-1 downto 0)
-		);
+-- 	key_sel_counter: entity work.counter(rtl)
+-- 		generic map (bit => log_size) -- 64 => 6bit
+-- 		port map(
+-- 			clk => clk,
+-- 			rst => reset_n,
+-- 			en  => start,
+-- 			val => cnt(log_size-1 downto 0)
+-- 		);
 
-	mod_mult_inp_sel_Counter: entity work.counter(rtl)
-		generic map (bit => 3) -- integer(log2(r))4 => 2bit +1
-		port map (
-			clk => clk,
-			rst => reset_n,
-			en  => to_integer(start),
-			val => cnt(2 downto 0)
-		);
+-- 	mod_mult_inp_sel_Counter: entity work.counter(rtl)
+-- 		generic map (bit => 3) -- integer(log2(r))4 => 2bit +1
+-- 		port map (
+-- 			clk => clk,
+-- 			rst => reset_n,
+-- 			en  => to_integer(start),
+-- 			val => cnt(2 downto 0)
+-- 		);
 
-	key_mux: entity work.mux(rtl)
-		generic map (
-			num => s,
-			bit => r
-		)
-		port map (
-			input  => key_array,
-			sel    => to_integer(cnt),
-			std_logic_vector(output) => f
-		);
+-- 	key_mux: entity work.mux(rtl)
+-- 		generic map (
+-- 			num => s,
+-- 			bit => r
+-- 		)
+-- 		port map (
+-- 			input  => key_array,
+-- 			sel    => to_integer(cnt),
+-- 			std_logic_vector(output) => f
+-- 		);
 
-	key_mux2: entity work.mux(rtl)
-		generic map (
-			num => r2,
-			bit => C_block_size
-		)
-		port map (
-			input  => m,
-			sel    => to_integer(f),
-			output => mf
-		);
+-- 	key_mux2: entity work.mux(rtl)
+-- 		generic map (
+-- 			num => r2,
+-- 			bit => C_block_size
+-- 		)
+-- 		port map (
+-- 			input  => m,
+-- 			sel    => to_integer(f),
+-- 			output => mf
+-- 		);
 
-	C_mod_mult: entity work.rsa_modmult(modmult_arch)
-		generic map (C_block_size => C_block_size)
-		port map (
-			clk      => clk,
-			reset_n  => reset_n,
-			n        => modulus,
-			a        => c_q,
-			b        => mux_out,
-			overflow => c_en,
-			p        => c
-		);
+-- 	C_mod_mult: entity work.rsa_modmult(modmult_arch)
+-- 		generic map (C_block_size => C_block_size)
+-- 		port map (
+-- 			clk      => clk,
+-- 			reset_n  => reset_n,
+-- 			n        => modulus,
+-- 			a        => c_q,
+-- 			b        => mux_out,
+-- 			overflow => c_en,
+-- 			p        => c
+-- 		);
 
-end architecture;
+-- end architecture;
 
 
 
