@@ -59,7 +59,7 @@ architecture rl_binary_rtl of exponentiation is
 			bit : natural :=  1
 		);
 		port (
-			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
+			input  : in  slv_array_t(0 to num-1)(bit-1 downto 0);
 			sel    : in  natural range 0 to num-1;
 			output : out std_logic_vector(bit-1 downto 0)
 		);

@@ -71,7 +71,7 @@ architecture rl_binary_rtl of exponentiation is
 			clk, reset_n : in  std_logic;
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
 			p            : out std_logic_vector(C_block_size-1 downto 0);
-			ready        : in  std_logic;
+			enable       : in  std_logic;
 			valid        : out std_logic
 		);
 	end component;
@@ -151,7 +151,7 @@ begin
 			n       => modulus,
 			a       => c_q,
 			b       => p_q,
-			ready   => run,
+			enable  => run,
 			valid   => c_en,
 			p       => c_d
 		);
@@ -164,7 +164,7 @@ begin
 			n       => modulus,
 			a       => p_q,
 			b       => p_q,
-			ready   => run,
+			enable  => run,
 			valid   => p_en,
 			p       => p_d
 		);
