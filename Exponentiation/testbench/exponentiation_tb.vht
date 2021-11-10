@@ -62,12 +62,13 @@ begin
 
 
 	Test : process
-	constant period : time := 5120*256 ns;
+	constant period : time := 256*256*20 ns;
 	begin
 		-- static
 		valid_in  <= '1';
 		ready_out <= '1';
 		restart   <= '0';
+		wait for 20 ns;
 
 		key     <= (0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3 -- e 65537
 		modulus <= (0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
