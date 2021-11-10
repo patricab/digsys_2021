@@ -12,7 +12,6 @@ safe_close_project
 source -notrace [file normalize "${origin_dir}/generate_IP.tcl"]
 cd [file dirname [file normalize [info script]]]
 
-
 puts [file normalize "${origin_dir}/RSA_soc/RSA_soc/RSA_soc.xpr"]
 open_project [file normalize "${origin_dir}/RSA_soc/RSA_soc/RSA_soc.xpr"]
 #to prevent random crash
