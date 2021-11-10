@@ -80,7 +80,7 @@ b_gen : for i in 0 to C_Block_size-1 generate
    b_array(i) <= b(i downto i);
 end generate;
 
-main : process( clk, reset_n )
+main : process( clk, reset_n, valid, enable )
 begin
    if( reset_n = '0' ) then
       rst_cnt <= '0';
@@ -100,7 +100,7 @@ begin
 end process ; -- main
 
 
-b_sel_cnt : counter
+b_sel_cnt : entity work.counter(down)
    generic map (bit => 9)
    port map (
       clk => clk,

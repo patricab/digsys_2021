@@ -68,7 +68,7 @@ architecture rl_binary_rtl of exponentiation is
 		);
 	end component;
 
-	shared variable log_size : integer := 8;
+	-- shared variable log_size : integer := 8;
 	-- log_size := to_integer(log2(real(C_block_size)));
 
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
@@ -88,16 +88,16 @@ begin
 	main : process(all)
 	begin
 		if( reset_n = '0' ) then
-			ready_in <= '1';
+			cnt <= (8 => '1', others => '0');
 			c <= (others => '0');
 			p <= (others => '0');
 		elsif( rising_edge(clk) ) then
 
-			done <= cnt(log_size);
-			ready_in <= done;
+			done <= cnt(8); --log_size
+
 			if (ready_in = '1' and valid_in = '1') then
 				run <= '1';
-				ready_in <= '0';
+				cnt <= (others => '0');
 			end if;
 			if (done = '1') then
 				run <= '0';
@@ -116,7 +116,7 @@ begin
 	end process; -- main
 
 	key_sel_counter: counter
-		generic map (bit => log_size + 1)
+		generic map (bit => 8 + 1) -- log_size
 		port map (
 			clk => clk,
 			rst => reset_n,

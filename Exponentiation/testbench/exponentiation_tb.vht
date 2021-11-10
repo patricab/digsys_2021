@@ -62,7 +62,7 @@ begin
 
 
 	Test : process
-	constant period : time := 2560 ns;
+	constant period : time := 5120*256 ns;
 	begin
 		-- static
 		valid_in  <= '1';
@@ -74,13 +74,16 @@ begin
 		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
 
 		wait for period;
-		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"0000000D") -- if false
+		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
+		               & x"00000000" & x"00000000" & x"00000000" & x"0000000D") -- if false
 			report "wrong result";
+
 		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
 		wait for period;
-		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000007")
+		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
+		               & x"00000000" & x"00000000" & x"00000000" & x"00000007")
 			report "wrong result";
 
 		wait;
