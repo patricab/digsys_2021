@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="/home/pab/projects/digsys_2021/rsa_control/rsa_control/rsa_control.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="84cdf32e9ffc49e4a3a1fabd3c72c9c4"/>
+    <Option Name="Id" Val="566b5f688a2a46768fcc686a58376181"/>
     <Option Name="Part" Val="xc7z020clg400-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -95,11 +95,6 @@
       </Config>
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
-      <File Path="$PPRDIR/../testbench/rsa_control.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../testbench/rsa_control_tb.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="simulation"/>

@@ -29,26 +29,31 @@ begin
 end architecture behavioral;
 --
 
--- DFF, no enable
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+-- DFF, no enable, reset
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-entity dff is
-	port (
-		clk     :in  std_logic;
-		d       :in  std_logic;
-		q       :out std_logic);
-end dff;
+entity dff_clr is
+  port (
+    clk     : in  std_logic;
+    reset_n : in  std_logic;
+    d       : in  std_logic;
+    q       : out std_logic);
+end dff_clr;
 
-architecture rtl of dff is
+architecture rtl of dff_clr is
 begin
-	process(clk)
-	begin
-		if (clk'event and clk='1') then
-			q <= d;
-		end if;
-	end process;
+  process(clk, reset_n)
+  begin
+    if (clk'event and clk='1') then
+      if(reset_n = '0') then
+        q <= '0';
+      else
+        q <= d;
+      end if;
+    end if;
+  end process;
 end rtl;
 --
 
@@ -72,7 +77,7 @@ architecture rtl of shift_register is
 begin
 	process(clk, rst)
 	begin
-		if(rst = '1') then
+		if(rst = '0') then
 			q_i <= (others => '0');
 		end if;
 		if (clk'event and clk='1') then
@@ -93,6 +98,7 @@ use work.sr_defines.all;
 entity shift_register_256 is
 	port (
 		clk     :in  std_logic;
+		rst		:in  std_logic;
 		en 		:in  std_logic;
 		d       :in  std_logic_vector(255 downto 0);
 		q       :out std_logic_vector(255 downto 0));
@@ -101,13 +107,18 @@ end shift_register_256;
 architecture rtl of shift_register_256 is
 	signal q_i :SR;
 begin
-	process(clk, en)
+	process(clk, en, rst)
 	begin
+		if (rst = '0') then
+			for i in 0 to 47 loop
+				q_i(i) <= (others => '0');
+			end loop;
+		end if;
 		if (en = '1') and (clk'event and clk='1') then
 			q_i <= q_i(REGISTER_WIDTH-2 downto 0) & d;
 		end if;
 	end process;
-	q <= q_i(0);
+	q <= q_i(47);
 end rtl;
 
 -- Main entity for control block
@@ -123,6 +134,7 @@ entity rsa_control is
 	port (
 		-- Tick-tock, on the clock
 		clk :in std_logic;
+		reset_n :in std_logic;
 
 		-- Message that will be sent out is valid
 		msgin_valid :in std_logic;
@@ -170,9 +182,10 @@ begin
 			y => or_y);
 
 	d_i <= or_y and msgout_ready;
-	DFF: entity work.dff(rtl)
+	DFF: entity work.dff_clr(rtl)
 		port map (
 			clk => clk,
+			reset_n => reset_n,
 			d => d_i,
 			q => msgout_valid);
 	
@@ -180,6 +193,7 @@ begin
 	sr_256: entity work.shift_register_256(rtl)
 		port map (
 			clk => clk,
+			rst => reset_n,
 			en => sr_en,
 			d => rl_data,
 			q => msgout_data);
