@@ -7,9 +7,9 @@ entity mod_sub is
 		bits : natural := 256
 	);
 	port (
-		input   : in  unsigned(bits-1 downto 0);
-		modular : in  unsigned(bits-1 downto 0);
-		output  : out unsigned(bits-1 downto 0)
+		input   : in  std_logic_vector(bits-1 downto 0);
+		modular : in  std_logic_vector(bits-1 downto 0);
+		output  : out std_logic_vector(bits-1 downto 0)
 	);
 end mod_sub;
 
@@ -20,9 +20,9 @@ begin
 	mod_sub : process(input, modular)
 	begin
 		if (input >= modular) then
-			output <= input - modular;
+			output <= std_logic_vector(unsigned(input) - unsigned(modular));
 		else
-			output <= input;
+			output <= std_logic_vector(unsigned(input));
 		end if;
 	end process ; -- mod_sub
 

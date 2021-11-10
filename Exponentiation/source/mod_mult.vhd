@@ -121,7 +121,7 @@ b_sel_mux : mux
    );
 
 add : adder
-   generic map (bits => 256)
+   generic map (bits => C_Block_size)
    port map (
       a => p(C_Block_size-2 downto 0) & '0',
       b => mid0,
@@ -129,7 +129,7 @@ add : adder
    );
 
 mod_sub1 : mod_sub
-   generic map (bits => 256)
+   generic map (bits => C_Block_size)
    port map (
       input   => mid1,
       modular => n,
@@ -137,7 +137,7 @@ mod_sub1 : mod_sub
    );
 
 mod_sub2 : mod_sub
-   generic map (bits => 256)
+   generic map (bits => C_Block_size)
    port map (
       input   => mid2,
       modular => n,

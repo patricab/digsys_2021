@@ -7,8 +7,8 @@ entity adder is
 		bits : natural := 256
 	);
 	port (
-		a, b : in  unsigned(bits-1 downto 0);
-		y    : out unsigned(bits-1 downto 0)
+		a, b : in  std_logic_vector(bits-1 downto 0);
+		y    : out std_logic_vector(bits-1 downto 0)
 	);
 end adder;
 
@@ -16,6 +16,6 @@ architecture rtl of adder is
 
 begin
 
-	y <= a + b;
+	y <= std_logic_vector(unsigned(a) + unsigned(b));
 
 end architecture;

@@ -28,6 +28,7 @@ architecture expBehave of exponentiation_tb is
 
 begin
 	i_exponentiation : entity work.exponentiation(rl_binary_rtl)
+		generic map (C_block_size => C_block_size)
 		port map (
 			message   => message  ,
 			key       => key      ,
@@ -65,22 +66,21 @@ begin
 	begin
 		-- static
 		valid_in  <= '1';
-		ready_in  <= '1';
 		ready_out <= '1';
 		restart   <= '0';
 
-		key     <= x"00000011"; -- e  3 -- e 65537
-		modulus <= x"00000021"; -- n 33
-		message <= x"00000007"; -- m  7
+		key     <= (0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3 -- e 65537
+		modulus <= (0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
+		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
 
 		wait for period;
-		assert (result = x"0000000D") -- if false
+		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"0000000D") -- if false
 			report "wrong result";
-
-		message <= x"0000000D"; -- m 13
+		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
+		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
 		wait for period;
-		assert (result = x"000000007")
+		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000000" & x"00000007")
 			report "wrong result";
 
 		wait;
