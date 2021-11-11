@@ -32,7 +32,7 @@ architecture rtl of mod_mult is
 
    signal bi : std_logic_vector(0 downto 0);
 
-	signal mid0, mid1, mid2 : std_logic_vector(C_block_size-1 downto 0);
+	signal p_mid, mid0, mid1, mid2 : std_logic_vector(C_block_size-1 downto 0);
 
 	component counter
 		generic (bit : integer := 8);
@@ -80,13 +80,17 @@ b_gen : for i in 0 to C_Block_size-1 generate
    b_array(i) <= b(i downto i);
 end generate;
 
-main : process( clk, reset_n, valid, enable )
+main : process( clk, reset_n, enable )
 begin
    if( reset_n = '0' ) then
       rst_cnt <= '0';
+      p_mid <= (others => '0');
+      p <= (others => '0');
+      mid1 <= (others => '0');
+      mid2 <= (others => '0');
 
    elsif( rising_edge(clk) and enable = '1' ) then
-      rst_cnt <= valid and enable;
+      -- rst_cnt <= valid;
 
       if (bi(0) = '1') then
          mid0 <= a;
@@ -94,7 +98,8 @@ begin
          mid0 <= (others => '0');
       end if;
 
-      valid <= cnt(8);
+      valid <= not cnt(8);
+      p_mid <= p(C_Block_size-2 downto 0) & '0';
 
    end if ;
 end process ; -- main
@@ -104,7 +109,7 @@ b_sel_cnt : entity work.counter(down)
    generic map (bit => 9)
    port map (
       clk => clk,
-      rst => rst_cnt,
+      rst => reset_n,
       en  => enable,
       val => cnt
    );
@@ -123,7 +128,7 @@ b_sel_mux : mux
 add : adder
    generic map (bits => C_Block_size)
    port map (
-      a => p(C_Block_size-2 downto 0) & '0',
+      a => p_mid,
       b => mid0,
       y => mid1
    );
