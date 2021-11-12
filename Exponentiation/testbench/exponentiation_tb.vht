@@ -17,7 +17,7 @@ architecture expBehave of exponentiation_tb is
 	signal modulus  	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	-- Output
 	signal result   	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-	signal cnt        : unsigned(7 downto 0);
+	signal cnt        : unsigned(8 downto 0);
 	signal p_en       : std_logic;
 	signal state, nxt_state : state_t;
 	-- Control

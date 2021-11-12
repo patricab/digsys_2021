@@ -22,7 +22,7 @@ entity exponentiation is
 
 		-- output data
 		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		cnt            : out unsigned(7 downto 0);
+		cnt            : out unsigned(8 downto 0);
 		p_en           : out std_logic;
 		state, nxt_state : out state_t;
 
@@ -80,7 +80,7 @@ architecture rl_binary_rtl of exponentiation is
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
 	signal skip_v  : std_logic_vector(0 downto 0);
-	signal skip, enable : std_logic;
+	signal skip, enable, rst_cnt : std_logic;
 	-- signal cnt : unsigned(7 downto 0);
 	signal c, p, p_d : std_logic_vector(C_block_size-1 downto 0);
 	signal c_en : std_logic; -- p_en
@@ -103,16 +103,20 @@ begin
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
+					rst_cnt   <= '0';
 
 				when idle  =>
 					enable    <= '0';
 					ready_in  <= '1';
 					valid_out <= '0';
+					rst_cnt   <= '1';
 
 				when start =>
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
+					rst_cnt   <= '1';
+
 					p <= message;
 					c <= (0 => '1', others => '0');
 
@@ -120,6 +124,8 @@ begin
 					enable    <= '1';
 					ready_in  <= '0';
 					valid_out <= '0';
+					rst_cnt   <= '1';
+
 					if (c_en = '1') then
 						c <= result;
 					end if;
@@ -131,11 +137,13 @@ begin
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '1';
+					rst_cnt   <= '0';
 
 				when others =>
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
+					rst_cnt   <= '1';
 			end case ;
 
 
@@ -164,7 +172,7 @@ begin
 					nxt_state <= calc;
 
 				when calc  =>
-					if (cnt = 255) then
+					if (cnt(8) = '1') then
 						nxt_state <= fnsh;
 					else
 						nxt_state <= calc;
@@ -190,10 +198,10 @@ begin
 
 
 	key_sel_counter: entity work.counter(up)
-		generic map (bit => 8) -- log_size
+		generic map (bit => 9) -- log_size
 		port map (
 			clk => p_en,
-			rst => reset_n,
+			rst => rst_cnt,
 			en  => enable,
 			val => cnt
 		);
