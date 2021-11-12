@@ -23,16 +23,6 @@ entity mod_mult is
 end mod_mult;
 --------------------------------------------------------------------------------
 architecture rtl of mod_mult is
--- signal declaration:
-	signal cnt: unsigned(8 downto 0);
-
-	signal rst_cnt : std_logic;
-
-   signal b_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
-
-   signal bi : std_logic_vector(0 downto 0);
-
-	signal p_mid, mid0, mid1, mid2 : std_logic_vector(C_block_size-1 downto 0);
 
 	component counter
 		generic (bit : integer := 8);
@@ -73,6 +63,17 @@ architecture rtl of mod_mult is
          output         : out std_logic_vector(bits-1 downto 0)
       );
    end component;
+
+   -- signal declaration:
+   signal cnt: unsigned(8 downto 0);
+
+   signal rst_cnt : std_logic;
+
+   signal b_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
+
+   signal bi : std_logic_vector(0 downto 0);
+
+   signal p_mid, mid0, mid1, mid2 : std_logic_vector(C_block_size-1 downto 0);
 
 begin---------------------------------------------------------------------------
 

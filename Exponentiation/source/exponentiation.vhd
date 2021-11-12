@@ -64,6 +64,7 @@ architecture rl_binary_rtl of exponentiation is
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
 			p            : out std_logic_vector(C_block_size-1 downto 0);
 			enable       : in  std_logic;
+			skip         : in std_logic;
 			valid        : out std_logic
 		);
 	end component;
@@ -73,13 +74,15 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal run, done : std_logic;
-	signal en : std_logic_vector(0 downto 0);
-	signal cnt : unsigned(8 downto 0);
-	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
+	signal skip_v  : std_logic_vector(0 downto 0);
+	signal skip, run : std_logic;
+	signal cnt : unsigned(7 downto 0);
+	signal c, c_d, p, p_d : std_logic_vector(C_block_size-1 downto 0);
 	signal c_en, p_en : std_logic;
 
 begin
+
+	skip <= skip_v(0);
 
 	key_gen : for i in 0 to C_block_size-1 generate
 		key_array(i) <= key(i downto i);
@@ -88,20 +91,22 @@ begin
 	main : process(all)
 	begin
 		if( reset_n = '0' ) then
-			cnt <= (8 => '1', others => '0');
 			c <= (others => '0');
 			p <= (others => '0');
 		elsif( rising_edge(clk) ) then
 
-			done <= cnt(8); --log_size
-
 			if (ready_in = '1' and valid_in = '1') then
 				run <= '1';
-				cnt <= (others => '0');
+				p <= message;
+				c <= (0 => '1', others => '0');
 			end if;
-			if (done = '1') then
+			if (cnt = 0) then
 				run <= '0';
-				ready_in <= '1';
+				ready_in  <= '1';
+				valid_out <= '1'; -- valid on reset...
+			else
+				valid_out <= '0';
+				ready_in  <= '0';
 			end if;
 
 			if (c_en = '1') then
@@ -115,8 +120,8 @@ begin
 		end if;
 	end process; -- main
 
-	key_sel_counter: counter
-		generic map (bit => 8 + 1) -- log_size
+	key_sel_counter: entity work.counter(down)
+		generic map (bit => 8) -- log_size
 		port map (
 			clk => clk,
 			rst => reset_n,
@@ -132,7 +137,7 @@ begin
 		port map (
 			input  => key_array,
 			sel    => to_integer(cnt),
-			output => en
+			output => skip_v
 		);
 
 	C_mult: mod_mult
@@ -141,9 +146,10 @@ begin
 			clk     => clk,
 			reset_n => reset_n,
 			n       => modulus,
-			a       => c_q,
-			b       => p_q,
+			a       => c,
+			b       => p,
 			enable  => run,
+			skip    => skip,
 			valid   => c_en,
 			p       => c_d
 		);
@@ -154,9 +160,10 @@ begin
 			clk     => clk,
 			reset_n => reset_n,
 			n       => modulus,
-			a       => p_q,
-			b       => p_q,
+			a       => p,
+			b       => p,
 			enable  => run,
+			skip    => '0',
 			valid   => p_en,
 			p       => p_d
 		);

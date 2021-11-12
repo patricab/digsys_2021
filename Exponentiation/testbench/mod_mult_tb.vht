@@ -19,24 +19,26 @@ architecture behaviour of mod_mult_tb is
 	-- control
 	signal valid   : std_logic;
    signal enable  : std_logic;
+   signal skip    : std_logic;
 	-- utility
 	signal clk		: std_logic;
    signal reset_n	: std_logic;
 
 begin
-	i_rsa_modmult : entity work.mod_mult(rtl)
+	i_rsa_modmult : entity work.mod_mult(behavioral)
 	    generic map(
 	       C_Block_size => 256
 	    )
 		port map(
-			b  => b,
-			a  => a,
-			n  => n,
-			p => p,
-			valid => valid,
-         enable => enable,
 			clk => clk,
-			reset_n => reset_n
+			reset_n => reset_n,
+			a => a,
+			b => b,
+			n => n,
+			p => p,
+			valid  => valid,
+         enable => enable,
+         skip => skip
 		);
 
 	-- init clock 50 MHz clock
@@ -64,6 +66,7 @@ begin
 	--n <= "01001111"; --4F
 
       enable <= '1';
+      skip   <= '0';
 
 	process is
 	   constant period: time := 180 ns;
