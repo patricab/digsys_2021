@@ -35,6 +35,9 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
+	type state_t is (reset, idle, start, calc, fnsh);
+	signal state, nxt_state : state_t;
+
 	component counter
 		generic (bit : integer := 8);
 		port (
@@ -75,7 +78,7 @@ architecture rl_binary_rtl of exponentiation is
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
 	signal skip_v  : std_logic_vector(0 downto 0);
-	signal skip, run : std_logic;
+	signal skip, enable : std_logic;
 	signal cnt : unsigned(7 downto 0);
 	signal c, c_d, p, p_d : std_logic_vector(C_block_size-1 downto 0);
 	signal c_en, p_en : std_logic;
@@ -90,24 +93,37 @@ begin
 
 	main : process(all)
 	begin
-		if( reset_n = '0' ) then
-			c <= (others => '0');
-			p <= (others => '0');
-		elsif( rising_edge(clk) ) then
+		if( rising_edge(clk) ) then
+			case( state ) is
+				when reset =>
+					c <= (others => '0');
+					p <= (others => '0');
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
 
-			if (ready_in = '1' and valid_in = '1') then
-				run <= '1';
-				p <= message;
-				c <= (0 => '1', others => '0');
-			end if;
-			if (cnt = 0) then
-				run <= '0';
-				ready_in  <= '1';
-				valid_out <= '1'; -- valid on reset...
-			else
-				valid_out <= '0';
-				ready_in  <= '0';
-			end if;
+				when idle  =>
+					enable    <= '0';
+					ready_in  <= '1';
+					valid_out <= '0';
+					p <= message;
+					c <= (0 => '1', others => '0');
+
+				when calc  =>
+					enable    <= '1';
+					ready_in  <= '0';
+					valid_out <= '0';
+
+				when fnsh  =>
+					enable    <= '0';
+					ready_in  <= '1';
+					valid_out <= '1';
+
+				when others =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
+			end case ;
 
 			if (c_en = '1') then
 				c <= c_d;
@@ -116,16 +132,62 @@ begin
 				p <= p_d;
 			end if;
 
-
 		end if;
 	end process; -- main
+
+
+	state_trans : process( clk, reset_n )
+	begin
+		if( reset_n = '0' ) then
+			state <= reset;
+			nxt_state <= idle;
+		elsif( rising_edge(clk) ) then
+			case( state ) is
+				when reset =>
+					nxt_state <= idle;
+
+				when idle  =>
+					if (valid_in = '1') then
+						nxt_state <= calc;
+					else
+						nxt_state <= idle;
+					end if ;
+
+				-- when start =>
+				-- 	nxt_state <= calc;
+
+				when calc  =>
+					if (cnt = 0) then
+						nxt_state <= fnsh;
+					else
+						nxt_state <= calc;
+					end if ;
+
+				when fnsh  =>
+					if (ready_out = '1') then
+						nxt_state <= idle;
+					else
+						nxt_state <= fnsh;
+					end if ;
+
+				when others =>
+						state <= reset;
+						nxt_state <= idle;
+			end case ;
+
+			state <= nxt_state;
+
+		end if ;
+	end process ; -- state_trans
+
+
 
 	key_sel_counter: entity work.counter(down)
 		generic map (bit => 8) -- log_size
 		port map (
-			clk => clk,
+			clk => clk and p_en,
 			rst => reset_n,
-			en  => run,
+			en  => enable,
 			val => cnt
 		);
 
@@ -148,7 +210,7 @@ begin
 			n       => modulus,
 			a       => c,
 			b       => p,
-			enable  => run,
+			enable  => enable,
 			skip    => skip,
 			valid   => c_en,
 			p       => c_d
@@ -162,11 +224,10 @@ begin
 			n       => modulus,
 			a       => p,
 			b       => p,
-			enable  => run,
+			enable  => enable,
 			skip    => '0',
 			valid   => p_en,
 			p       => p_d
 		);
 
 end architecture;
-
