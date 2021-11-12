@@ -32,9 +32,10 @@ entity mod_mult is
 	-- data
 		a, b, n : in  std_logic_vector(C_Block_size-1 downto 0);
 		p       : out std_logic_vector(C_Block_size-1 downto 0);
+		counter : out unsigned (2 downto 0);
 	-- control
 		enable  : in  std_logic;
-		skip    : in  std_logic;
+		run     : in  std_logic;
 		valid   : out std_logic
 	);
 
@@ -43,12 +44,12 @@ end mod_mult;
 architecture behavioral of mod_mult is
 -- signal declaration:
 
-signal counter: unsigned(7 downto 0);
+-- signal counter: unsigned(2 downto 0);
 
 begin
 
 -- modmult structure:
-process(clk, a, n, b, enable, reset_n)
+process(all)
 	variable par_temp : std_logic_vector(C_Block_size-1 downto 0);
 	variable p_1: std_logic_vector(C_Block_size downto 0);
 begin
@@ -56,14 +57,14 @@ begin
 		par_temp := (others => '0');
 		p_1      := (others => '0');
 		valid   <= '0';
-		counter <= (others =>'1');
+		counter <= (others => '1');
 	elsif(enable = '1' and rising_edge(clk)) then
 		if(counter = 0) then
 			valid <= '1';
 		else
 			valid <= '0';
 		end if;
-		if (skip = '0') then
+		if (run = '1') then
 			---------- Left shift ----------
 			p_1 := (p_1(C_Block_size-1 downto 0) & "0");
 			--------------------------------

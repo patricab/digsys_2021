@@ -22,7 +22,8 @@ entity exponentiation is
 
 		-- output data
 		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		cnt            : out unsigned(8 downto 0);
+		cnt            : out unsigned(3 downto 0);
+		mod_cnt        : out unsigned(2 downto 0);
 		p_en           : out std_logic;
 		state, nxt_state : out state_t;
 
@@ -68,8 +69,9 @@ architecture rl_binary_rtl of exponentiation is
 			clk, reset_n : in  std_logic;
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
 			p            : out std_logic_vector(C_block_size-1 downto 0);
+			counter      : out unsigned (2 downto 0);
 			enable       : in  std_logic;
-			skip         : in std_logic;
+			run          : in std_logic;
 			valid        : out std_logic
 		);
 	end component;
@@ -79,15 +81,15 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal skip_v  : std_logic_vector(0 downto 0);
-	signal skip, enable, rst_cnt : std_logic;
+	signal run_v  : std_logic_vector(0 downto 0);
+	signal run, enable, rst_cnt : std_logic;
 	-- signal cnt : unsigned(7 downto 0);
 	signal c, p, p_d : std_logic_vector(C_block_size-1 downto 0);
 	signal c_en : std_logic; -- p_en
 
 begin
 
-	skip <= skip_v(0);
+	run <= run_v(0);
 
 	key_gen : for i in 0 to C_block_size-1 generate
 		key_array(i) <= key(i downto i);
@@ -100,6 +102,7 @@ begin
 				when reset =>
 					c <= (others => '0');
 					p <= (others => '0');
+
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
@@ -172,7 +175,7 @@ begin
 					nxt_state <= calc;
 
 				when calc  =>
-					if (cnt(8) = '1') then
+					if (cnt(3) = '1') then
 						nxt_state <= fnsh;
 					else
 						nxt_state <= calc;
@@ -198,7 +201,7 @@ begin
 
 
 	key_sel_counter: entity work.counter(up)
-		generic map (bit => 9) -- log_size
+		generic map (bit => 4) -- log_size
 		port map (
 			clk => p_en,
 			rst => rst_cnt,
@@ -213,8 +216,8 @@ begin
 		)
 		port map (
 			input  => key_array,
-			sel    => to_integer(cnt),
-			output => skip_v
+			sel    => to_integer(cnt(2 downto 0)),
+			output => run_v
 		);
 
 	C_mult: mod_mult
@@ -226,7 +229,7 @@ begin
 			a       => c,
 			b       => p,
 			enable  => enable,
-			skip    => skip,
+			run     => run,
 			valid   => c_en,
 			p       => result
 		);
@@ -240,7 +243,8 @@ begin
 			a       => p,
 			b       => p,
 			enable  => enable,
-			skip    => '0',
+			counter => mod_cnt,
+			run    => '1',
 			valid   => p_en,
 			p       => p_d
 		);

@@ -5,7 +5,7 @@ use work.slv_arr_p.all;
 
 entity exponentiation_tb is
 	generic (
-		C_block_size : integer := 256 -- 256
+		C_block_size : integer := 8 -- 256
 	);
 end exponentiation_tb;
 
@@ -17,7 +17,8 @@ architecture expBehave of exponentiation_tb is
 	signal modulus  	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	-- Output
 	signal result   	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-	signal cnt        : unsigned(8 downto 0);
+	signal cnt        : unsigned(3 downto 0); --8
+	signal mod_cnt    : unsigned(2 downto 0);
 	signal p_en       : std_logic;
 	signal state, nxt_state : state_t;
 	-- Control
@@ -42,6 +43,7 @@ begin
 			valid_out => valid_out,
 			result    => result   ,
 			cnt       => cnt      , -- test
+			mod_cnt   => mod_cnt  ,
 			p_en      => p_en     , -- test
 			state     => state    ,
 			nxt_state => nxt_state,
@@ -70,7 +72,7 @@ begin
 
 
 	Test : process
-	constant period : time := 256*256*20 ns;
+	constant period : time := 8*8*20 ns;
 	begin
 		-- static
 		valid_in  <= '1';
@@ -83,8 +85,9 @@ begin
 		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
 
 		wait for period;
-		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
-		               & x"00000000" & x"00000000" & x"00000000" & x"0000000D") -- if false
+		assert (result = --x"00000000" & x"00000000" & x"00000000" & x"00000000"
+		               --& x"00000000" & x"00000000" & x"00000000" & x"000000" &
+							x"0D") -- if false
 			report "wrong result";
 
 		ready_out <= '1';
@@ -97,8 +100,9 @@ begin
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
 		wait for period;
-		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
-		               & x"00000000" & x"00000000" & x"00000000" & x"00000007")
+		assert (result = --x"00000000" & x"00000000" & x"00000000" & x"00000000"
+		               --& x"00000000" & x"00000000" & x"00000000" & x"000000" &
+							x"07")
 			report "wrong result";
 
 		ready_out <= '1';

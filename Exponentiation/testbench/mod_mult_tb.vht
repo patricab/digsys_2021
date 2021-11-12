@@ -19,7 +19,7 @@ architecture behaviour of mod_mult_tb is
 	-- control
 	signal valid   : std_logic;
    signal enable  : std_logic;
-   signal skip    : std_logic;
+   signal run    : std_logic;
 	-- utility
 	signal clk		: std_logic;
    signal reset_n	: std_logic;
@@ -38,7 +38,7 @@ begin
 			p => p,
 			valid  => valid,
          enable => enable,
-         skip => skip
+         run    => run
 		);
 
 	-- init clock 50 MHz clock
@@ -66,7 +66,7 @@ begin
 	--n <= "01001111"; --4F
 
       enable <= '1';
-      skip   <= '0';
+      run   <= '0';
 
 	process is
 	   constant period: time := 180 ns;
