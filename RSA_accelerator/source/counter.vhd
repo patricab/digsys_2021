@@ -14,18 +14,36 @@ entity counter is
 	);
 end counter;
 
-architecture rtl of counter is
+architecture up of counter is
 
 	signal value : unsigned(bit-1 downto 0);
 
 begin
 
-	counter : process( clk, rst )
+	counter : process( clk, rst, value )
 	begin
 		if( rst = '0' ) then
 			value <= (others => '0');
 		elsif( rising_edge(clk) ) then
 			value <= value + 1;
+		end if;
+		val <= value;
+	end process; -- counter
+
+end architecture;
+
+architecture down of counter is
+
+	signal value : unsigned(bit-1 downto 0);
+
+begin
+
+	counter : process( clk, rst, value )
+	begin
+		if( rst = '0' ) then
+			value <= (others => '1');
+		elsif( rising_edge(clk) ) then
+			value <= value - 1;
 		end if;
 		val <= value;
 	end process; -- counter
