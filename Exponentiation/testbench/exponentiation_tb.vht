@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.slv_arr_p.all;
 
 entity exponentiation_tb is
 	generic (
@@ -18,6 +19,7 @@ architecture expBehave of exponentiation_tb is
 	signal result   	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	signal cnt        : unsigned(7 downto 0);
 	signal p_en       : std_logic;
+	signal state, nxt_state : state_t;
 	-- Control
 	signal valid_in 	: STD_LOGIC;
 	signal ready_in 	: STD_LOGIC;
@@ -41,6 +43,8 @@ begin
 			result    => result   ,
 			cnt       => cnt      , -- test
 			p_en      => p_en     , -- test
+			state     => state    ,
+			nxt_state => nxt_state,
 			modulus   => modulus  ,
 			clk       => clk      ,
 			reset_n   => reset_n

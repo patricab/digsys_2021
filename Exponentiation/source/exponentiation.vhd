@@ -24,6 +24,7 @@ entity exponentiation is
 		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 		cnt            : out unsigned(7 downto 0);
 		p_en           : out std_logic;
+		state, nxt_state : out state_t;
 
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
@@ -37,8 +38,7 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
-	type state_t is (reset, idle, start, calc, fnsh);
-	signal state, nxt_state : state_t;
+	-- signal state, nxt_state : state_t;
 
 	component counter
 		generic (bit : integer := 8);
