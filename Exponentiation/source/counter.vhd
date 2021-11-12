@@ -41,7 +41,7 @@ begin
 	counter : process( clk, rst, value )
 	begin
 		if( rst = '0' ) then
-			value <= (others => '0');
+			value <= (others => '1');
 		elsif( rising_edge(clk) ) then
 			value <= value - 1;
 		end if;

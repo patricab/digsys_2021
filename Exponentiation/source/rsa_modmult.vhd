@@ -43,50 +43,50 @@ end mod_mult;
 architecture behavioral of mod_mult is
 -- signal declaration:
 
-signal counter: unsigned(C_Block_size-1 downto 0);
+signal counter: unsigned(7 downto 0);
 
 begin
 
 -- modmult structure:
-process(clk,a,n,b,reset_n)
+process(clk, a, n, b, enable, reset_n)
 	variable par_temp : std_logic_vector(C_Block_size-1 downto 0);
 	variable p_1: std_logic_vector(C_Block_size downto 0);
 begin
 	if(reset_n = '0') then
 		par_temp := (others => '0');
-		p_1 := (others => '0');
-		valid    <= '0';
-		counter <= (others =>'0');
-	end if;
-	if(enable = '1' and rising_edge(clk)) then
-		if(counter = C_Block_size + 1) then
-			valid    <= '1';
+		p_1      := (others => '0');
+		valid   <= '0';
+		counter <= (others =>'1');
+	elsif(enable = '1' and rising_edge(clk)) then
+		if(counter = 0) then
+			valid <= '1';
 		else
-			if (skip = '0') then
-				---------- Left shift ----------
-				p_1 := (p_1(C_Block_size-1 downto 0) & "0");
-				--------------------------------
-				-- Partial product generation --
-					if(b(C_Block_size-1-to_integer(counter)) = '1')then
-						par_temp := a;
-					else
-						par_temp := (others => '0');
-					end if;
+			valid <= '0';
+		end if;
+		if (skip = '0') then
+			---------- Left shift ----------
+			p_1 := (p_1(C_Block_size-1 downto 0) & "0");
+			--------------------------------
+			-- Partial product generation --
+				if(b(to_integer(counter)) = '1')then
+					par_temp := a;
+				else
+					par_temp := (others => '0');
+				end if;
 
-				--------------------------------
-				----------- Addition -----------
-				p_1 := p_1 +("0" + par_temp);
-				--------------------------------
-				---------- substaction ---------
-				if(p_1 >= n) then
-					p_1 := p_1 - ("0" + n);
-				end if;
-				if(p_1 >= n) then
-					p_1 := p_1 - ("0" + n);
-				end if;
-				--------------------------------
+			--------------------------------
+			----------- Addition -----------
+			p_1 := p_1 +("0" + par_temp);
+			--------------------------------
+			---------- substaction ---------
+			if(p_1 >= n) then
+				p_1 := p_1 - ("0" + n);
 			end if;
-			counter <= counter + 1;
+			if(p_1 >= n) then
+				p_1 := p_1 - ("0" + n);
+			end if;
+			--------------------------------
+			counter <= counter - 1;
 		end if;
 	end if;
 	p <= p_1(C_Block_size-1 downto 0);

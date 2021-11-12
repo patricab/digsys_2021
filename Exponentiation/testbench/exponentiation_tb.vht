@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
+use ieee.numeric_std.all;
 
 entity exponentiation_tb is
 	generic (
@@ -16,6 +16,8 @@ architecture expBehave of exponentiation_tb is
 	signal modulus  	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	-- Output
 	signal result   	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+	signal cnt        : unsigned(7 downto 0);
+	signal p_en       : std_logic;
 	-- Control
 	signal valid_in 	: STD_LOGIC;
 	signal ready_in 	: STD_LOGIC;
@@ -37,6 +39,8 @@ begin
 			ready_out => ready_out,
 			valid_out => valid_out,
 			result    => result   ,
+			cnt       => cnt      , -- test
+			p_en      => p_en     , -- test
 			modulus   => modulus  ,
 			clk       => clk      ,
 			reset_n   => reset_n
@@ -66,7 +70,7 @@ begin
 	begin
 		-- static
 		valid_in  <= '1';
-		ready_out <= '1';
+		ready_out <= '0';
 		restart   <= '0';
 		wait for 20 ns;
 
@@ -79,6 +83,12 @@ begin
 		               & x"00000000" & x"00000000" & x"00000000" & x"0000000D") -- if false
 			report "wrong result";
 
+		ready_out <= '1';
+
+		wait for 100 ns;
+
+		ready_out <= '0';
+
 		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
@@ -86,6 +96,8 @@ begin
 		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               & x"00000000" & x"00000000" & x"00000000" & x"00000007")
 			report "wrong result";
+
+		ready_out <= '1';
 
 		wait;
 	end process; -- Test

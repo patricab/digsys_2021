@@ -22,6 +22,8 @@ entity exponentiation is
 
 		-- output data
 		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		cnt            : out unsigned(7 downto 0);
+		p_en           : out std_logic;
 
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
@@ -79,9 +81,9 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal skip_v  : std_logic_vector(0 downto 0);
 	signal skip, enable : std_logic;
-	signal cnt : unsigned(7 downto 0);
-	signal c, c_d, p, p_d : std_logic_vector(C_block_size-1 downto 0);
-	signal c_en, p_en : std_logic;
+	-- signal cnt : unsigned(7 downto 0);
+	signal c, p, p_d : std_logic_vector(C_block_size-1 downto 0);
+	signal c_en : std_logic; -- p_en
 
 begin
 
@@ -106,6 +108,11 @@ begin
 					enable    <= '0';
 					ready_in  <= '1';
 					valid_out <= '0';
+
+				when start =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
 					p <= message;
 					c <= (0 => '1', others => '0');
 
@@ -113,10 +120,16 @@ begin
 					enable    <= '1';
 					ready_in  <= '0';
 					valid_out <= '0';
+					if (c_en = '1') then
+						c <= result;
+					end if;
+					if (p_en = '1') then
+						p <= p_d;
+					end if;
 
 				when fnsh  =>
 					enable    <= '0';
-					ready_in  <= '1';
+					ready_in  <= '0';
 					valid_out <= '1';
 
 				when others =>
@@ -125,12 +138,6 @@ begin
 					valid_out <= '0';
 			end case ;
 
-			if (c_en = '1') then
-				c <= c_d;
-			end if;
-			if (p_en = '1') then
-				p <= p_d;
-			end if;
 
 		end if;
 	end process; -- main
@@ -148,16 +155,16 @@ begin
 
 				when idle  =>
 					if (valid_in = '1') then
-						nxt_state <= calc;
+						nxt_state <= start;
 					else
 						nxt_state <= idle;
 					end if ;
 
-				-- when start =>
-				-- 	nxt_state <= calc;
+				when start =>
+					nxt_state <= calc;
 
 				when calc  =>
-					if (cnt = 0) then
+					if (cnt = 255) then
 						nxt_state <= fnsh;
 					else
 						nxt_state <= calc;
@@ -182,10 +189,10 @@ begin
 
 
 
-	key_sel_counter: entity work.counter(down)
+	key_sel_counter: entity work.counter(up)
 		generic map (bit => 8) -- log_size
 		port map (
-			clk => clk and p_en,
+			clk => p_en,
 			rst => reset_n,
 			en  => enable,
 			val => cnt
@@ -213,7 +220,7 @@ begin
 			enable  => enable,
 			skip    => skip,
 			valid   => c_en,
-			p       => c_d
+			p       => result
 		);
 
 	P_mult: mod_mult
