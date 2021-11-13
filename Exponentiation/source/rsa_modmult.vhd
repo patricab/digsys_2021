@@ -32,7 +32,7 @@ entity mod_mult is
 	-- data
 		a, b, n : in  std_logic_vector(C_Block_size-1 downto 0);
 		p       : out std_logic_vector(C_Block_size-1 downto 0);
-		counter : out unsigned (2 downto 0);
+		counter : out unsigned (7 downto 0);
 	-- control
 		enable  : in  std_logic;
 		run     : in  std_logic;
@@ -58,7 +58,6 @@ begin
 		valid   <= '0';
 		counter <= (others => '1');
 	elsif(enable = '1' and rising_edge(clk)) then
-		-- if(counter(3) = '0') then
 		if (valid = '1') then
 			par_temp := (others => '0');
 			p_1      := (others => '0');
@@ -74,7 +73,7 @@ begin
 			p_1 := (p_1(C_Block_size-1 downto 0) & "0");
 			--------------------------------
 			-- Partial product generation --
-				if(b(to_integer(counter)) = '1')then --(2 downto 0)
+				if(b(to_integer(counter)) = '1') then
 					par_temp := a;
 				else
 					par_temp := (others => '0');

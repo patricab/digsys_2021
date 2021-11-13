@@ -2,12 +2,12 @@
 from sys import argv
 
 def rl_binary(m, key, n):
-	key = format(key, '08b')[::-1]
+	key = format(key, '0256b')[::-1]
 	print('key: ' + key)
 	c = 1
 	p = m
 	print('step 1.')
-	print('c: ' +format(c, '0x') + '\tp: ' + format(p, '0x'))
+	print('c: ' + format(c, '0x') + '\tp: ' + format(p, '0x'))
 	print('step 2.')
 	for i in range(0, len(key)):
 		if (key[i] == '1'):
@@ -18,15 +18,13 @@ def rl_binary(m, key, n):
 
 def blakely(a, b, n):
 	p = 0
-	b = format(b, '08b')
+	b = format(b, '0256b')
 	for i in range(0, len(b)):
 		p = 2 * p + a * int(b[i])
 		if p >= n:
 			p -= n
 			if p >= n:
 				p -= n
-		print(format(p, '02x'), end=' ')
-	print()
 	return p
 
 # m   = 0x26
