@@ -89,8 +89,6 @@ architecture rl_binary_rtl of exponentiation is
 
 begin
 
-	run <= run_v(0);
-
 	key_gen : for i in 0 to C_block_size-1 generate
 		key_array(i) <= key(i downto i);
 	end generate; -- key_gen
@@ -128,6 +126,12 @@ begin
 					ready_in  <= '0';
 					valid_out <= '0';
 					rst_cnt   <= '1';
+
+					if (cnt(3) = '0') then
+						run <= run_v(0);
+					else
+						run <= '0';
+					end if;
 
 					if (c_en = '1') then
 						c <= result;
