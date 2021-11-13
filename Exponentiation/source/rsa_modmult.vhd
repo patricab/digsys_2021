@@ -59,13 +59,17 @@ begin
 		counter <= (others => '1');
 	elsif(enable = '1' and rising_edge(clk)) then
 		-- if(counter(3) = '0') then
+		if (valid = '1') then
+			par_temp := (others => '0');
+			p_1      := (others => '0');
+			counter  <= (others => '1');
+		end if ;
 		if (counter = 0) then
 			valid <= '1';
-			-- counter <= (others => '1');
 		else
 			valid <= '0';
 		end if;
-		if (run = '1') then
+		if (run = '1' and valid = '0') then
 			---------- Left shift ----------
 			p_1 := (p_1(C_Block_size-1 downto 0) & "0");
 			--------------------------------
@@ -89,9 +93,9 @@ begin
 			end if;
 			--------------------------------
 			counter <= counter - 1;
+			p <= p_1(C_Block_size-1 downto 0);
 		end if;
 	end if;
-	p <= p_1(C_Block_size-1 downto 0);
 end process;
 
 end behavioral;

@@ -244,7 +244,7 @@ begin
 			b       => p,
 			enable  => enable,
 			counter => mod_cnt,
-			run    => '1',
+			run     => '1',
 			valid   => p_en,
 			p       => p_d
 		);

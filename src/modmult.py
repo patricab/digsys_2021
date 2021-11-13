@@ -18,7 +18,7 @@ def rl_binary(m, key, n):
 
 def blakely(a, b, n):
 	p = 0
-	b = format(b, 'b')
+	b = format(b, '08b')
 	for i in range(0, len(b)):
 		p = 2 * p + a * int(b[i])
 		if p >= n:
