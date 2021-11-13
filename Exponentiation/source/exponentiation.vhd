@@ -187,7 +187,7 @@ begin
 
 				when fnsh  =>
 					if (ready_out = '1') then
-						nxt_state <= idle;
+						nxt_state <= reset;
 					else
 						nxt_state <= fnsh;
 					end if ;
@@ -228,7 +228,7 @@ begin
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
-			reset_n => reset_n,
+			reset_n => rst_cnt,
 			n       => modulus,
 			a       => c,
 			b       => p,
@@ -242,7 +242,7 @@ begin
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
-			reset_n => reset_n,
+			reset_n => rst_cnt,
 			n       => modulus,
 			a       => p,
 			b       => p,
