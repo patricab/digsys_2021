@@ -136,5 +136,4 @@ begin
 
 		wait;
 	end process; -- Test
-	0x2348762 0x10001 0x737483728274817
 end expBehave;
