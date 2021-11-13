@@ -21,10 +21,10 @@ entity exponentiation is
 		valid_out   	: out STD_LOGIC;
 
 		-- output data
-		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+		result, p_d, c, p 	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 		cnt            : out unsigned(3 downto 0);
 		mod_cnt        : out unsigned(2 downto 0);
-		p_en           : out std_logic;
+		p_en, c_en     : out std_logic;
 		state, nxt_state : out state_t;
 
 		-- modulus
@@ -84,8 +84,8 @@ architecture rl_binary_rtl of exponentiation is
 	signal run_v  : std_logic_vector(0 downto 0);
 	signal run, enable, rst_cnt : std_logic;
 	-- signal cnt : unsigned(7 downto 0);
-	signal c, p, p_d : std_logic_vector(C_block_size-1 downto 0);
-	signal c_en : std_logic; -- p_en
+	--signal c, p : std_logic_vector(C_block_size-1 downto 0);-- p_d
+	--signal c_en : std_logic; -- p_en
 
 begin
 

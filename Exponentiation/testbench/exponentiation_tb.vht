@@ -16,10 +16,10 @@ architecture expBehave of exponentiation_tb is
 	signal key      	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	signal modulus  	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	-- Output
-	signal result   	: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+	signal result, p_d, c, p: STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 	signal cnt        : unsigned(3 downto 0); --8
 	signal mod_cnt    : unsigned(2 downto 0);
-	signal p_en       : std_logic;
+	signal p_en, c_en : std_logic;
 	signal state, nxt_state : state_t;
 	-- Control
 	signal valid_in 	: STD_LOGIC;
@@ -30,6 +30,8 @@ architecture expBehave of exponentiation_tb is
 	signal clk      	: STD_LOGIC;
 	signal restart  	: STD_LOGIC;
 	signal reset_n  	: STD_LOGIC;
+
+	constant CLK_PERIOD : time := 20 ns;
 
 begin
 	i_exponentiation : entity work.exponentiation(rl_binary_rtl)
@@ -42,9 +44,13 @@ begin
 			ready_out => ready_out,
 			valid_out => valid_out,
 			result    => result   ,
+			p_d => p_d,
+			c => c,
+			p => p,
 			cnt       => cnt      , -- test
 			mod_cnt   => mod_cnt  ,
 			p_en      => p_en     , -- test
+			c_en => c_en,
 			state     => state    ,
 			nxt_state => nxt_state,
 			modulus   => modulus  ,
@@ -56,54 +62,58 @@ begin
 	Clock : process is
 	begin
 		clk <= '1';
-		wait for 10 ns;
+		wait for CLK_PERIOD/2;
 		clk <= '0';
-		wait for 10 ns;
+		wait for CLK_PERIOD/2;
 	end process ; -- Clock
 
 	-- Start by reseting
 	Reset : process is
 	begin
 		reset_n <= '0';
-		wait for 20 ns;
+		wait for CLK_PERIOD;
 		reset_n <= '1';
 		wait;
 	end process ; -- Reset
 
 
 	Test : process
-	constant period : time := 8*8*20 ns;
+	constant period : time := 8*8*CLK_PERIOD;
 	begin
 		-- static
 		valid_in  <= '1';
 		ready_out <= '0';
 		restart   <= '0';
-		wait for 20 ns;
+		wait for CLK_PERIOD;
 
-		key     <= (0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3 -- e 65537
-		modulus <= (0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
-		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
+		message <= x"26";--(0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
+		key     <= x"37";--(0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3 -- e 65537
+		modulus <= x"79";--(0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
 
-		wait for period;
+		wait until (valid_out = '1');
 		assert (result = --x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               --& x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"0D") -- if false
 			report "wrong result";
 
+		wait for period;
+
 		ready_out <= '1';
 
-		wait for 100 ns;
+		wait for 5*CLK_PERIOD;
 
 		ready_out <= '0';
 
 		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
-		wait for period;
+		wait until (valid_out = '1');
 		assert (result = --x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               --& x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"07")
 			report "wrong result";
+
+		wait for period;
 
 		ready_out <= '1';
 

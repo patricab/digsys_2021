@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 
 entity mod_mult_tb is
 	generic (
-		C_Block_size : integer := 256
+		C_block_size : integer := 8
 	);
 
 end mod_mult_tb;
@@ -24,10 +24,12 @@ architecture behaviour of mod_mult_tb is
 	signal clk		: std_logic;
    signal reset_n	: std_logic;
 
+	constant CLK_PERIOD    : time := 10 ns;
+
 begin
 	i_rsa_modmult : entity work.mod_mult(behavioral)
 	    generic map(
-	       C_Block_size => 256
+	       C_Block_size => C_block_size
 	    )
 		port map(
 			clk => clk,
@@ -45,9 +47,9 @@ begin
 	clock : process is
 	begin
 		clk <= '1';
-		wait for 10 ns;
+		wait for CLK_PERIOD;
 		clk <= '0';
-		wait for 10 ns;
+		wait for CLK_PERIOD;
 	end process; -- Clock
 
 
@@ -55,7 +57,7 @@ begin
 	reset : process is
 	begin
 		reset_n <= '0';
-		wait for 20 ns;
+		wait for 2*CLK_PERIOD;
 		reset_n <= '1';
 		wait;
 	end process; -- reset
@@ -65,15 +67,23 @@ begin
 	--a <= "11001100"; --CC
 	--n <= "01001111"; --4F
 
-      enable <= '1';
-      run   <= '0';
 
 	process is
-	   constant period: time := 180 ns;
+	   -- constant period: time := 8*2*CLK_PERIOD;
 	begin
-		a <= x"000000000a1c91ad4082efb714bd79abcd0d9f67d39110016dc67a4e92ff0a43";
-		b <= x"000000000024e0941fb50201be3982911bce1c86fa532a3b50e25817ac04878f"; --1F
-		n <= x"2eca389029913bab3d0b7d023b6ce5cac43ec2f450fb982c728d56f4a3bd011e";
-	wait for period;
+		enable <= '1';
+		run    <= '1';
+		a <= x"03";
+		b <= x"07";
+		n <= x"21";
+		wait for 2*CLK_PERIOD;
+		-- a <= x"000000000a1c91ad4082efb714bd79abcd0d9f67d39110016dc67a4e92ff0a43";
+		-- b <= x"000000000024e0941fb50201be3982911bce1c86fa532a3b50e25817ac04878f"; --1F
+		-- n <= x"2eca389029913bab3d0b7d023b6ce5cac43ec2f450fb982c728d56f4a3bd011e";
+
+		wait until (valid = '1');
+		enable <= '0';
+		wait;
+
 	end process;
 end behaviour; --i_rsa_modmult

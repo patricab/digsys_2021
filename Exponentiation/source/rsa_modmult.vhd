@@ -43,8 +43,7 @@ end mod_mult;
 --------------------------------------------------------------------------------
 architecture behavioral of mod_mult is
 -- signal declaration:
-
--- signal counter: unsigned(2 downto 0);
+-- signal counter: unsigned(8 downto 0);
 
 begin
 
@@ -59,8 +58,10 @@ begin
 		valid   <= '0';
 		counter <= (others => '1');
 	elsif(enable = '1' and rising_edge(clk)) then
-		if(counter = 0) then
+		-- if(counter(3) = '0') then
+		if (counter = 0) then
 			valid <= '1';
+			-- counter <= (others => '1');
 		else
 			valid <= '0';
 		end if;
@@ -69,7 +70,7 @@ begin
 			p_1 := (p_1(C_Block_size-1 downto 0) & "0");
 			--------------------------------
 			-- Partial product generation --
-				if(b(to_integer(counter)) = '1')then
+				if(b(to_integer(counter)) = '1')then --(2 downto 0)
 					par_temp := a;
 				else
 					par_temp := (others => '0');
