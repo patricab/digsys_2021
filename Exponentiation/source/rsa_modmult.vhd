@@ -32,7 +32,6 @@ entity mod_mult is
 	-- data
 		a, b, n : in  std_logic_vector(C_Block_size-1 downto 0);
 		p       : out std_logic_vector(C_Block_size-1 downto 0);
-		counter : out unsigned (7 downto 0);
 	-- control
 		enable  : in  std_logic;
 		run     : in  std_logic;
@@ -43,14 +42,14 @@ end mod_mult;
 --------------------------------------------------------------------------------
 architecture behavioral of mod_mult is
 -- signal declaration:
--- signal counter: unsigned(8 downto 0);
+signal counter: unsigned(7 downto 0);
 
 begin
 
 -- modmult structure:
 process(all)
 	variable par_temp : std_logic_vector(C_Block_size-1 downto 0);
-	variable p_1: std_logic_vector(C_Block_size downto 0);
+	variable p_1      : std_logic_vector(C_Block_size downto 0);
 begin
 	if(reset_n = '0') then
 		par_temp := (others => '0');

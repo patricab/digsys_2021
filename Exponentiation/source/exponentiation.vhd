@@ -21,11 +21,7 @@ entity exponentiation is
 		valid_out   	: out STD_LOGIC;
 
 		-- output data
-		result, p_d, c, p 	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-		cnt            : out unsigned(8 downto 0);
-		mod_cnt        : out unsigned(7 downto 0);
-		p_en, c_en     : out std_logic;
-		state, nxt_state : out state_t;
+		result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
@@ -39,7 +35,7 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
-	-- signal state, nxt_state : state_t;
+	shared variable log_size : integer := 8;
 
 	component counter
 		generic (bit : integer := 8);
@@ -69,23 +65,22 @@ architecture rl_binary_rtl of exponentiation is
 			clk, reset_n : in  std_logic;
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
 			p            : out std_logic_vector(C_block_size-1 downto 0);
-			counter      : out unsigned (7 downto 0);
+			counter      : out unsigned (log_size-1 downto 0);
 			enable       : in  std_logic;
 			run          : in  std_logic;
 			valid        : out std_logic
 		);
 	end component;
 
-	-- shared variable log_size : integer := 8;
-	-- log_size := to_integer(log2(real(C_block_size)));
+	signal state, nxt_state : state_t;
 
-	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
+	signal key_array           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal run_v  : std_logic_vector(0 downto 0);
-	signal run, enable, rst_cnt : std_logic;
-	-- signal cnt : unsigned(7 downto 0);
-	--signal c, p : std_logic_vector(C_block_size-1 downto 0);-- p_d
-	--signal c_en : std_logic; -- p_en
+	signal run_v               	: std_logic_vector(0 downto 0);
+	signal cnt                 	: unsigned(log_size downto 0);
+	signal run, enable, rst_cnt	: std_logic;
+	signal c_en, p_en          	: std_logic;
+	signal c, p, p_d           	: std_logic_vector(C_block_size-1 downto 0);
 
 begin
 
@@ -127,7 +122,7 @@ begin
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
-					if (cnt(8) = '0') then
+					if (cnt(log_size) = '0') then
 						run <= run_v(0);
 					else
 						run <= '0';
@@ -179,7 +174,7 @@ begin
 					nxt_state <= calc;
 
 				when calc  =>
-					if (cnt(8) = '1') then
+					if (cnt(log_size) = '1') then
 						nxt_state <= fnsh;
 					else
 						nxt_state <= calc;
@@ -205,7 +200,7 @@ begin
 
 
 	key_sel_counter: entity work.counter(up)
-		generic map (bit => 9) -- log_size
+		generic map (bit => log_size+1) -- log_size
 		port map (
 			clk => p_en,
 			rst => rst_cnt,
@@ -220,7 +215,7 @@ begin
 		)
 		port map (
 			input  => key_array,
-			sel    => to_integer(cnt(7 downto 0)),
+			sel    => to_integer(cnt(log_size-1 downto 0)),
 			output => run_v
 		);
 
@@ -247,7 +242,6 @@ begin
 			a       => p,
 			b       => p,
 			enable  => enable,
-			counter => mod_cnt,
 			run     => '1',
 			valid   => p_en,
 			p       => p_d
