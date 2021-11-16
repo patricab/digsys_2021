@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Tue Nov 16 12:46:25 2021
+# Process ID: 18746
+# Current directory: /home/pab/projects/digsys_2021
+# Command line: vivado -mode batch -source synthesize.tcl
+# Log file: /home/pab/projects/digsys_2021/vivado.log
+# Journal file: /home/pab/projects/digsys_2021/vivado.jou
+#-----------------------------------------------------------
+source synthesize.tcl
