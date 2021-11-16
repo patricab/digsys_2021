@@ -35,6 +35,8 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
+	shared variable log_size : integer := 8;
+
 	component counter
 		generic (bit : integer := 8);
 		port (
@@ -63,21 +65,22 @@ architecture rl_binary_rtl of exponentiation is
 			clk, reset_n : in  std_logic;
 			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
 			p            : out std_logic_vector(C_block_size-1 downto 0);
+			counter      : out unsigned (log_size-1 downto 0);
 			enable       : in  std_logic;
+			run          : in  std_logic;
 			valid        : out std_logic
 		);
 	end component;
 
-	-- shared variable log_size : integer := 8;
-	-- log_size := to_integer(log2(real(C_block_size)));
+	signal state, nxt_state : state_t;
 
-	signal key_array : slv_array_t(0 to C_block_size-1)(0 downto 0);
+	signal key_array           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal run, done : std_logic;
-	signal en : std_logic_vector(0 downto 0);
-	signal cnt : unsigned(8 downto 0);
-	signal c, c_d, c_q, p, p_d, p_q : std_logic_vector(C_block_size-1 downto 0);
-	signal c_en, p_en : std_logic;
+	signal run_v               	: std_logic_vector(0 downto 0);
+	signal cnt                 	: unsigned(log_size downto 0);
+	signal run, enable, rst_cnt	: std_logic;
+	signal c_en, p_en          	: std_logic;
+	signal c, p, p_d           	: std_logic_vector(C_block_size-1 downto 0);
 
 begin
 
@@ -87,40 +90,121 @@ begin
 
 	main : process(all)
 	begin
-		if( reset_n = '0' ) then
-			cnt <= (8 => '1', others => '0');
-			c <= (others => '0');
-			p <= (others => '0');
-		elsif( rising_edge(clk) ) then
+		if( rising_edge(clk) ) then
+			case( state ) is
+				when reset =>
+					c <= (others => '0');
+					p <= (others => '0');
 
-			done <= cnt(8); --log_size
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
+					rst_cnt   <= '0';
 
-			if (ready_in = '1' and valid_in = '1') then
-				run <= '1';
-				cnt <= (others => '0');
-			end if;
-			if (done = '1') then
-				run <= '0';
-				ready_in <= '1';
-			end if;
+				when idle  =>
+					enable    <= '0';
+					ready_in  <= '1';
+					valid_out <= '0';
+					rst_cnt   <= '1';
 
-			if (c_en = '1') then
-				c <= c_d;
-			end if;
-			if (p_en = '1') then
-				p <= p_d;
-			end if;
+				when start =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
+					rst_cnt   <= '1';
+
+					p <= message;
+					c <= (0 => '1', others => '0');
+
+				when calc  =>
+					enable    <= '1';
+					ready_in  <= '0';
+					valid_out <= '0';
+					rst_cnt   <= '1';
+
+					if (cnt(log_size) = '0') then
+						run <= run_v(0);
+					else
+						run <= '0';
+					end if;
+
+					if (c_en = '1') then
+						c <= result;
+					end if;
+					if (p_en = '1') then
+						p <= p_d;
+					end if;
+
+				when fnsh  =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '1';
+					rst_cnt   <= '0';
+
+				when others =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
+					rst_cnt   <= '1';
+			end case ;
 
 
 		end if;
 	end process; -- main
 
-	key_sel_counter: counter
-		generic map (bit => 8 + 1) -- log_size
+
+	state_trans : process( clk, reset_n )
+	begin
+		if( reset_n = '0' ) then
+			state <= reset;
+			nxt_state <= idle;
+		elsif( rising_edge(clk) ) then
+			case( state ) is
+				when reset =>
+					nxt_state <= idle;
+
+				when idle  =>
+					if (valid_in = '1') then
+						nxt_state <= start;
+					else
+						nxt_state <= idle;
+					end if ;
+
+				when start =>
+					nxt_state <= calc;
+
+				when calc  =>
+					if (cnt(log_size) = '1') then
+						nxt_state <= fnsh;
+					else
+						nxt_state <= calc;
+					end if ;
+
+				when fnsh  =>
+					if (ready_out = '1') then
+						nxt_state <= reset;
+					else
+						nxt_state <= fnsh;
+					end if ;
+
+				when others =>
+						state <= reset;
+						nxt_state <= idle;
+			end case ;
+
+			state <= nxt_state;
+
+		end if ;
+	end process ; -- state_trans
+
+
+
+	key_sel_counter: entity work.counter(up)
+		generic map (bit => log_size+1) -- log_size
 		port map (
-			clk => clk,
-			rst => reset_n,
-			en  => run,
+			clk => p_en,
+			rst => rst_cnt,
+			en  => enable,
 			val => cnt
 		);
 
@@ -131,35 +215,36 @@ begin
 		)
 		port map (
 			input  => key_array,
-			sel    => to_integer(cnt),
-			output => en
+			sel    => to_integer(cnt(log_size-1 downto 0)),
+			output => run_v
 		);
 
 	C_mult: mod_mult
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
-			reset_n => reset_n,
+			reset_n => rst_cnt,
 			n       => modulus,
-			a       => c_q,
-			b       => p_q,
-			enable  => run,
+			a       => c,
+			b       => p,
+			enable  => enable,
+			run     => run,
 			valid   => c_en,
-			p       => c_d
+			p       => result
 		);
 
 	P_mult: mod_mult
 		generic map (C_block_size => C_block_size)
 		port map (
 			clk     => clk,
-			reset_n => reset_n,
+			reset_n => rst_cnt,
 			n       => modulus,
-			a       => p_q,
-			b       => p_q,
-			enable  => run,
+			a       => p,
+			b       => p,
+			enable  => enable,
+			run     => '1',
 			valid   => p_en,
 			p       => p_d
 		);
 
 end architecture;
-
