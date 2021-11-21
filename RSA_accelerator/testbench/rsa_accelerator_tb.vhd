@@ -310,9 +310,9 @@ begin
 	clk_gen: process is
 	begin
 		clk <= '1';
-		wait for 20 ns;
+		wait for 6 ns;
 		clk <= '0';
-		wait for 20 ns;
+		wait for 6 ns;
 	end process;
 
 	-- reset_n generator

@@ -128,6 +128,7 @@ begin
 		)
 		port map (
 			clk => clk,
+			reset_n => reset_n,
 			msgin_valid => msgin_valid,
 			msgin_ready => msgin_ready,
 			msgin_data => msgin_data,
