@@ -37,40 +37,40 @@ architecture rl_binary_rtl of exponentiation is
 
 	shared variable log_size : integer := 8;
 
-	component counter
-		generic (bit : integer := 8);
-		port (
-			clk	: in 	std_logic;
-			rst	: in 	std_logic;
-			en 	: in 	std_logic;
-			val	: out	unsigned(bit-1 downto 0)
-		);
-	end component;
+	-- component counter
+	-- 	generic (bit : integer := 8);
+	-- 	port (
+	-- 		clk	: in 	std_logic;
+	-- 		rst	: in 	std_logic;
+	-- 		en 	: in 	std_logic;
+	-- 		val	: out	unsigned(bit-1 downto 0)
+	-- 	);
+	-- end component;
 
-	component mux
-		generic (
-			num : natural := 32;
-			bit : natural :=  1
-		);
-		port (
-			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
-			sel    : in  natural range 0 to num-1;
-			output : out std_logic_vector(bit-1 downto 0)
-		);
-	end component;
+	-- component mux
+	-- 	generic (
+	-- 		num : natural := 32;
+	-- 		bit : natural :=  1
+	-- 	);
+	-- 	port (
+	-- 		input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
+	-- 		sel    : in  natural range 0 to num-1;
+	-- 		output : out std_logic_vector(bit-1 downto 0)
+	-- 	);
+	-- end component;
 
-	component mod_mult
-		generic (C_block_size : integer := 256);
-		port (
-			clk, reset_n : in  std_logic;
-			a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
-			p            : out std_logic_vector(C_block_size-1 downto 0);
-			counter      : out unsigned (log_size-1 downto 0);
-			enable       : in  std_logic;
-			run          : in  std_logic;
-			valid        : out std_logic
-		);
-	end component;
+	-- component mod_mult
+	-- 	generic (C_block_size : integer := 256);
+	-- 	port (
+	-- 		clk, reset_n : in  std_logic;
+	-- 		a, b, n      : in  std_logic_vector(C_block_size-1 downto 0);
+	-- 		p            : out std_logic_vector(C_block_size-1 downto 0);
+	-- 		counter      : out unsigned (log_size-1 downto 0);
+	-- 		enable       : in  std_logic;
+	-- 		run          : in  std_logic;
+	-- 		valid        : out std_logic
+	-- 	);
+	-- end component;
 
 	signal state, nxt_state : state_t;
 
@@ -208,7 +208,7 @@ begin
 			val => cnt
 		);
 
-	key_mux: mux
+	key_mux: entity work.mux
 		generic map (
 			num => C_block_size,
 			bit => 1
@@ -219,8 +219,10 @@ begin
 			output => run_v
 		);
 
-	C_mult: mod_mult
-		generic map (C_block_size => C_block_size)
+	C_mult: entity work.mod_mult
+		generic map (
+			C_block_size => C_block_size
+		)
 		port map (
 			clk     => clk,
 			reset_n => rst_cnt,
@@ -233,8 +235,10 @@ begin
 			p       => result
 		);
 
-	P_mult: mod_mult
-		generic map (C_block_size => C_block_size)
+	P_mult: entity work.mod_mult
+		generic map (
+			C_block_size => C_block_size
+			)
 		port map (
 			clk     => clk,
 			reset_n => rst_cnt,
@@ -246,5 +250,4 @@ begin
 			valid   => p_en,
 			p       => p_d
 		);
-
 end architecture;

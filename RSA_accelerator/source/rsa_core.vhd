@@ -108,18 +108,22 @@ begin
 	-- 	);
 	gen: for i in 0 to 47 generate
 
-		element: entity work.exponentiation(rl_binary_rtl) port map(
-			message   => msgin_data  ,
-			key       => key_e_d     ,
-			valid_in  => rl_valid(i) ,
-			ready_in  => ready_in(i),
-			ready_out => ready_out(i),
-			valid_out => rl_ready(i),
-			result    => rl_data,
-			modulus   => key_n       ,
-			clk       => clk         ,
-			reset_n   => reset_n
-		);
+		element: entity work.exponentiation
+			generic map (
+				C_block_size => C_BLOCK_SIZE
+			)
+			port map(
+				message   => msgin_data,
+				key       => key_e_d,
+				valid_in  => rl_valid(i),
+				ready_in  => ready_in(i),
+				ready_out => ready_out(i),
+				valid_out => rl_ready(i),
+				result    => rl_data,
+				modulus   => key_n,
+				clk       => clk,
+				reset_n   => reset_n
+			);
 	end generate;
 
 	control : entity work.rsa_control
