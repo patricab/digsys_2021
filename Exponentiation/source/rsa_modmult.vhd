@@ -21,7 +21,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.std_logic_unsigned.all;
 --------------------------------------------------------------------------------
-entity mod_mult is
+entity rsa_modmult is
 	generic (
 		C_Block_size: integer := 256
 	);

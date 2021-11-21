@@ -200,7 +200,9 @@ begin
 
 
 	key_sel_counter: entity work.counter(up)
-		generic map (bit => log_size+1) -- log_size
+		generic map (
+			bit => log_size+1
+		) -- log_size
 		port map (
 			clk => p_en,
 			rst => rst_cnt,
@@ -219,7 +221,7 @@ begin
 			output => run_v
 		);
 
-	C_mult: entity work.mod_mult
+	C_mult: entity work.rsa_modmult
 		generic map (
 			C_block_size => C_block_size
 		)
@@ -235,7 +237,7 @@ begin
 			p       => result
 		);
 
-	P_mult: entity work.mod_mult
+	P_mult: entity work.rsa_modmult
 		generic map (
 			C_block_size => C_block_size
 			)
