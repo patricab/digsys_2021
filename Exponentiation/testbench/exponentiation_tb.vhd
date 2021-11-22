@@ -71,17 +71,13 @@ begin
 		ready_out <= '0';
 		restart   <= '0';
 		wait for CLK_PERIOD;
-
-		message <= x"00000000" & x"00000000" & x"00000000" & x"00000000"
-		         & x"00000000" & x"00000000" & x"00000000" & x"02348762";
-		key     <= (0 => '1', 4 => '1', others => '0'); -- e 65537
-		modulus <= x"00000000" & x"00000000" & x"00000000" & x"00000000"
-		         & x"00000000" & x"00000000" & x"07374837" & x"28274817";
+		message <= x"0a23232323232323232323232323232323232323232323232323232323232323";
+		key     <= x"0000000000000000000000000000000000000000000000000000000000010001"; -- e 65537
+		modulus <= x"99925173ad65686715385ea800cd28120288fc70a9bc98dd4c90d676f8ff768d";
 
 		wait until (valid_out = '1');
-		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
-		               & x"00000000" & x"00000000" & x"050f2bc2" & x"15aabc56") -- if false
-			report "wrong result";
+		assert (result = x"85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01") -- if false
+			report "wrong result" severity Failure;
 
 		wait for period;
 
@@ -97,7 +93,7 @@ begin
 		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               & x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"0D") -- if false
-			report "wrong result";
+			report "wrong result" severity Failure;
 
 		wait for period;
 
@@ -114,7 +110,7 @@ begin
 		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               & x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"07")
-			report "wrong result";
+			report "wrong result" severity Failure;
 
 		wait for period;
 

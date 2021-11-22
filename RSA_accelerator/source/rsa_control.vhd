@@ -158,6 +158,9 @@ begin
 
 	exp_gen : for i in 0 to CORES-1 generate
 		element: Exponentiation
+			generic map (
+				C_BLOCK_SIZE => C_BLOCK_SIZE
+			)
 			port map (
 				clk       => clk,
 				reset_n   => reset_n,
