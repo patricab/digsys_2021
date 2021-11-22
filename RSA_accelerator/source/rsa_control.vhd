@@ -43,8 +43,7 @@ architecture structural of rsa_control is
 	constant CORES     : natural := 32;
 	constant LOG_CORES : natural := 5;
 
-	signal or_y, d_i, sr_en, rst_cnt : std_logic;
-	signal sr_i                      : std_logic_vector(0 downto 0);
+	signal or_y, d_i, sr_en, sr_i, rst_cnt : std_logic;
 	signal cnt                       : unsigned(LOG_CORES-1 downto 0);
 
 	signal rl_data  	: std_logic_vector(C_BLOCK_SIZE-1 downto 0);
@@ -53,7 +52,7 @@ architecture structural of rsa_control is
 	signal ready_in 	: std_logic_vector(CORES-1 downto 0);
 	signal ready_out	: std_logic_vector(CORES-1 downto 0);
 
-	signal rl_valid_array : slv_array_t(0 to CORES-1)(0 downto 0);
+	-- signal rl_valid_array : slv_array_t(0 to CORES-1)(0 downto 0);
 
 	component Exponentiation is
 		generic (
@@ -84,13 +83,13 @@ begin
 	msgout_last <= msgin_last;
 	rsa_status  <= (others => '0');
 
-	sr_i(0) <= msgin_valid and msgin_ready;
+	sr_i <= msgin_valid and msgin_ready;
 
 	rst_cnt <= reset_n; -- must reset at CORES!
 
-	VAL_GEN : for i in 0 to CORES-1 generate
-		rl_valid_array(i) <= rl_valid(i downto i);
-	end generate;
+	-- VAL_GEN : for i in 0 to CORES-1 generate
+	-- 	rl_valid_array(i) <= rl_valid(i downto i);
+	-- end generate;
 
 	valid_sel_counter : entity work.counter(up)
 		generic map (
@@ -105,13 +104,13 @@ begin
 
 	valid_sel_demux : entity work.demux(rtl)
 		generic map (
-			num => CORES,
-			bit => 1
+			num => CORES
+			-- bit => 1
 		)
 		port map (
 			input => sr_i,
 			sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
-			output => rl_valid_array
+			output => rl_valid -- _array
 		);
 
 	-- sr_CORES: entity work.shift_register(rtl)

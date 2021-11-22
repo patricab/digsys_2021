@@ -49,13 +49,13 @@ architecture rl_binary_rtl of exponentiation is
 
 	component mux
 		generic (
-			num : natural := 32;
-			bit : natural :=  1
+			num : natural := 32
+			-- bit : natural :=  1
 		);
 		port (
-			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
+			input  : in  std_logic_vector(num-1 downto 0) ;-- slv_array_t(0 to num-1)(bit-1 downto 0);
 			sel    : in  natural range 0 to num-1;
-			output : out std_logic_vector(bit-1 downto 0)
+			output : out std_logic -- _vector(bit-1 downto 0)
 		);
 	end component;
 
@@ -73,9 +73,9 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal state, nxt_state : state_t;
 
-	signal key_array           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
+	-- signal , --           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal run_v               	: std_logic_vector(0 downto 0);
+	signal run_v            	   : std_logic; -- _vector(0 downto 0);
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -83,9 +83,9 @@ architecture rl_binary_rtl of exponentiation is
 
 begin
 
-	key_gen : for i in 0 to C_block_size-1 generate
-		key_array(i) <= key(i downto i);
-	end generate; -- key_gen
+	-- key_gen : for i in 0 to C_block_size-1 generate
+	-- 	, --(i) <= key(i downto i);
+	-- end generate; -- key_gen
 
 	main : process(all)
 	begin
@@ -125,7 +125,7 @@ begin
 					rst_cnt   <= '1';
 
 					if (cnt(log_size) = '0') then
-						run <= run_v(0);
+						run <= run_v;
 					else
 						run <= '0';
 					end if;
@@ -214,11 +214,11 @@ begin
 
 	key_mux: mux
 		generic map (
-			num => C_block_size,
-			bit => 1
+			num => C_block_size
+			-- bit => 1
 		)
 		port map (
-			input  => key_array,
+			input  => key, --_array,
 			sel    => to_integer(cnt(log_size-1 downto 0)),
 			output => run_v
 		);
