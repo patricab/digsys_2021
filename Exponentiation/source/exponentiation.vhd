@@ -166,9 +166,9 @@ begin
 
 				when idle  =>
 					if (valid_in = '1') then
-						nxt_state <= calc;
 						p <= message;
 						c <= (0 => '1', others => '0');
+						nxt_state <= calc;
 					else
 						nxt_state <= idle;
 					end if ;
