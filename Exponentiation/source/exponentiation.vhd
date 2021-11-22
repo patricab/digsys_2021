@@ -101,6 +101,8 @@ begin
 					rst_cnt   <= '0';
 
 				when idle  =>
+					p         <= message;
+					c         <= (0 => '1', others => '0');
 					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '1';
@@ -166,8 +168,6 @@ begin
 
 				when idle  =>
 					if (valid_in = '1') then
-						p <= message;
-						c <= (0 => '1', others => '0');
 						nxt_state <= calc;
 					else
 						nxt_state <= idle;
