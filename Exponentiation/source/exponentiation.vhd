@@ -35,7 +35,7 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
-	shared variable log_size : integer := 8;
+	constant log_size : integer := 8;
 
 	component counter
 		generic (bit : integer := 8);

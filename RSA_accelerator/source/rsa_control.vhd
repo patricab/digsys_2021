@@ -40,8 +40,8 @@ end entity rsa_control;
 
 architecture structural of rsa_control is
 
-	shared variable CORES    : natural := 32;
-	shared variable LOG_CORES : natural := 5;
+	constant CORES     : natural := 32;
+	constant LOG_CORES : natural := 5;
 
 	signal or_y, d_i, sr_en, rst_cnt : std_logic;
 	signal sr_i                      : std_logic_vector(0 downto 0);
@@ -69,6 +69,14 @@ architecture structural of rsa_control is
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			clk, reset_n	: in  STD_LOGIC
 		);
+	end component;
+
+	component or_n is
+		generic (
+			REGISTER_WIDTH : natural := 2);
+		 port (
+			x : in  std_logic_vector(REGISTER_WIDTH-1 downto 0);
+			y : out std_logic);
 	end component;
 
 begin
@@ -115,14 +123,14 @@ begin
 	-- 		d   => sr_i,
 	-- 		q   => rl_valid);
 
-	readyin_OR_n: entity work.or_n(behavioral)
+	readyin_OR_n : or_n
 		generic map (
 			REGISTER_WIDTH => CORES)
 		port map(
 			x => ready_in,
 			y => msgin_ready);
 
-	OR_n: entity work.or_n(behavioral)
+	ready_OR_n: or_n
 		generic map (
 			REGISTER_WIDTH => CORES)
 		port map(
