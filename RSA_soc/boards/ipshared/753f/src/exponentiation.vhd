@@ -35,7 +35,7 @@ end exponentiation;
 
 architecture rl_binary_rtl of exponentiation is
 
-	constant log_size : integer := 8;
+	shared variable log_size : integer := 8;
 
 	component counter
 		generic (bit : integer := 8);
@@ -49,13 +49,13 @@ architecture rl_binary_rtl of exponentiation is
 
 	component mux
 		generic (
-			num : natural := 32
-			-- bit : natural :=  1
+			num : natural := 32;
+			bit : natural :=  1
 		);
 		port (
-			input  : in  std_logic_vector(num-1 downto 0) ;-- slv_array_t(0 to num-1)(bit-1 downto 0);
+			input  : in slv_array_t(0 to num-1)(bit-1 downto 0);
 			sel    : in  natural range 0 to num-1;
-			output : out std_logic -- _vector(bit-1 downto 0)
+			output : out std_logic_vector(bit-1 downto 0)
 		);
 	end component;
 
@@ -73,19 +73,19 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal state, nxt_state : state_t;
 
-	-- signal , --           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
+	signal key_array           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
 
-	signal run_v            	   : std_logic; -- _vector(0 downto 0);
+	signal run_v               	: std_logic_vector(0 downto 0);
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
-	signal c, p, p_d, c_d      	: std_logic_vector(C_block_size-1 downto 0);
+	signal c, p, p_d           	: std_logic_vector(C_block_size-1 downto 0);
 
 begin
 
-	-- key_gen : for i in 0 to C_block_size-1 generate
-	-- 	, --(i) <= key(i downto i);
-	-- end generate; -- key_gen
+	key_gen : for i in 0 to C_block_size-1 generate
+		key_array(i) <= key(i downto i);
+	end generate; -- key_gen
 
 	main : process(all)
 	begin
@@ -94,55 +94,53 @@ begin
 				when reset =>
 					c <= (others => '0');
 					p <= (others => '0');
-					result    <= (others => 'Z');
+
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
 					rst_cnt   <= '0';
 
 				when idle  =>
-					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '1';
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
-				-- when start =>
-				-- 	result    <= (others => 'Z');
-				-- 	enable    <= '0';
-				-- 	ready_in  <= '0';
-				-- 	valid_out <= '0';
-				-- 	rst_cnt   <= '1';
+				when start =>
+					enable    <= '0';
+					ready_in  <= '0';
+					valid_out <= '0';
+					rst_cnt   <= '1';
+
+					p <= message;
+					c <= (0 => '1', others => '0');
 
 				when calc  =>
-					result    <= (others => 'Z');
 					enable    <= '1';
 					ready_in  <= '0';
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
 					if (cnt(log_size) = '0') then
-						run <= run_v;
+						run <= run_v(0);
 					else
 						run <= '0';
 					end if;
 
 					if (c_en = '1') then
-						c <= c_d;
+						c <= result;
 					end if;
 					if (p_en = '1') then
 						p <= p_d;
 					end if;
 
 				when fnsh  =>
-					result    <= c_d; -- use non zero value after reset
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '1';
-					rst_cnt   <= '1';
+					rst_cnt   <= '0';
 
 				when others =>
-					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
@@ -166,15 +164,13 @@ begin
 
 				when idle  =>
 					if (valid_in = '1') then
-						nxt_state <= calc;
-						p <= message;
-						c <= (0 => '1', others => '0');
+						nxt_state <= start;
 					else
 						nxt_state <= idle;
 					end if ;
 
-				-- when start =>
-				-- 	nxt_state <= calc;
+				when start =>
+					nxt_state <= calc;
 
 				when calc  =>
 					if (cnt(log_size) = '1') then
@@ -213,11 +209,11 @@ begin
 
 	key_mux: mux
 		generic map (
-			num => C_block_size
-			-- bit => 1
+			num => C_block_size,
+			bit => 1
 		)
 		port map (
-			input  => key, --_array,
+			input  => key_array,
 			sel    => to_integer(cnt(log_size-1 downto 0)),
 			output => run_v
 		);
@@ -233,7 +229,7 @@ begin
 			enable  => enable,
 			run     => run,
 			valid   => c_en,
-			p       => c_d
+			p       => result
 		);
 
 	P_mult: mod_mult
