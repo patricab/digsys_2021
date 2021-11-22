@@ -93,7 +93,7 @@ rsa_soc_xbar_0_sc::rsa_soc_xbar_0_sc(const sc_core::sc_module_name& nm) : sc_cor
 
   mp_impl = new axi_crossbar("inst", model_param_props);
 
-  // initialize AXI sockets
+  // initialize sockets
   target_0_rd_socket = mp_impl->target_0_rd_socket;
   target_0_wr_socket = mp_impl->target_0_wr_socket;
   initiator_0_rd_socket = mp_impl->initiator_0_rd_socket;

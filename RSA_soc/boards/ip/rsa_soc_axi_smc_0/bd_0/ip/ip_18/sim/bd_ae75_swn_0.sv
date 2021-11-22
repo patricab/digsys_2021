@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_node:1.0
-// IP Revision: 13
+// IP Revision: 11
 
 `timescale 1ns/1ps
 
@@ -70,7 +70,7 @@ module bd_ae75_swn_0 (
   m_sc_payld
 );
 
-(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aclk, ASSOCIATED_BUSIF S_AXIS_ARB:M_AXIS_ARB:S_SC, ASSOCIATED_RESET s_sc_aresetn, ASSOCIATED_CLKEN s_sc_aclken, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN rsa_soc_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0" *)
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aclk, ASSOCIATED_BUSIF S_AXIS_ARB:M_AXIS_ARB:S_SC, ASSOCIATED_RESET s_sc_aresetn, ASSOCIATED_CLKEN s_sc_aclken, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN rsa_soc_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 aclk CLK" *)
 input wire s_sc_aclk;
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME aresetn, POLARITY ACTIVE_LOW, INSERT_VIP 0" *)
@@ -86,7 +86,7 @@ input wire [0 : 0] s_sc_send;
 output wire [0 : 0] s_sc_recv;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S_SC PAYLD" *)
 input wire [87 : 0] s_sc_payld;
-(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aclk, ASSOCIATED_BUSIF M_SC, ASSOCIATED_RESET m_sc_aresetn, ASSOCIATED_CLKEN m_sc_aclken, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN rsa_soc_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0" *)
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aclk, ASSOCIATED_BUSIF M_SC, ASSOCIATED_RESET m_sc_aresetn, ASSOCIATED_CLKEN m_sc_aclken, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN rsa_soc_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 m_sc_aclk CLK" *)
 input wire m_sc_aclk;
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME m_sc_aresetn, POLARITY ACTIVE_LOW, INSERT_VIP 0" *)
@@ -103,7 +103,7 @@ output wire [0 : 0] m_sc_info;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC PAYLD" *)
 output wire [87 : 0] m_sc_payld;
 
-  sc_node_v1_0_13_top #(
+  sc_node_v1_0_11_top #(
     .C_FAMILY("zynq"),
     .C_FIFO_IP(0),
     .C_DISABLE_IP(0),
@@ -118,11 +118,10 @@ output wire [87 : 0] m_sc_payld;
     .C_PAYLD_WIDTH(88),
     .C_S_NUM_BYTES_ARRAY(32'H00000004),
     .C_M_NUM_BYTES_ARRAY(32'H00000008),
-    .C_PRIORITY_ARB_ARRAY(1'B0),
     .C_USER_BITS_PER_BYTE(0),
     .C_ARBITER_MODE(1),
     .C_SC_ROUTE_WIDTH(1),
-    .C_ID_WIDTH(2),
+    .C_ID_WIDTH(1),
     .C_ADDR_WIDTH(32),
     .C_USER_WIDTH(512),
     .C_MAX_PAYLD_BYTES(8),

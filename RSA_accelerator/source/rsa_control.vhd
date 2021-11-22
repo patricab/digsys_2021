@@ -47,6 +47,22 @@ architecture structural of rsa_control is
 	signal ready_in 	: std_logic_vector( 47 downto 0);
 	signal ready_out	: std_logic_vector( 47 downto 0);
 
+	component Exponentiation is
+		generic (
+			C_block_size : integer := 256
+		);
+		port (
+			valid_in    	: in  STD_LOGIC;
+			ready_in    	: out STD_LOGIC;
+			message, key	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			ready_out   	: in  STD_LOGIC;
+			valid_out   	: out STD_LOGIC;
+			result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			clk, reset_n	: in STD_LOGIC
+		);
+	end component;
+
 begin
 
 	msgout_last <= msgin_last;
@@ -88,20 +104,19 @@ begin
 			q   => msgout_data);
 
 	exp_gen : for i in 0 to 47 generate
-		element: entity work.exponentiation(rl_binary_rtl)
+		element: Exponentiation
 			port map (
-				clk       => clk         ,
-				reset_n   => reset_n     ,
+				clk       => clk,
+				reset_n   => reset_n,
 
-				message   => msgin_data  ,
-				key       => key_e_d     ,
-				modulus   => key_n       ,
+				message   => msgin_data,
+				key       => key_e_d,
+				modulus   => key_n,
 
-				valid_in  => rl_valid(i) ,
-				ready_in  => ready_in(i) ,
+				valid_in  => rl_valid(i),
+				ready_in  => ready_in(i),
 				ready_out => ready_out(i),
-				valid_out => rl_ready(i) ,
-
+				valid_out => rl_ready(i),
 				result    => rl_data
 			);
 	end generate;

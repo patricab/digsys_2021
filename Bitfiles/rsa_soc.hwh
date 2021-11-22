@@ -1,9 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Sun Nov 21 17:27:56 2021" VIVADOVERSION="2021.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Nov 22 14:26:59 2021" VIVADOVERSION="2020.1">
 
   <SYSTEMINFO ARCH="zynq" BOARD="www.digilentinc.com:pynq-z1:part0:1.0" DEVICE="7z020" NAME="rsa_soc" PACKAGE="clg400" SPEEDGRADE="-1"/>
 
   <EXTERNALPORTS>
+    <PORT DIR="IO" LEFT="53" NAME="FIXED_IO_mio" RIGHT="0" SIGIS="undef" SIGNAME="processing_system7_0_MIO">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="MIO"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_ddr_vrn" SIGIS="undef" SIGNAME="processing_system7_0_DDR_VRN">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_VRN"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_ddr_vrp" SIGIS="undef" SIGNAME="processing_system7_0_DDR_VRP">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_VRP"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_ps_srstb" SIGIS="undef" SIGNAME="processing_system7_0_PS_SRSTB">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_SRSTB"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_ps_clk" SIGIS="undef" SIGNAME="processing_system7_0_PS_CLK">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_CLK"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_ps_porb" SIGIS="undef" SIGNAME="processing_system7_0_PS_PORB">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_PORB"/>
+      </CONNECTIONS>
+    </PORT>
     <PORT DIR="IO" NAME="DDR_cas_n" SIGIS="undef" SIGNAME="processing_system7_0_DDR_CAS_n">
       <CONNECTIONS>
         <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_CAS_n"/>
@@ -79,36 +109,6 @@
         <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_DQS"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="IO" LEFT="53" NAME="FIXED_IO_mio" RIGHT="0" SIGIS="undef" SIGNAME="processing_system7_0_MIO">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="MIO"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_ddr_vrn" SIGIS="undef" SIGNAME="processing_system7_0_DDR_VRN">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_VRN"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_ddr_vrp" SIGIS="undef" SIGNAME="processing_system7_0_DDR_VRP">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="DDR_VRP"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_ps_srstb" SIGIS="undef" SIGNAME="processing_system7_0_PS_SRSTB">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_SRSTB"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_ps_clk" SIGIS="undef" SIGNAME="processing_system7_0_PS_CLK">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_CLK"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_ps_porb" SIGIS="undef" SIGNAME="processing_system7_0_PS_PORB">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="processing_system7_0" PORT="PS_PORB"/>
-      </CONNECTIONS>
-    </PORT>
   </EXTERNALPORTS>
 
   <EXTERNALINTERFACES>
@@ -159,7 +159,7 @@
   </EXTERNALINTERFACES>
 
   <MODULES>
-    <MODULE BD="rsa_soc_axi_smc_0" BDTYPE="SBD" COREREVISION="16" DRIVERMODE="CORE" FULLNAME="/axi_smc" HWVERSION="1.0" INSTANCE="axi_smc" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="rsa_soc_axi_smc_0" VLNV="xilinx.com:ip:smartconnect:1.0">
+    <MODULE BD="rsa_soc_axi_smc_0" BDTYPE="SBD" COREREVISION="13" DRIVERMODE="CORE" FULLNAME="/axi_smc" HWVERSION="1.0" INSTANCE="axi_smc" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="rsa_soc_axi_smc_0" VLNV="xilinx.com:ip:smartconnect:1.0">
       <DOCUMENTS>
         <DOCUMENT SOURCE="http://www.xilinx.com/cgi-bin/docs/ipdoc?c=smartconnect;v=v1_0;d=pg247-smartconnect.pdf"/>
       </DOCUMENTS>
@@ -526,7 +526,7 @@
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="16"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="16"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -576,7 +576,7 @@
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="16"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="16"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -629,7 +629,7 @@
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="16"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="16"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="8"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -2211,7 +2211,7 @@
           <PARAMETER NAME="HAS_BRESP" VALUE="1"/>
           <PARAMETER NAME="HAS_RRESP" VALUE="1"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="16"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="4"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="4"/>
@@ -2284,7 +2284,7 @@
           <PARAMETER NAME="HAS_RRESP" VALUE="1"/>
           <PARAMETER NAME="SUPPORTS_NARROW_BURST" VALUE="0"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="8"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -2342,7 +2342,7 @@
         <PERIPHERAL INSTANCE="rsa_rsa_acc"/>
       </PERIPHERALS>
     </MODULE>
-    <MODULE COREREVISION="25" FULLNAME="/ps7_0_axi_periph" HWVERSION="2.1" INSTANCE="ps7_0_axi_periph" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="axi_interconnect" VLNV="xilinx.com:ip:axi_interconnect:2.1">
+    <MODULE COREREVISION="22" FULLNAME="/ps7_0_axi_periph" HWVERSION="2.1" INSTANCE="ps7_0_axi_periph" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="axi_interconnect" VLNV="xilinx.com:ip:axi_interconnect:2.1">
       <DOCUMENTS>
         <DOCUMENT SOURCE="http://www.xilinx.com/cgi-bin/docs/ipdoc?c=axi_interconnect;v=v2_1;d=pg059-axi-interconnect.pdf"/>
       </DOCUMENTS>
@@ -3406,7 +3406,7 @@
           <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
           <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
@@ -3428,7 +3428,7 @@
           <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
           <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
@@ -3465,7 +3465,7 @@
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="1"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="1"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -3496,7 +3496,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="25" FULLNAME="/rsa/rsa_dma" HWVERSION="7.1" INSTANCE="rsa_rsa_dma" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="axi_dma" VLNV="xilinx.com:ip:axi_dma:7.1">
+    <MODULE COREREVISION="22" FULLNAME="/rsa/rsa_dma" HWVERSION="7.1" INSTANCE="rsa_rsa_dma" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="axi_dma" VLNV="xilinx.com:ip:axi_dma:7.1">
       <DOCUMENTS>
         <DOCUMENT SOURCE="http://www.xilinx.com/cgi-bin/docs/ipdoc?c=axi_dma;v=v7_1;d=pg021_axi_dma.pdf"/>
       </DOCUMENTS>
@@ -4698,7 +4698,7 @@
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="1"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -4749,7 +4749,7 @@
           <PARAMETER NAME="HAS_RRESP" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="16"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -4797,7 +4797,7 @@
           <PARAMETER NAME="HAS_RRESP" VALUE="0"/>
           <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="16"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
@@ -4833,7 +4833,7 @@
           <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
           <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
@@ -4856,7 +4856,7 @@
           <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
           <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
           <PARAMETER NAME="CLK_DOMAIN" VALUE="rsa_soc_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>

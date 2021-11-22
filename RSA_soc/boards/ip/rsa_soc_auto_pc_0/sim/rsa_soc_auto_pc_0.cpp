@@ -118,7 +118,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     S_AXI_transactor_param_props.addLong("HAS_SIZE", "1");
     S_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    S_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    S_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     S_AXI_transactor_param_props.addString("PROTOCOL", "AXI3");
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -184,9 +184,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     mp_impl->target_rd_socket->bind(*(mp_S_AXI_transactor->rd_socket));
     mp_impl->target_wr_socket->bind(*(mp_S_AXI_transactor->wr_socket));
   }
-  else
-  {
-  }
 
   // configure 'M_AXI' transactor
 
@@ -224,7 +221,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     M_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     M_AXI_transactor_param_props.addLong("HAS_SIZE", "0");
     M_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    M_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    M_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     M_AXI_transactor_param_props.addString("PROTOCOL", "AXI4LITE");
     M_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     M_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -259,9 +256,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
 
     mp_impl->initiator_rd_socket->bind(*(mp_M_AXI_transactor->rd_socket));
     mp_impl->initiator_wr_socket->bind(*(mp_M_AXI_transactor->wr_socket));
-  }
-  else
-  {
   }
 
 }
@@ -329,7 +323,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     S_AXI_transactor_param_props.addLong("HAS_SIZE", "1");
     S_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    S_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    S_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     S_AXI_transactor_param_props.addString("PROTOCOL", "AXI3");
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -395,9 +389,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     mp_impl->target_rd_socket->bind(*(mp_S_AXI_transactor->rd_socket));
     mp_impl->target_wr_socket->bind(*(mp_S_AXI_transactor->wr_socket));
   }
-  else
-  {
-  }
 
   // configure 'M_AXI' transactor
 
@@ -435,7 +426,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     M_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     M_AXI_transactor_param_props.addLong("HAS_SIZE", "0");
     M_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    M_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    M_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     M_AXI_transactor_param_props.addString("PROTOCOL", "AXI4LITE");
     M_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     M_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -470,9 +461,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
 
     mp_impl->initiator_rd_socket->bind(*(mp_M_AXI_transactor->rd_socket));
     mp_impl->initiator_wr_socket->bind(*(mp_M_AXI_transactor->wr_socket));
-  }
-  else
-  {
   }
 
 }
@@ -540,7 +528,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     S_AXI_transactor_param_props.addLong("HAS_SIZE", "1");
     S_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    S_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    S_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     S_AXI_transactor_param_props.addString("PROTOCOL", "AXI3");
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -606,9 +594,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     mp_impl->target_rd_socket->bind(*(mp_S_AXI_transactor->rd_socket));
     mp_impl->target_wr_socket->bind(*(mp_S_AXI_transactor->wr_socket));
   }
-  else
-  {
-  }
 
   // configure 'M_AXI' transactor
 
@@ -646,7 +631,7 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     M_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     M_AXI_transactor_param_props.addLong("HAS_SIZE", "0");
     M_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    M_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    M_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     M_AXI_transactor_param_props.addString("PROTOCOL", "AXI4LITE");
     M_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     M_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -682,9 +667,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
     mp_impl->initiator_rd_socket->bind(*(mp_M_AXI_transactor->rd_socket));
     mp_impl->initiator_wr_socket->bind(*(mp_M_AXI_transactor->wr_socket));
   }
-  else
-  {
-  }
 
 }
 
@@ -707,7 +689,6 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_s_axi_arlen_converter = NULL;
   mp_s_axi_arlock_converter = NULL;
   mp_M_AXI_transactor = NULL;
-
   // Instantiate Socket Stubs
 
   // configure S_AXI_transactor
@@ -740,7 +721,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
     S_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     S_AXI_transactor_param_props.addLong("HAS_SIZE", "1");
     S_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    S_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    S_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     S_AXI_transactor_param_props.addString("PROTOCOL", "AXI3");
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -797,6 +778,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_S_AXI_transactor->RREADY(s_axi_rready);
   mp_S_AXI_transactor->CLK(aclk);
   mp_S_AXI_transactor->RST(aresetn);
+
   // configure M_AXI_transactor
     xsc::common_cpp::properties M_AXI_transactor_param_props;
     M_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
@@ -827,7 +809,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
     M_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     M_AXI_transactor_param_props.addLong("HAS_SIZE", "0");
     M_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    M_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    M_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     M_AXI_transactor_param_props.addString("PROTOCOL", "AXI4LITE");
     M_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     M_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -855,6 +837,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_M_AXI_transactor->CLK(aclk);
   mp_M_AXI_transactor->RST(aresetn);
 
+
   // initialize transactors stubs
   S_AXI_transactor_target_wr_socket_stub = nullptr;
   S_AXI_transactor_target_rd_socket_stub = nullptr;
@@ -870,7 +853,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
   {
     mp_impl->target_rd_socket->bind(*(mp_S_AXI_transactor->rd_socket));
     mp_impl->target_wr_socket->bind(*(mp_S_AXI_transactor->wr_socket));
-  
   }
   else
   {
@@ -886,7 +868,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
   {
     mp_impl->initiator_rd_socket->bind(*(mp_M_AXI_transactor->rd_socket));
     mp_impl->initiator_wr_socket->bind(*(mp_M_AXI_transactor->wr_socket));
-  
   }
   else
   {
@@ -918,7 +899,6 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_s_axi_arlen_converter = NULL;
   mp_s_axi_arlock_converter = NULL;
   mp_M_AXI_transactor = NULL;
-
   // Instantiate Socket Stubs
 
   // configure S_AXI_transactor
@@ -951,7 +931,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
     S_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     S_AXI_transactor_param_props.addLong("HAS_SIZE", "1");
     S_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    S_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    S_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     S_AXI_transactor_param_props.addString("PROTOCOL", "AXI3");
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -1008,6 +988,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_S_AXI_transactor->RREADY(s_axi_rready);
   mp_S_AXI_transactor->CLK(aclk);
   mp_S_AXI_transactor->RST(aresetn);
+
   // configure M_AXI_transactor
     xsc::common_cpp::properties M_AXI_transactor_param_props;
     M_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
@@ -1038,7 +1019,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
     M_AXI_transactor_param_props.addLong("WUSER_BITS_PER_BYTE", "0");
     M_AXI_transactor_param_props.addLong("HAS_SIZE", "0");
     M_AXI_transactor_param_props.addLong("HAS_RESET", "1");
-    M_AXI_transactor_param_props.addFloat("PHASE", "0.0");
+    M_AXI_transactor_param_props.addFloat("PHASE", "0.000");
     M_AXI_transactor_param_props.addString("PROTOCOL", "AXI4LITE");
     M_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     M_AXI_transactor_param_props.addString("CLK_DOMAIN", "rsa_soc_processing_system7_0_0_FCLK_CLK0");
@@ -1066,6 +1047,7 @@ rsa_soc_auto_pc_0::rsa_soc_auto_pc_0(const sc_core::sc_module_name& nm) : rsa_so
   mp_M_AXI_transactor->CLK(aclk);
   mp_M_AXI_transactor->RST(aresetn);
 
+
   // initialize transactors stubs
   S_AXI_transactor_target_wr_socket_stub = nullptr;
   S_AXI_transactor_target_rd_socket_stub = nullptr;
@@ -1081,7 +1063,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
   {
     mp_impl->target_rd_socket->bind(*(mp_S_AXI_transactor->rd_socket));
     mp_impl->target_wr_socket->bind(*(mp_S_AXI_transactor->wr_socket));
-  
   }
   else
   {
@@ -1097,7 +1078,6 @@ void rsa_soc_auto_pc_0::before_end_of_elaboration()
   {
     mp_impl->initiator_rd_socket->bind(*(mp_M_AXI_transactor->rd_socket));
     mp_impl->initiator_wr_socket->bind(*(mp_M_AXI_transactor->wr_socket));
-  
   }
   else
   {

@@ -120,7 +120,7 @@ rsa_soc_processing_system7_0_0_sc::rsa_soc_processing_system7_0_0_sc(const sc_co
 
   mp_impl = new processing_system7_v5_5_tlm("inst", model_param_props);
 
-  // initialize AXI sockets
+  // initialize sockets
   M_AXI_GP0_rd_socket = mp_impl->M_AXI_GP0_rd_socket;
   M_AXI_GP0_wr_socket = mp_impl->M_AXI_GP0_wr_socket;
   S_AXI_HP0_rd_socket = mp_impl->S_AXI_HP0_rd_socket;

@@ -74,15 +74,12 @@ public:
   rsa_soc_auto_pc_0_sc(const sc_core::sc_module_name& nm);
   virtual ~rsa_soc_auto_pc_0_sc();
 
-  // module socket-to-socket AXI TLM interfaces
+public: // module socket-to-socket TLM interface
 
   xtlm::xtlm_aximm_target_socket* target_rd_socket;
   xtlm::xtlm_aximm_target_socket* target_wr_socket;
   xtlm::xtlm_aximm_initiator_socket* initiator_rd_socket;
   xtlm::xtlm_aximm_initiator_socket* initiator_wr_socket;
-
-  // module socket-to-socket TLM interfaces
-
 
 protected:
 

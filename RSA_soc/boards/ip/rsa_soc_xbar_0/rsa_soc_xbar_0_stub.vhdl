@@ -1,10 +1,10 @@
--- Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2021.1 (win64) Build 3247384 Thu Jun 10 19:36:33 MDT 2021
--- Date        : Sun Nov 21 17:30:22 2021
--- Host        : MSI running 64-bit major release  (build 9200)
+-- Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
+-- Date        : Mon Nov 22 14:31:11 2021
+-- Host        : sp3ctre running 64-bit Ubuntu 18.04.6 LTS
 -- Command     : write_vhdl -force -mode synth_stub
---               c:/Users/ejka1/OneDrive/Skrivebord/tfe4141_rsa_integration_kit_2020/RSA_soc/boards/ip/rsa_soc_xbar_0/rsa_soc_xbar_0_stub.vhdl
+--               /home/pab/projects/digsys_2021/RSA_soc/boards/ip/rsa_soc_xbar_0/rsa_soc_xbar_0_stub.vhdl
 -- Design      : rsa_soc_xbar_0
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7z020clg400-1
@@ -64,6 +64,6 @@ attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
 attribute black_box_pad_pin of stub : architecture is "aclk,aresetn,s_axi_awaddr[31:0],s_axi_awprot[2:0],s_axi_awvalid[0:0],s_axi_awready[0:0],s_axi_wdata[31:0],s_axi_wstrb[3:0],s_axi_wvalid[0:0],s_axi_wready[0:0],s_axi_bresp[1:0],s_axi_bvalid[0:0],s_axi_bready[0:0],s_axi_araddr[31:0],s_axi_arprot[2:0],s_axi_arvalid[0:0],s_axi_arready[0:0],s_axi_rdata[31:0],s_axi_rresp[1:0],s_axi_rvalid[0:0],s_axi_rready[0:0],m_axi_awaddr[63:0],m_axi_awprot[5:0],m_axi_awvalid[1:0],m_axi_awready[1:0],m_axi_wdata[63:0],m_axi_wstrb[7:0],m_axi_wvalid[1:0],m_axi_wready[1:0],m_axi_bresp[3:0],m_axi_bvalid[1:0],m_axi_bready[1:0],m_axi_araddr[63:0],m_axi_arprot[5:0],m_axi_arvalid[1:0],m_axi_arready[1:0],m_axi_rdata[63:0],m_axi_rresp[3:0],m_axi_rvalid[1:0],m_axi_rready[1:0]";
 attribute X_CORE_INFO : string;
-attribute X_CORE_INFO of stub : architecture is "axi_crossbar_v2_1_25_axi_crossbar,Vivado 2021.1";
+attribute X_CORE_INFO of stub : architecture is "axi_crossbar_v2_1_22_axi_crossbar,Vivado 2020.1";
 begin
 end;

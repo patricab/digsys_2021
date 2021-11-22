@@ -74,7 +74,7 @@ public:
   rsa_soc_axi_smc_0_sc(const sc_core::sc_module_name& nm);
   virtual ~rsa_soc_axi_smc_0_sc();
 
-  // module socket-to-socket AXI TLM interfaces
+public: // module socket-to-socket TLM interface
 
   xtlm::xtlm_aximm_target_socket* S00_AXI_tlm_aximm_read_socket;
   xtlm::xtlm_aximm_target_socket* S00_AXI_tlm_aximm_write_socket;
@@ -82,9 +82,6 @@ public:
   xtlm::xtlm_aximm_target_socket* S01_AXI_tlm_aximm_write_socket;
   xtlm::xtlm_aximm_initiator_socket* M00_AXI_tlm_aximm_read_socket;
   xtlm::xtlm_aximm_initiator_socket* M00_AXI_tlm_aximm_write_socket;
-
-  // module socket-to-socket TLM interfaces
-
 
 protected:
 

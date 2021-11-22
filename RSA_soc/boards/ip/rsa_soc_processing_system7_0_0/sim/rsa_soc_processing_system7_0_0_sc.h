@@ -74,15 +74,12 @@ public:
   rsa_soc_processing_system7_0_0_sc(const sc_core::sc_module_name& nm);
   virtual ~rsa_soc_processing_system7_0_0_sc();
 
-  // module socket-to-socket AXI TLM interfaces
+public: // module socket-to-socket TLM interface
 
   xtlm::xtlm_aximm_initiator_socket* M_AXI_GP0_rd_socket;
   xtlm::xtlm_aximm_initiator_socket* M_AXI_GP0_wr_socket;
   xtlm::xtlm_aximm_target_socket* S_AXI_HP0_rd_socket;
   xtlm::xtlm_aximm_target_socket* S_AXI_HP0_wr_socket;
-
-  // module socket-to-socket TLM interfaces
-
 
 protected:
 

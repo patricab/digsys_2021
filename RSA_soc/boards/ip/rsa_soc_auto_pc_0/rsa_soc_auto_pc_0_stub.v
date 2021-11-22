@@ -1,10 +1,10 @@
-// Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2021.1 (win64) Build 3247384 Thu Jun 10 19:36:33 MDT 2021
-// Date        : Sun Nov 21 17:30:29 2021
-// Host        : MSI running 64-bit major release  (build 9200)
+// Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
+// Date        : Mon Nov 22 14:31:11 2021
+// Host        : sp3ctre running 64-bit Ubuntu 18.04.6 LTS
 // Command     : write_verilog -force -mode synth_stub
-//               c:/Users/ejka1/OneDrive/Skrivebord/tfe4141_rsa_integration_kit_2020/RSA_soc/boards/ip/rsa_soc_auto_pc_0/rsa_soc_auto_pc_0_stub.v
+//               /home/pab/projects/digsys_2021/RSA_soc/boards/ip/rsa_soc_auto_pc_0/rsa_soc_auto_pc_0_stub.v
 // Design      : rsa_soc_auto_pc_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg400-1
@@ -13,7 +13,7 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-(* X_CORE_INFO = "axi_protocol_converter_v2_1_24_axi_protocol_converter,Vivado 2021.1" *)
+(* X_CORE_INFO = "axi_protocol_converter_v2_1_21_axi_protocol_converter,Vivado 2020.1" *)
 module rsa_soc_auto_pc_0(aclk, aresetn, s_axi_awid, s_axi_awaddr, 
   s_axi_awlen, s_axi_awsize, s_axi_awburst, s_axi_awlock, s_axi_awcache, s_axi_awprot, 
   s_axi_awqos, s_axi_awvalid, s_axi_awready, s_axi_wid, s_axi_wdata, s_axi_wstrb, s_axi_wlast, 

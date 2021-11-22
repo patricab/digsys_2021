@@ -80,7 +80,7 @@ rsa_soc_auto_pc_0_sc::rsa_soc_auto_pc_0_sc(const sc_core::sc_module_name& nm) : 
 
   mp_impl = new axi_protocol_converter("inst", model_param_props);
 
-  // initialize AXI sockets
+  // initialize sockets
   target_rd_socket = mp_impl->target_rd_socket;
   target_wr_socket = mp_impl->target_wr_socket;
   initiator_rd_socket = mp_impl->initiator_rd_socket;
