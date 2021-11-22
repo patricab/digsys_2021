@@ -79,7 +79,7 @@ architecture rl_binary_rtl of exponentiation is
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
-	signal c, p, p_d           	: std_logic_vector(C_block_size-1 downto 0);
+	signal c, p, p_d, c_d      	: std_logic_vector(C_block_size-1 downto 0);
 
 begin
 
@@ -94,19 +94,21 @@ begin
 				when reset =>
 					c <= (others => '0');
 					p <= (others => '0');
-
+					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
 					rst_cnt   <= '0';
 
 				when idle  =>
+					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '1';
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
 				when start =>
+					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
@@ -116,6 +118,7 @@ begin
 					c <= (0 => '1', others => '0');
 
 				when calc  =>
+					result    <= (others => 'Z');
 					enable    <= '1';
 					ready_in  <= '0';
 					valid_out <= '0';
@@ -128,19 +131,21 @@ begin
 					end if;
 
 					if (c_en = '1') then
-						c <= result;
+						c <= c_d;
 					end if;
 					if (p_en = '1') then
 						p <= p_d;
 					end if;
 
 				when fnsh  =>
+					result    <= c_d; -- use non zero value after reset
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '1';
-					rst_cnt   <= '0';
+					rst_cnt   <= '1';
 
 				when others =>
+					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '0';
@@ -229,7 +234,7 @@ begin
 			enable  => enable,
 			run     => run,
 			valid   => c_en,
-			p       => result
+			p       => c_d
 		);
 
 	P_mult: mod_mult

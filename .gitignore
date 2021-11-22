@@ -1,9 +1,9 @@
-
+Bitfiles
 
 RSA_accelerator/RSA_accelerator/
 RSA_accelerator/IP/
 Exponentiation/Exponentiation/
 RSA_soc/RSA_soc/
-
+RSA_soc/boards
 .Xil
 */.Xil
