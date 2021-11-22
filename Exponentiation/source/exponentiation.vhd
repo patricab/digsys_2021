@@ -50,12 +50,11 @@ architecture rl_binary_rtl of exponentiation is
 	component mux
 		generic (
 			num : natural := 32
-			-- bit : natural :=  1
 		);
 		port (
-			input  : in  std_logic_vector(num-1 downto 0) ;-- slv_array_t(0 to num-1)(bit-1 downto 0);
+			input  : in  std_logic_vector(num-1 downto 0);
 			sel    : in  natural range 0 to num-1;
-			output : out std_logic -- _vector(bit-1 downto 0)
+			output : out std_logic
 		);
 	end component;
 
@@ -73,9 +72,7 @@ architecture rl_binary_rtl of exponentiation is
 
 	signal state, nxt_state : state_t;
 
-	-- signal , --           	: slv_array_t(0 to C_block_size-1)(0 downto 0);
-
-	signal run_v            	   : std_logic; -- _vector(0 downto 0);
+	signal run_v            	   : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -83,17 +80,13 @@ architecture rl_binary_rtl of exponentiation is
 
 begin
 
-	-- key_gen : for i in 0 to C_block_size-1 generate
-	-- 	, --(i) <= key(i downto i);
-	-- end generate; -- key_gen
-
 	main : process(all)
 	begin
 		if( rising_edge(clk) ) then
 			case( state ) is
 				when reset =>
-					c <= (others => '0');
-					p <= (others => '0');
+					c         <= (others => '0');
+					p         <= (others => '0');
 					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '0';
@@ -101,8 +94,10 @@ begin
 					rst_cnt   <= '0';
 
 				when idle  =>
-					p         <= message;
-					c         <= (0 => '1', others => '0');
+					if (rising_edge(valid_in)) then
+						p         <= message;
+						c         <= (0 => '1', others => '0');
+					end if;
 					result    <= (others => 'Z');
 					enable    <= '0';
 					ready_in  <= '1';
@@ -137,7 +132,7 @@ begin
 					end if;
 
 				when fnsh  =>
-					result    <= c_d; -- use non zero value after reset
+					result    <= c_d;
 					enable    <= '0';
 					ready_in  <= '0';
 					valid_out <= '1';
@@ -169,8 +164,6 @@ begin
 				when idle  =>
 					if (valid_in = '1') then
 						nxt_state <= calc;
-					else
-						nxt_state <= idle;
 					end if ;
 
 				-- when start =>
@@ -179,16 +172,12 @@ begin
 				when calc  =>
 					if (cnt(log_size) = '1') then
 						nxt_state <= fnsh;
-					else
-						nxt_state <= calc;
-					end if ;
+					end if;
 
 				when fnsh  =>
 					if (ready_out = '1') then
 						nxt_state <= reset;
-					else
-						nxt_state <= fnsh;
-					end if ;
+					end if;
 
 				when others =>
 						state <= reset;

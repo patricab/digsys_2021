@@ -32,15 +32,15 @@ begin
 	i_exponentiation : entity work.exponentiation(rl_binary_rtl)
 		generic map (C_block_size => C_block_size)
 		port map (
-			message   => message  ,
-			key       => key      ,
-			valid_in  => valid_in ,
-			ready_in  => ready_in ,
+			message   => message,
+			key       => key,
+			valid_in  => valid_in,
+			ready_in  => ready_in,
 			ready_out => ready_out,
 			valid_out => valid_out,
-			result    => result   ,
-			modulus   => modulus  ,
-			clk       => clk      ,
+			result    => result,
+			modulus   => modulus,
+			clk       => clk,
 			reset_n   => reset_n
 		);
 
@@ -67,13 +67,20 @@ begin
 	constant period : time := 8*8*CLK_PERIOD;
 	begin
 		-- static
-		valid_in  <= '1';
-		ready_out <= '0';
+		ready_out <= '1';
 		restart   <= '0';
+		valid_in  <= '0';
+
 		wait for CLK_PERIOD;
-		message <= x"0a23232323232323232323232323232323232323232323232323232323232323";
 		key     <= x"0000000000000000000000000000000000000000000000000000000000010001"; -- e 65537
 		modulus <= x"99925173ad65686715385ea800cd28120288fc70a9bc98dd4c90d676f8ff768d";
+		message <= x"0000000000000000000000000000000000000000000000000000000000000000";
+		wait for CLK_PERIOD;
+		valid_in  <= '1';
+		message <= x"0a23232323232323232323232323232323232323232323232323232323232323";
+		wait for CLK_PERIOD;
+		valid_in  <= '0';
+		message <= x"0000000000000000000000000000000000000000000000000000000000000001";
 
 		wait until (valid_out = '1');
 		assert (result = x"85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01") -- if false
