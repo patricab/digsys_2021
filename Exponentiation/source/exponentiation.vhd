@@ -74,7 +74,7 @@ architecture rl_binary_rtl of exponentiation is
 
 	-- signal state, nxt_state : state_t;
 
-	signal run_v            	   : std_logic;
+	signal run_v, first     	   : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -94,15 +94,21 @@ begin
 					ready_in  <= '0';
 					valid_out <= '0';
 					rst_cnt   <= '0';
+					first     <= '1';
 
 				when idle  =>
-					if (rising_edge(valid_in)) then
-						p         <= message;
-						c         <= (0 => '1', others => '0');
+					if (valid_in = '1') then
+						if (first = '1') then
+							p         <= message;
+							c         <= (0 => '1', others => '0');
+							first     <= '0';
+						end if;
+						ready_in  <= '0';
+					else
+						ready_in  <= '1';
 					end if;
 					result    <= (others => 'Z');
 					enable    <= '0';
-					ready_in  <= '1';
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
