@@ -85,7 +85,19 @@ architecture structural of rsa_control is
 
 begin
 
-	msgout_last <= msgin_last;
+	-- last : process( msgin_ready, msgout_valid )
+	-- begin
+	-- 	if (reset_n = '0') then
+	-- 		counter <= (others => '0');
+	-- 	elsif rising_edge(msgin_ready) then
+	-- 		counter <= counter + 1;
+	-- 	else if rising_edge(msgout_valid) then
+	-- 		counter <= counter - 1;
+	-- 	end if;
+	-- end process ; -- last
+
+	msgout_last <= '0';
+	--  msgin_last;
 	rsa_status  <= (others => '0');
 
 	-- sr_i <= msgin_valid and msgin_ready;
