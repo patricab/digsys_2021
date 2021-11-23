@@ -74,7 +74,7 @@ architecture rl_binary_rtl of exponentiation is
 
 	-- signal state, nxt_state : state_t;
 
-	signal run_v, first     	   : std_logic;
+	signal run_v, first           : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -84,8 +84,8 @@ begin
 
 	main : process(all)
 	begin
-		if( rising_edge(clk) ) then
-			case( state ) is
+		if ( rising_edge(clk) ) then
+			case( nxt_state ) is
 				when reset =>
 					c         <= (others => '0');
 					p         <= (others => '0');
@@ -99,9 +99,9 @@ begin
 				when idle  =>
 					if (valid_in = '1') then
 						if (first = '1') then
-							p         <= message;
-							c         <= (0 => '1', others => '0');
-							first     <= '0';
+							p      <= message;
+							c      <= (0 => '1', others => '0');
+							first  <= '0';
 						end if;
 						ready_in  <= '0';
 					else
@@ -112,12 +112,9 @@ begin
 					valid_out <= '0';
 					rst_cnt   <= '1';
 
-				-- when start =>
-				-- 	result    <= (others => 'Z');
-				-- 	enable    <= '0';
-				-- 	ready_in  <= '0';
-				-- 	valid_out <= '0';
-				-- 	rst_cnt   <= '1';
+				when trns =>
+					valid_out <= '0';
+					rst_cnt   <= '1';
 
 				when calc  =>
 					result    <= (others => 'Z');
@@ -143,7 +140,7 @@ begin
 					result    <= c_d;
 					enable    <= '0';
 					ready_in  <= '0';
-					valid_out <= '1';
+					valid_out <= not valid_out;
 					rst_cnt   <= '1';
 
 				when others =>
@@ -163,37 +160,38 @@ begin
 	begin
 		if( reset_n = '0' ) then
 			state <= reset;
-			nxt_state <= idle;
+			-- nxt_state <= idle;
 		elsif( rising_edge(clk) ) then
 			case( state ) is
 				when reset =>
 					nxt_state <= idle;
+					state     <= trns;
 
 				when idle  =>
 					if (valid_in = '1') then
 						nxt_state <= calc;
-					end if ;
-
-				-- when start =>
-				-- 	nxt_state <= calc;
+						state     <= trns;
+					end if;
 
 				when calc  =>
 					if (cnt(log_size) = '1') then
 						nxt_state <= fnsh;
+						state     <= trns;
 					end if;
 
 				when fnsh  =>
 					if (ready_out = '1') then
 						nxt_state <= reset;
+						state     <= trns;
 					end if;
 
+				when trns =>
+					state <= nxt_state;
+
 				when others =>
-						state <= reset;
-						nxt_state <= idle;
+					nxt_state <= reset;
+					state     <= trns;
 			end case ;
-
-			state <= nxt_state;
-
 		end if ;
 	end process ; -- state_trans
 

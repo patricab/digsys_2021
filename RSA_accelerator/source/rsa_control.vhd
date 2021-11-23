@@ -45,7 +45,7 @@ architecture structural of rsa_control is
 	constant CORES     : natural := 1;
 	constant LOG_CORES : natural := 1;
 
-	signal or_y, d_i, sr_en, sr_i, rst_cnt : std_logic;
+	signal or_y, d_i, sr_en, sr_i, rst_cnt, ready : std_logic;
 	signal cnt                       : unsigned(LOG_CORES-1 downto 0);
 
 	signal rl_data  	: std_logic_vector(C_BLOCK_SIZE-1 downto 0);
@@ -118,6 +118,8 @@ begin
 		rl_valid(0) <= msgin_valid; -- remove later
 		ready_out(0) <= msgout_ready;
 
+		-- ready_out(0) <= msgout_ready and rl_ready(0);
+
 	-- sr_CORES: entity work.shift_register(rtl)
 	-- 	generic map (
 	-- 		REGISTER_WIDTH => CORES)
@@ -134,20 +136,20 @@ begin
 			x => ready_in,
 			y => msgin_ready);
 
-	ready_OR_n: or_n
-		generic map (
-			REGISTER_WIDTH => CORES)
-		port map(
-			x => rl_ready,
-			y => or_y);
+	-- ready_OR_n: or_n
+	-- 	generic map (
+	-- 		REGISTER_WIDTH => CORES)
+	-- 	port map(
+	-- 		x => rl_ready,
+	-- 		y => or_y);
 
-	d_i <= or_y and msgout_ready; -- fix valid
-	DFF: entity work.dff_clr(rtl)
-		port map (
-			clk     => clk,
-			reset_n => reset_n,
-			d       => d_i,
-			q       => msgout_valid);
+	-- d_i <= or_y and msgout_ready; -- fix valid
+	-- DFF: entity work.dff_clr(rtl)
+	-- 	port map (
+	-- 		clk     => clk,
+	-- 		reset_n => reset_n,
+	-- 		d       => d_i,
+	-- 		q       => msgout_valid);
 
 	sr_en <= d_i and msgout_valid;
 
@@ -176,8 +178,8 @@ begin
 
 				valid_in  => rl_valid(i),
 				ready_in  => ready_in(i),
-				ready_out => ready_out(i),
-				valid_out => rl_ready(i),
+				ready_out => msgout_ready, -- ready_out(i),
+				valid_out => msgout_valid, -- rl_ready(i),
 
 				state     => state,
 				nxt_state => nxt_state,
