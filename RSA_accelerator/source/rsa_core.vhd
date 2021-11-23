@@ -57,7 +57,7 @@ entity rsa_core is
 		-- Indicates boundary of last packet
 		msgout_last             : out std_logic;
 
-		state, nxt_state : out state_t;
+		state       : out state_t;
 
 		-----------------------------------------------------------------------------
 		-- Interface to the register block
@@ -89,7 +89,6 @@ begin
 			msgout_last  => msgout_last,
 
 			state     => state,
-			nxt_state => nxt_state,
 
 			key_e_d      => key_e_d,
 			key_n        => key_n,

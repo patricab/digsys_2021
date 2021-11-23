@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.slv_arr_p.all;
 
 entity exponentiation_tb is
 	generic (
@@ -21,6 +22,8 @@ architecture expBehave of exponentiation_tb is
 	signal ready_in 	: STD_LOGIC;
 	signal ready_out	: STD_LOGIC;
 	signal valid_out	: STD_LOGIC;
+
+	signal state   : state_t;
 	-- Utility
 	signal clk      	: STD_LOGIC;
 	signal reset_n  	: STD_LOGIC;
@@ -41,6 +44,8 @@ begin
 			ready_in  => ready_in,
 			ready_out => ready_out,
 			valid_out => valid_out,
+
+			state     => state,
 
 			clk       => clk,
 			reset_n   => reset_n
@@ -64,12 +69,20 @@ begin
 		wait;
 	end process ; -- Reset
 
+	ready : process is
+	begin
+		ready_out <= '0';
+		wait for 3*CLK_PERIOD;
+		ready_out <= '1';
+		wait for 3*CLK_PERIOD;
+	end process;
+
 
 	Test : process
 	constant period : time := 8*8*CLK_PERIOD;
 	begin
 		-- static
-		ready_out <= '0';
+		-- ready_out <= '0';
 		valid_in  <= '0';
 
 		wait for CLK_PERIOD;
@@ -83,24 +96,25 @@ begin
 		valid_in  <= '0';
 		message <= x"0000000000000000000000000000000000000000000000000000000000000001";
 
-		wait until (valid_out = '1');
+		-- ready_out <= '1';
+
+		wait until (valid_out = '1' and ready_out = '1');
 		assert (result = x"85ee722363960779206a2b37cc8b64b5fc12a934473fa0204bbaaf714bc90c01") -- if false
-			report "wrong result" severity Failure;
+		report "wrong result" severity Failure;
 
 		wait for period;
 
-		ready_out <= '1';
 
 		wait for 5*CLK_PERIOD;
 
-		ready_out <= '0';
+		-- ready_out <= '0';
 		valid_in  <= '1';
 
 		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
 		key     <= (0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3
 		modulus <= (0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
 
-		wait until (valid_out = '1');
+		wait until (valid_out = '1' and ready_out = '1');
 		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               & x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"0D") -- if false
@@ -109,17 +123,17 @@ begin
 		wait for period;
 
 		valid_in  <= '0';
-		ready_out <= '1';
+		-- ready_out <= '1';
 
 		wait for 5*CLK_PERIOD;
 
-		ready_out <= '0';
+		-- ready_out <= '0';
 		valid_in  <= '1';
 
 		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13
 
-		wait until (valid_out = '1');
+		wait until (valid_out = '1' and ready_out = '1');
 		assert (result = x"00000000" & x"00000000" & x"00000000" & x"00000000"
 		               & x"00000000" & x"00000000" & x"00000000" & x"000000" &
 							x"07")
@@ -127,7 +141,7 @@ begin
 
 		wait for period;
 
-		ready_out <= '1';
+		-- ready_out <= '1';
 
 		wait;
 	end process; -- Test

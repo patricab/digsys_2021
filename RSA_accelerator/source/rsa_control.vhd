@@ -32,7 +32,7 @@ entity rsa_control is
 		-- Indicates boundary of last packet
 		msgout_last  : out std_logic;
 
-		state, nxt_state : out state_t; -- remove after test
+		state : out state_t; -- remove after test
 
 		key_e_d      :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		key_n        :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
@@ -69,7 +69,7 @@ architecture structural of rsa_control is
 			result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
-			state, nxt_state : out state_t;
+			state : out state_t;
 
 			clk, reset_n	: in  STD_LOGIC
 		);
@@ -182,7 +182,6 @@ begin
 				valid_out => msgout_valid, -- rl_ready(i),
 
 				state     => state,
-				nxt_state => nxt_state,
 
 				result    => rl_data
 			);

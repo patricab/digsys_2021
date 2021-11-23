@@ -60,7 +60,7 @@ architecture struct of rsa_accelerator_tb is
 	-- Indicates boundary of last packet
 	signal msgout_last     : std_logic;
 
-	signal state, nxt_state : state_t;
+	signal state : state_t;
 
 	-----------------------------------------------------------------------------
 	-- Interface to the register block
@@ -590,7 +590,6 @@ u_rsa_core : entity work.rsa_core
 		msgout_last            => msgout_last,
 
 		state     => state,
-		nxt_state => nxt_state,
 
 		-----------------------------------------------------------------------------
 		-- Interface to the register block

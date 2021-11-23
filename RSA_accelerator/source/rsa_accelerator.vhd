@@ -107,7 +107,7 @@ architecture rtl of rsa_accelerator is
 	signal key_n        : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 	signal rsa_status   : std_logic_vector(31 downto 0);
 
-	signal state, nxt_state : state_t;
+	signal state   : state_t;
 
 
 begin
@@ -223,7 +223,6 @@ u_rsa_core : entity work.rsa_core
 		msgout_last            => msgout_last,
 
 		state     => state,
-		nxt_state => nxt_state,
 
 		-----------------------------------------------------------------------------
 		-- Interface to the register block

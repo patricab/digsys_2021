@@ -26,7 +26,7 @@ entity exponentiation is
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
-		state, nxt_state : out state_t;
+		state : out state_t;
 
 		-- utility
 		clk, reset_n	: in STD_LOGIC
@@ -72,7 +72,7 @@ architecture rl_binary_rtl of exponentiation is
 		);
 	end component;
 
-	-- signal state, nxt_state : state_t;
+	-- signal state : state_t;
 
 	signal run_v, first           : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
@@ -84,75 +84,62 @@ begin
 
 	main : process(all)
 	begin
-		if ( rising_edge(clk) ) then
-			case( nxt_state ) is
-				when reset =>
-					c         <= (others => '0');
-					p         <= (others => '0');
-					result    <= (others => 'Z');
-					enable    <= '0';
-					ready_in  <= '0';
-					valid_out <= '0';
-					rst_cnt   <= '0';
-					first     <= '1';
+		case( state ) is
+			when reset =>
+				c         <= (others => '0');
+				p         <= (others => '0');
+				result    <= (others => 'Z');
+				enable    <= '0';
+				ready_in  <= '0';
+				valid_out <= '0';
+				rst_cnt   <= '0';
+				first     <= '1';
 
-				when idle  =>
-					if (valid_in = '1') then
-						if (first = '1') then
-							p      <= message;
-							c      <= (0 => '1', others => '0');
-							first  <= '0';
-						end if;
-						ready_in  <= '0';
-					else
-						ready_in  <= '1';
-					end if;
-					result    <= (others => 'Z');
-					enable    <= '0';
-					valid_out <= '0';
-					rst_cnt   <= '1';
+			when idle  =>
+				if (valid_in = '1' and first = '1') then
+					p      <= message;
+					c      <= (0 => '1', others => '0');
+				end if;
+				ready_in  <= '1';
+				result    <= (others => 'Z');
+				enable    <= '0';
+				valid_out <= '0';
+				rst_cnt   <= '1';
 
-				when trns =>
-					valid_out <= '0';
-					rst_cnt   <= '1';
+			when calc  =>
+				result    <= (others => 'Z');
+				enable    <= '1';
+				ready_in  <= '0';
+				valid_out <= '0';
+				rst_cnt   <= '1';
 
-				when calc  =>
-					result    <= (others => 'Z');
-					enable    <= '1';
-					ready_in  <= '0';
-					valid_out <= '0';
-					rst_cnt   <= '1';
+				if (cnt(log_size) = '0') then
+					run <= run_v;
+				else
+					run <= '0';
+				end if;
 
-					if (cnt(log_size) = '0') then
-						run <= run_v;
-					else
-						run <= '0';
-					end if;
+				if (c_en = '1') then
+					c <= c_d;
+				end if;
+				if (p_en = '1') then
+					p <= p_d;
+				end if;
 
-					if (c_en = '1') then
-						c <= c_d;
-					end if;
-					if (p_en = '1') then
-						p <= p_d;
-					end if;
+			when fnsh  =>
+				result    <= c_d;
+				enable    <= '0';
+				ready_in  <= '0';
+				valid_out <= '1';
+				rst_cnt   <= '1';
 
-				when fnsh  =>
-					result    <= c_d;
-					enable    <= '0';
-					ready_in  <= '0';
-					valid_out <= not valid_out;
-					rst_cnt   <= '1';
-
-				when others =>
-					result    <= (others => 'Z');
-					enable    <= '0';
-					ready_in  <= '0';
-					valid_out <= '0';
-					rst_cnt   <= '1';
-			end case ;
-
-
-		end if;
+			when others =>
+				result    <= (others => 'Z');
+				enable    <= '0';
+				ready_in  <= '0';
+				valid_out <= '0';
+				rst_cnt   <= '1';
+		end case ;
 	end process; -- main
 
 
@@ -160,37 +147,28 @@ begin
 	begin
 		if( reset_n = '0' ) then
 			state <= reset;
-			-- nxt_state <= idle;
 		elsif( rising_edge(clk) ) then
 			case( state ) is
 				when reset =>
-					nxt_state <= idle;
-					state     <= trns;
+					state <= idle;
 
 				when idle  =>
 					if (valid_in = '1') then
-						nxt_state <= calc;
-						state     <= trns;
+						state <= calc;
 					end if;
 
 				when calc  =>
 					if (cnt(log_size) = '1') then
-						nxt_state <= fnsh;
-						state     <= trns;
+						state <= fnsh;
 					end if;
 
 				when fnsh  =>
 					if (ready_out = '1') then
-						nxt_state <= reset;
-						state     <= trns;
+						state <= reset;
 					end if;
 
-				when trns =>
-					state <= nxt_state;
-
 				when others =>
-					nxt_state <= reset;
-					state     <= trns;
+					state <= reset;
 			end case ;
 		end if ;
 	end process ; -- state_trans
