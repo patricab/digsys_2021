@@ -23,7 +23,6 @@ architecture expBehave of exponentiation_tb is
 	signal valid_out	: STD_LOGIC;
 	-- Utility
 	signal clk      	: STD_LOGIC;
-	signal restart  	: STD_LOGIC;
 	signal reset_n  	: STD_LOGIC;
 
 	constant CLK_PERIOD : time := 20 ns;
@@ -34,12 +33,15 @@ begin
 		port map (
 			message   => message,
 			key       => key,
+			modulus   => modulus,
+
+			result    => result,
+
 			valid_in  => valid_in,
 			ready_in  => ready_in,
 			ready_out => ready_out,
 			valid_out => valid_out,
-			result    => result,
-			modulus   => modulus,
+
 			clk       => clk,
 			reset_n   => reset_n
 		);
@@ -67,8 +69,7 @@ begin
 	constant period : time := 8*8*CLK_PERIOD;
 	begin
 		-- static
-		ready_out <= '1';
-		restart   <= '0';
+		ready_out <= '0';
 		valid_in  <= '0';
 
 		wait for CLK_PERIOD;
@@ -92,6 +93,9 @@ begin
 
 		wait for 5*CLK_PERIOD;
 
+		ready_out <= '0';
+		valid_in  <= '1';
+
 		message <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- m  7
 		key     <= (0 => '1', 1 => '1', others => '0'); -- x"00000003"; -- e  3
 		modulus <= (0 => '1', 5 => '1', others => '0'); -- & x"00000021"; -- n 33
@@ -104,11 +108,13 @@ begin
 
 		wait for period;
 
+		valid_in  <= '0';
 		ready_out <= '1';
 
 		wait for 5*CLK_PERIOD;
 
 		ready_out <= '0';
+		valid_in  <= '1';
 
 		key     <= (0 => '1', 1 => '1', 2 => '1', others => '0'); -- & x"00000007"; -- d  7
 		message <= (3 => '1', 2 => '1', 0 => '1', others => '0'); -- & x"0000000D") -- m 13

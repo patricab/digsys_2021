@@ -26,6 +26,8 @@ entity exponentiation is
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
+		state, nxt_state : out state_t;
+
 		-- utility
 		clk, reset_n	: in STD_LOGIC
 	);
@@ -70,7 +72,7 @@ architecture rl_binary_rtl of exponentiation is
 		);
 	end component;
 
-	signal state, nxt_state : state_t;
+	-- signal state, nxt_state : state_t;
 
 	signal run_v            	   : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);

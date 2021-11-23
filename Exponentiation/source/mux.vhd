@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 
 package slv_arr_p is
 	-- type slv_array_t is array (natural range <>) of std_logic_vector;
-	type state_t is (reset, idle, start, calc, fnsh);
+	type state_t is (reset, idle, calc, fnsh);
 end package;
 
 library ieee;

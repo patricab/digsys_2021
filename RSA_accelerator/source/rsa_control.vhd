@@ -32,6 +32,8 @@ entity rsa_control is
 		-- Indicates boundary of last packet
 		msgout_last  : out std_logic;
 
+		state, nxt_state : out state_t; -- remove after test
+
 		key_e_d      :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		key_n        :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		rsa_status   : out std_logic_vector(31 downto 0)
@@ -40,8 +42,8 @@ end entity rsa_control;
 
 architecture structural of rsa_control is
 
-	constant CORES     : natural := 32;
-	constant LOG_CORES : natural := 5;
+	constant CORES     : natural := 1;
+	constant LOG_CORES : natural := 1;
 
 	signal or_y, d_i, sr_en, sr_i, rst_cnt : std_logic;
 	signal cnt                       : unsigned(LOG_CORES-1 downto 0);
@@ -66,6 +68,9 @@ architecture structural of rsa_control is
 			valid_out   	: out STD_LOGIC;
 			result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+
+			state, nxt_state : out state_t;
+
 			clk, reset_n	: in  STD_LOGIC
 		);
 	end component;
@@ -83,35 +88,35 @@ begin
 	msgout_last <= msgin_last;
 	rsa_status  <= (others => '0');
 
-	sr_i <= msgin_valid and msgin_ready;
+	-- sr_i <= msgin_valid and msgin_ready;
 
 	rst_cnt <= reset_n; -- must reset at CORES!
+-- only exp 2 and 8 are not idle
 
-	-- VAL_GEN : for i in 0 to CORES-1 generate
-	-- 	rl_valid_array(i) <= rl_valid(i downto i);
-	-- end generate;
+	-- valid_sel_counter : entity work.counter(up)
+	-- 	generic map (
+	-- 		bit => LOG_CORES
+	-- 	)
+	-- 	port map (
+	-- 		clk => not clk,
+	-- 		rst => rst_cnt,
+	-- 		en  => msgin_valid,
+	-- 		val => cnt
+	-- 	);
 
-	valid_sel_counter : entity work.counter(up)
-		generic map (
-			bit => LOG_CORES
-		)
-		port map (
-			clk => clk,
-			rst => rst_cnt,
-			en  => msgin_valid,
-			val => cnt
-		);
+	-- valid_sel_demux : entity work.demux(rtl)
+	-- 	generic map (
+	-- 		num => CORES
+	-- 		-- bit => 1
+	-- 	)
+	-- 	port map (
+	-- 		input => msgin_valid,	-- sr_i,
+	-- 		sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
+	-- 		output => rl_valid -- _array
+	-- 	);
 
-	valid_sel_demux : entity work.demux(rtl)
-		generic map (
-			num => CORES
-			-- bit => 1
-		)
-		port map (
-			input => sr_i,
-			sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
-			output => rl_valid -- _array
-		);
+		rl_valid(0) <= msgin_valid; -- remove later
+		ready_out(0) <= msgout_ready;
 
 	-- sr_CORES: entity work.shift_register(rtl)
 	-- 	generic map (
@@ -173,6 +178,10 @@ begin
 				ready_in  => ready_in(i),
 				ready_out => ready_out(i),
 				valid_out => rl_ready(i),
+
+				state     => state,
+				nxt_state => nxt_state,
+
 				result    => rl_data
 			);
 	end generate;
