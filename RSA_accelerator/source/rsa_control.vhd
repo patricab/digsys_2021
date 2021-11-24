@@ -47,6 +47,7 @@ architecture structural of rsa_control is
 
 	signal or_y, d_i, sr_en, sr_i, rst_cnt, ready : std_logic;
 	signal cnt                       : unsigned(LOG_CORES-1 downto 0);
+	signal counter    : unsigned(15 downto 0);
 
 	signal rl_data  	: std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 	signal rl_ready 	: std_logic_vector(CORES-1 downto 0);
@@ -68,6 +69,8 @@ architecture structural of rsa_control is
 			valid_out   	: out STD_LOGIC;
 			result      	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			msgin_last     : in  STD_LOGIC;
+			msgout_last    : out STD_LOGIC;
 
 			state : out state_t;
 
@@ -88,15 +91,23 @@ begin
 	-- last : process( msgin_ready, msgout_valid )
 	-- begin
 	-- 	if (reset_n = '0') then
-	-- 		counter <= (others => '0');
-	-- 	elsif rising_edge(msgin_ready) then
-	-- 		counter <= counter + 1;
-	-- 	else if rising_edge(msgout_valid) then
-	-- 		counter <= counter - 1;
+	-- 		counter <= (0 => '1', others => '0');
+	-- 	elsif (msgin_last = '1') then
+	-- 		if rising_edge(msgout_valid) then
+	-- 			counter <= counter - 1;
+	-- 		end if;
+	-- 	else
+	-- 		if rising_edge(msgin_ready) then
+	-- 			counter <= counter + 1;
+	-- 		end if;
+	-- 	end if;
+	-- 	if (counter = 0) then
+	-- 		msgout_last <= '1';
+	-- 	else
+	-- 		msgout_last <= '0';
 	-- 	end if;
 	-- end process ; -- last
 
-	msgout_last <= '0';
 	--  msgin_last;
 	rsa_status  <= (others => '0');
 
@@ -192,6 +203,9 @@ begin
 				ready_in  => ready_in(i),
 				ready_out => msgout_ready, -- ready_out(i),
 				valid_out => msgout_valid, -- rl_ready(i),
+
+				msgin_last  => msgin_last,
+				msgout_last => msgout_last,
 
 				state     => state,
 

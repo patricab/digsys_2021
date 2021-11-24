@@ -26,6 +26,9 @@ entity exponentiation is
 		-- modulus
 		modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 
+		msgin_last     : in  STD_LOGIC;
+		msgout_last    : out STD_LOGIC;
+
 		state : out state_t;
 
 		-- utility
@@ -74,7 +77,7 @@ architecture rl_binary_rtl of exponentiation is
 
 	-- signal state : state_t;
 
-	signal run_v, first           : std_logic;
+	signal run_v, first, last     : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -99,6 +102,11 @@ begin
 				if (valid_in = '1' and first = '1') then
 					p      <= message;
 					c      <= (0 => '1', others => '0');
+					if (msgin_last = '1') then
+						last <= '1';
+					else
+						last <= '0';
+					end if;
 				end if;
 				ready_in  <= '1';
 				result    <= (others => 'Z');
@@ -127,6 +135,11 @@ begin
 				end if;
 
 			when fnsh  =>
+				if (last = '1') then
+					msgout_last <= '1';
+				else
+					msgout_last <= '0';
+				end if;
 				result    <= c_d;
 				enable    <= '0';
 				ready_in  <= '0';
