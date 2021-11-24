@@ -46,7 +46,7 @@ architecture structural of rsa_control is
 
 	signal state                        : piso_t;
 
-	signal sr_en, piso                  : std_logic;
+	signal sr_en, piso, valid           : std_logic;
 	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
 	signal piso_cnt                     : unsigned(7 downto 0);
 
@@ -132,9 +132,11 @@ begin
 		if ( state = input ) then
 			sr_en <= '0';
 			piso  <= '1';
+			msgout_valid  <= '0';
 		elsif ( state = output ) then
 			sr_en <= msgout_ready;
 			piso  <= '0';
+			msgout_valid <= valid;
 		end if;
 	end process ; -- PISO
 
@@ -152,7 +154,7 @@ begin
 			d_last  => rl_last,
 			-- serial output
 			q       => msgout_data,
-			q_valid => msgout_valid,
+			q_valid => valid,
 			q_last  => msgout_last
 		);
 
