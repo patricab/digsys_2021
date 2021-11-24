@@ -25,7 +25,9 @@ begin
 		if( rst = '0' ) then
 			value <= (others => '0');
 		elsif( rising_edge(clk) ) then
-			value <= value + 1;
+			if (en = '1') then
+				value <= value + 1;
+			end if;
 		end if;
 		val <= value;
 	end process; -- counter
