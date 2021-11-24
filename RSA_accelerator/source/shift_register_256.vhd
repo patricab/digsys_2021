@@ -9,7 +9,7 @@ entity shift_register_256 is
 	port
 	(
 		clk, rst, en, piso : in  std_logic;
-		d_valid, d_last    : in  std_logic_vector(CORES-1 downto 0);
+		d_valid, d_last    : in  std_logic_vector(0 to CORES-1);
 		d                  : in  SR;
 		q_valid, q_last    : out std_logic;
 		q                  : out std_logic_vector(255 downto 0)
@@ -20,13 +20,13 @@ architecture rtl of shift_register_256 is
 
 	signal q_i              : SR;
 	signal Z                : std_logic_vector(255 downto 0);
-	signal i_valid, i_last  : std_logic_vector(CORES-1 downto 0);
+	signal i_valid, i_last  : std_logic_vector(0 to CORES-1);
 
 begin
 
 	Z <= (others => 'Z');
 
-	process (clk, en, rst) is
+	process (clk, en, rst, piso) is
 	begin
 		if (rst = '0') then
 			for i in 0 to CORES-1 loop
@@ -36,9 +36,9 @@ begin
 			i_last     <= (others => '0');
 		elsif (rising_edge(clk)) then
 			if (en = '1') then
-				q_i     <= q_i    (REGISTER_WIDTH-2 downto 0) & Z;
-				i_valid <= i_valid(REGISTER_WIDTH-2 downto 0) & '0';
-				i_last  <= i_last (REGISTER_WIDTH-2 downto 0) & '0';
+				q_i     <= q_i    (1 to REGISTER_WIDTH-1) & Z;
+				i_valid <= i_valid(1 to REGISTER_WIDTH-1) & '0';
+				i_last  <= i_last (1 to REGISTER_WIDTH-1) & '0';
 
 			elsif (piso = '1') then
 				q_i     <= d;
@@ -48,8 +48,8 @@ begin
 		end if;
 	end process;
 
-	q       <= q_i(CORES-1);
-	q_valid <= i_valid(CORES-1);
-	q_last  <= i_last (CORES-1);
+	q       <= q_i(0);
+	q_valid <= i_valid(0);
+	q_last  <= i_last (0);
 
 end rtl;

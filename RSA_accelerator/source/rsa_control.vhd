@@ -51,8 +51,8 @@ architecture structural of rsa_control is
 	signal piso_cnt                     : unsigned(7 downto 0);
 
 	signal rl_data  	                  : SR;
-	signal rl_valid_out, rl_valid_in    : std_logic_vector(CORES-1 downto 0);
-	signal ready_in, rl_last	         : std_logic_vector(CORES-1 downto 0);
+	signal rl_valid_out, rl_last        : std_logic_vector(0 to CORES-1);
+	signal ready_in, rl_valid_in        : std_logic_vector(CORES-1 downto 0);
 
 	component Exponentiation is
 		generic (
@@ -83,9 +83,6 @@ architecture structural of rsa_control is
 begin
 
 	rsa_status  <= (others => '0');
-
-	-- rst_cnt <= reset_n;
--- only exp 2 and 8 are not idle?
 
 	valid_sel_counter : entity work.counter(up)
 		generic map (
@@ -174,7 +171,7 @@ begin
 
 				valid_in    => rl_valid_in(i),
 				ready_in    => ready_in(i),
-				ready_out   => piso,
+				ready_out   => not piso,
 				valid_out   => rl_valid_out(i),
 
 				msgin_last  => msgin_last,
