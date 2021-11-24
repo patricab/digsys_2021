@@ -44,19 +44,17 @@ architecture structural of rsa_control is
 	constant CORES     : natural := 16;
 	constant LOG_CORES : natural := 4;
 
-	signal state    : piso_t;
+	signal state                        : piso_t;
 
 	signal or_y, sr_en, sr_i, rst_cnt   : std_logic;
 	signal d_valid, d_last, ready, piso : std_logic;
 	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
 	signal piso_cnt                     : unsigned(7 downto 0);
 
-	signal rl_data  	            : SR;
-	signal rl_ready, rl_valid 	   : std_logic_vector(CORES-1 downto 0);
-	signal ready_in, ready_out 	: std_logic_vector(CORES-1 downto 0);
-	signal rl_last	               : std_logic_vector(CORES-1 downto 0);
-
-	-- signal rl_valid_array : slv_array_t(0 to CORES-1)(0 downto 0);
+	signal rl_data  	                  : SR;
+	signal rl_valid_out, rl_valid_in    : std_logic_vector(CORES-1 downto 0);
+	signal ready_in, ready_out       	: std_logic_vector(CORES-1 downto 0);
+	signal rl_last	                     : std_logic_vector(CORES-1 downto 0);
 
 	component Exponentiation is
 		generic (
@@ -88,9 +86,7 @@ begin
 
 	rsa_status  <= (others => '0');
 
-	-- sr_i <= msgin_valid and msgin_ready;
-
-	rst_cnt <= reset_n; -- must reset at CORES!
+	rst_cnt <= reset_n;
 -- only exp 2 and 8 are not idle
 
 	valid_sel_counter : entity work.counter(up)
@@ -107,27 +103,12 @@ begin
 	valid_sel_demux : entity work.demux(rtl)
 		generic map (
 			num => CORES
-			-- bit => 1
 		)
 		port map (
-			input => msgin_valid,	-- sr_i,
+			input => msgin_valid,
 			sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
-			output => rl_valid -- _array
+			output => rl_valid_in
 		);
-
-		-- rl_valid(0) <= msgin_valid; -- remove later
-		-- ready_out(0) <= msgout_ready;
-
-		-- ready_out(0) <= msgout_ready and rl_ready(0);
-
-	-- sr_CORES: entity work.shift_register(rtl)
-	-- 	generic map (
-	-- 		REGISTER_WIDTH => CORES)
-	-- 	port map (
-	-- 		clk => clk,
-	-- 		rst => sr_i,
-	-- 		d   => sr_i,
-	-- 		q   => rl_valid);
 
 	readyin_OR_n : or_n
 		generic map (
@@ -135,35 +116,6 @@ begin
 		port map(
 			x => ready_in,
 			y => msgin_ready);
-
-	-- ready_OR_n: or_n
-	-- 	generic map (
-	-- 		REGISTER_WIDTH => CORES)
-	-- 	port map(
-	-- 		x => rl_ready,
-	-- 		y => d_valid); --msgout_valid);
-
-	-- last_OR_n: or_n
-	-- 	generic map (
-	-- 		REGISTER_WIDTH => CORES)
-	-- 	port map(
-	-- 		x => rl_last,
-	-- 		y => d_last);
-
-	-- d_i <= or_y and msgout_ready;
-	-- msgout_valid -- fix valid
-
-	-- DFF: entity work.dff_clr(rtl)
-	-- 	port map (
-	-- 		clk     => clk,
-	-- 		reset_n => reset_n,
-	-- 		d       => d_i,
-	-- 		q       => msgout_valid);
-
-	-- sr_en <= msgout_ready and msgout_valid;
-
-	-- msgout_data <= rl_data;
-
 
 	PISO_STATE : process ( clk, reset_n )
 	begin
@@ -201,7 +153,7 @@ begin
 			piso    => piso,
 			-- parallel input
 			d       => rl_data,
-			d_valid => rl_ready,
+			d_valid => rl_valid_out,
 			d_last  => rl_last,
 			-- serial output
 			q       => msgout_data,
@@ -222,10 +174,10 @@ begin
 				key         => key_e_d,
 				modulus     => key_n,
 
-				valid_in    => rl_valid(i),
+				valid_in    => rl_valid_in(i),
 				ready_in    => ready_in(i),
 				ready_out   => not piso,
-				valid_out   => rl_ready(i),
+				valid_out   => rl_valid_out(i),
 
 				msgin_last  => msgin_last,
 				msgout_last => rl_last(i),
