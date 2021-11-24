@@ -127,7 +127,7 @@ begin
 		end if ;
 	end process ; -- PISO
 
-	PISO_PROCESS : process( state )
+	PISO_PROCESS : process( state, msgout_ready )
 	begin
 		if ( state = input ) then
 			sr_en <= '0';
