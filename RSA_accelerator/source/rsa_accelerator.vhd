@@ -12,6 +12,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.state_p.all;
 
 entity rsa_accelerator is
 	generic (
@@ -105,6 +106,9 @@ architecture rtl of rsa_accelerator is
 	signal key_e_d      : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 	signal key_n        : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 	signal rsa_status   : std_logic_vector(31 downto 0);
+
+	signal state   : state_t;
+
 
 begin
 
@@ -217,6 +221,8 @@ u_rsa_core : entity work.rsa_core
 		msgout_ready           => msgout_ready,
 		msgout_data            => msgout_data,
 		msgout_last            => msgout_last,
+
+		state     => state,
 
 		-----------------------------------------------------------------------------
 		-- Interface to the register block

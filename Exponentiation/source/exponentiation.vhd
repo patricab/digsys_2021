@@ -29,6 +29,8 @@ entity exponentiation is
 		msgin_last     : in  STD_LOGIC;
 		msgout_last    : out STD_LOGIC;
 
+		state        : out state_t;
+
 		-- utility
 		clk, reset_n	: in STD_LOGIC
 	);
@@ -73,9 +75,9 @@ architecture rl_binary_rtl of exponentiation is
 		);
 	end component;
 
-	signal state : state_t;
+	-- signal state : state_t;
 
-	signal run_v, first, last     : std_logic;
+	signal run_v, last            : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
 	signal run, enable, rst_cnt	: std_logic;
 	signal c_en, p_en          	: std_logic;
@@ -95,10 +97,9 @@ begin
 				valid_out   <= '0';
 				msgout_last <= '0';
 				rst_cnt     <= '0';
-				first       <= '1';
 
 			when idle  =>
-				if (valid_in = '1' and first = '1') then
+				if (valid_in = '1') then
 					p      <= message;
 					c      <= (0 => '1', others => '0');
 					if (msgin_last = '1') then
@@ -165,7 +166,9 @@ begin
 		elsif( rising_edge(clk) ) then
 			case( state ) is
 				when reset =>
-					state <= idle;
+					if (reset_n = '1') then
+						state <= idle;
+					end if;
 
 				when idle  =>
 					if (valid_in = '1') then

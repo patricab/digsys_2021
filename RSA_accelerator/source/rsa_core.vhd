@@ -19,6 +19,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.state_p.all;
 
 entity rsa_core is
 	generic (
@@ -56,6 +57,8 @@ entity rsa_core is
 		-- Indicates boundary of last packet
 		msgout_last             : out std_logic;
 
+		state       : out state_t;
+
 		-----------------------------------------------------------------------------
 		-- Interface to the register block
 		-----------------------------------------------------------------------------
@@ -84,6 +87,8 @@ begin
 			msgout_ready => msgout_ready,
 			msgout_data  => msgout_data,
 			msgout_last  => msgout_last,
+
+			-- state        => state,
 
 			key_e_d      => key_e_d,
 			key_n        => key_n,

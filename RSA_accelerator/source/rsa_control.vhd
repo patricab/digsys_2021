@@ -33,6 +33,8 @@ entity rsa_control is
 		-- Indicates boundary of last packet
 		msgout_last  : out std_logic;
 
+		state : out state_t;
+
 		key_e_d      : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		key_n        : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		rsa_status   : out std_logic_vector(31 downto 0)
@@ -44,7 +46,7 @@ architecture structural of rsa_control is
 	constant CORES     : natural := 16;
 	constant LOG_CORES : natural := 4;
 
-	signal state                        : piso_t;
+	signal piso_state                   : piso_t;
 
 	signal sr_en, piso, valid           : std_logic;
 	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
@@ -68,6 +70,7 @@ architecture structural of rsa_control is
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			msgin_last     : in  STD_LOGIC;
 			msgout_last    : out STD_LOGIC;
+			state      : out state_t;
 			clk, reset_n	: in  STD_LOGIC
 		);
 	end component;
@@ -91,7 +94,7 @@ begin
 		port map (
 			clk => clk,
 			rst => reset_n,
-			en  => msgin_valid,
+			en  => msgin_valid and msgin_ready,
 			val => cnt
 		);
 
@@ -112,28 +115,28 @@ begin
 			x => ready_in,
 			y => msgin_ready);
 
-	PISO_STATE : process ( clk, reset_n )
+	PISO_STATE_transition : process ( clk, reset_n )
 	begin
 		if ( reset_n = '0' ) then
-			state <= input;
+			piso_state <= input;
 			piso_cnt <= (others => '0');
 		elsif ( rising_edge(clk) ) then
 			piso_cnt <= piso_cnt + 1;
 			if ( piso_cnt(7) = '1') then
-				state <= output;
+				piso_state <= output;
 			else
-				state <= input;
+				piso_state <= input;
 			end if;
 		end if ;
 	end process ; -- PISO
 
-	PISO_PROCESS : process( state, msgout_ready )
+	PISO_PROCESS : process( piso_state, msgout_ready )
 	begin
-		if ( state = input ) then
+		if ( piso_state = input ) then
 			sr_en <= '0';
 			piso  <= '1';
 			msgout_valid  <= '0';
-		elsif ( state = output ) then
+		elsif ( piso_state = output ) then
 			sr_en <= msgout_ready;
 			piso  <= '0';
 			msgout_valid <= valid;
@@ -178,6 +181,8 @@ begin
 
 				msgin_last  => msgin_last,
 				msgout_last => rl_last(i),
+
+				-- state => state,
 
 				result      => rl_data(i)
 			);
