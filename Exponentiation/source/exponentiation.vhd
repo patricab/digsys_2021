@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
-use work.slv_arr_p.all;
+use work.state_p.all;
 
 entity exponentiation is
 	generic (
@@ -28,8 +28,6 @@ entity exponentiation is
 
 		msgin_last     : in  STD_LOGIC;
 		msgout_last    : out STD_LOGIC;
-
-		state : out state_t;
 
 		-- utility
 		clk, reset_n	: in STD_LOGIC
@@ -75,7 +73,7 @@ architecture rl_binary_rtl of exponentiation is
 		);
 	end component;
 
-	-- signal state : state_t;
+	signal state : state_t;
 
 	signal run_v, first, last     : std_logic;
 	signal cnt                 	: unsigned(log_size downto 0);
@@ -89,14 +87,15 @@ begin
 	begin
 		case( state ) is
 			when reset =>
-				c         <= (others => '0');
-				p         <= (others => '0');
-				result    <= (others => 'Z');
-				enable    <= '0';
-				ready_in  <= '0';
-				valid_out <= '0';
-				rst_cnt   <= '0';
-				first     <= '1';
+				c           <= (others => '0');
+				p           <= (others => '0');
+				result      <= (others => 'Z');
+				enable      <= '0';
+				ready_in    <= '0';
+				valid_out   <= '0';
+				msgout_last <= '0';
+				rst_cnt     <= '0';
+				first       <= '1';
 
 			when idle  =>
 				if (valid_in = '1' and first = '1') then
@@ -108,18 +107,20 @@ begin
 						last <= '0';
 					end if;
 				end if;
-				ready_in  <= '1';
-				result    <= (others => 'Z');
-				enable    <= '0';
-				valid_out <= '0';
-				rst_cnt   <= '1';
+				ready_in    <= '1';
+				result      <= (others => 'Z');
+				enable      <= '0';
+				valid_out   <= '0';
+				msgout_last <= '0';
+				rst_cnt     <= '1';
 
 			when calc  =>
-				result    <= (others => 'Z');
-				enable    <= '1';
-				ready_in  <= '0';
-				valid_out <= '0';
-				rst_cnt   <= '1';
+				result      <= (others => 'Z');
+				enable      <= '1';
+				ready_in    <= '0';
+				valid_out   <= '0';
+				msgout_last <= '0';
+				rst_cnt     <= '1';
 
 				if (cnt(log_size) = '0') then
 					run <= run_v;
@@ -147,11 +148,12 @@ begin
 				rst_cnt   <= '1';
 
 			when others =>
-				result    <= (others => 'Z');
-				enable    <= '0';
-				ready_in  <= '0';
-				valid_out <= '0';
-				rst_cnt   <= '1';
+				result      <= (others => 'Z');
+				enable      <= '0';
+				ready_in    <= '0';
+				valid_out   <= '0';
+				msgout_last <= '0';
+				rst_cnt     <= '1';
 		end case ;
 	end process; -- main
 

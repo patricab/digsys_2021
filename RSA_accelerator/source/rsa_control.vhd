@@ -2,7 +2,8 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-use work.slv_arr_p.all;
+use work.state_p.all;
+use work.sr_defines.all;
 
 entity rsa_control is
 	generic (
@@ -32,28 +33,28 @@ entity rsa_control is
 		-- Indicates boundary of last packet
 		msgout_last  : out std_logic;
 
-		state : out state_t; -- remove after test
-
-		key_e_d      :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
-		key_n        :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+		key_e_d      : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+		key_n        : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		rsa_status   : out std_logic_vector(31 downto 0)
 	);
 end entity rsa_control;
 
 architecture structural of rsa_control is
 
-	constant CORES     : natural := 1;
-	constant LOG_CORES : natural := 1;
+	constant CORES     : natural := 16;
+	constant LOG_CORES : natural := 4;
 
-	signal or_y, d_i, sr_en, sr_i, rst_cnt, ready : std_logic;
-	signal cnt                       : unsigned(LOG_CORES-1 downto 0);
-	signal counter    : unsigned(15 downto 0);
+	signal state    : piso_t;
 
-	signal rl_data  	: std_logic_vector(C_BLOCK_SIZE-1 downto 0);
-	signal rl_ready 	: std_logic_vector(CORES-1 downto 0);
-	signal rl_valid 	: std_logic_vector(CORES-1 downto 0);
-	signal ready_in 	: std_logic_vector(CORES-1 downto 0);
-	signal ready_out	: std_logic_vector(CORES-1 downto 0);
+	signal or_y, sr_en, sr_i, rst_cnt   : std_logic;
+	signal d_valid, d_last, ready, piso : std_logic;
+	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
+	signal piso_cnt                     : unsigned(7 downto 0);
+
+	signal rl_data  	            : SR;
+	signal rl_ready, rl_valid 	   : std_logic_vector(CORES-1 downto 0);
+	signal ready_in, ready_out 	: std_logic_vector(CORES-1 downto 0);
+	signal rl_last	               : std_logic_vector(CORES-1 downto 0);
 
 	-- signal rl_valid_array : slv_array_t(0 to CORES-1)(0 downto 0);
 
@@ -71,9 +72,6 @@ architecture structural of rsa_control is
 			modulus     	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
 			msgin_last     : in  STD_LOGIC;
 			msgout_last    : out STD_LOGIC;
-
-			state : out state_t;
-
 			clk, reset_n	: in  STD_LOGIC
 		);
 	end component;
@@ -88,27 +86,6 @@ architecture structural of rsa_control is
 
 begin
 
-	-- last : process( msgin_ready, msgout_valid )
-	-- begin
-	-- 	if (reset_n = '0') then
-	-- 		counter <= (0 => '1', others => '0');
-	-- 	elsif (msgin_last = '1') then
-	-- 		if rising_edge(msgout_valid) then
-	-- 			counter <= counter - 1;
-	-- 		end if;
-	-- 	else
-	-- 		if rising_edge(msgin_ready) then
-	-- 			counter <= counter + 1;
-	-- 		end if;
-	-- 	end if;
-	-- 	if (counter = 0) then
-	-- 		msgout_last <= '1';
-	-- 	else
-	-- 		msgout_last <= '0';
-	-- 	end if;
-	-- end process ; -- last
-
-	--  msgin_last;
 	rsa_status  <= (others => '0');
 
 	-- sr_i <= msgin_valid and msgin_ready;
@@ -116,30 +93,30 @@ begin
 	rst_cnt <= reset_n; -- must reset at CORES!
 -- only exp 2 and 8 are not idle
 
-	-- valid_sel_counter : entity work.counter(up)
-	-- 	generic map (
-	-- 		bit => LOG_CORES
-	-- 	)
-	-- 	port map (
-	-- 		clk => not clk,
-	-- 		rst => rst_cnt,
-	-- 		en  => msgin_valid,
-	-- 		val => cnt
-	-- 	);
+	valid_sel_counter : entity work.counter(up)
+		generic map (
+			bit => LOG_CORES
+		)
+		port map (
+			clk => not clk,
+			rst => rst_cnt,
+			en  => msgin_valid,
+			val => cnt
+		);
 
-	-- valid_sel_demux : entity work.demux(rtl)
-	-- 	generic map (
-	-- 		num => CORES
-	-- 		-- bit => 1
-	-- 	)
-	-- 	port map (
-	-- 		input => msgin_valid,	-- sr_i,
-	-- 		sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
-	-- 		output => rl_valid -- _array
-	-- 	);
+	valid_sel_demux : entity work.demux(rtl)
+		generic map (
+			num => CORES
+			-- bit => 1
+		)
+		port map (
+			input => msgin_valid,	-- sr_i,
+			sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
+			output => rl_valid -- _array
+		);
 
-		rl_valid(0) <= msgin_valid; -- remove later
-		ready_out(0) <= msgout_ready;
+		-- rl_valid(0) <= msgin_valid; -- remove later
+		-- ready_out(0) <= msgout_ready;
 
 		-- ready_out(0) <= msgout_ready and rl_ready(0);
 
@@ -164,9 +141,18 @@ begin
 	-- 		REGISTER_WIDTH => CORES)
 	-- 	port map(
 	-- 		x => rl_ready,
-	-- 		y => or_y);
+	-- 		y => d_valid); --msgout_valid);
 
-	-- d_i <= or_y and msgout_ready; -- fix valid
+	-- last_OR_n: or_n
+	-- 	generic map (
+	-- 		REGISTER_WIDTH => CORES)
+	-- 	port map(
+	-- 		x => rl_last,
+	-- 		y => d_last);
+
+	-- d_i <= or_y and msgout_ready;
+	-- msgout_valid -- fix valid
+
 	-- DFF: entity work.dff_clr(rtl)
 	-- 	port map (
 	-- 		clk     => clk,
@@ -174,17 +160,54 @@ begin
 	-- 		d       => d_i,
 	-- 		q       => msgout_valid);
 
-	sr_en <= d_i and msgout_valid;
+	-- sr_en <= msgout_ready and msgout_valid;
 
-	msgout_data <= rl_data;
+	-- msgout_data <= rl_data;
 
-	-- sr_256: entity work.shift_register_256(rtl)
-	-- 	port map (
-	-- 		clk => clk,
-	-- 		rst => reset_n,
-	-- 		en  => sr_en,
-	-- 		d   => rl_data,
-	-- 		q   => msgout_data);
+
+	PISO_STATE : process ( clk, reset_n )
+	begin
+		if ( reset_n = '0' ) then
+			state <= input;
+			piso_cnt <= (others => '0');
+		elsif ( rising_edge(clk) ) then
+			piso_cnt <= piso_cnt + 1;
+			if ( piso_cnt(7) = '1') then
+				state <= output;
+			else
+				state <= input;
+			end if;
+		end if ;
+	end process ; -- PISO
+
+	PISO_PROCESS : process( state )
+	begin
+		if ( state = input ) then
+			sr_en <= '0';
+			piso  <= '0';
+		elsif ( state = output ) then
+			sr_en <= msgout_ready;
+			piso  <= '1';
+		end if;
+	end process ; -- PISO
+
+
+	sr_256: entity work.shift_register_256(rtl) -- parallel input?
+		port map (
+			-- utility
+			clk     => clk,
+			rst     => reset_n,
+			en      => sr_en,
+			piso    => piso,
+			-- parallel input
+			d       => rl_data,
+			d_valid => rl_ready,
+			d_last  => rl_last,
+			-- serial output
+			q       => msgout_data,
+			q_valid => msgout_valid,
+			q_last  => msgout_last
+		);
 
 	exp_gen : for i in 0 to CORES-1 generate
 		element: Exponentiation
@@ -192,24 +215,22 @@ begin
 				C_BLOCK_SIZE => C_BLOCK_SIZE
 			)
 			port map (
-				clk       => clk,
-				reset_n   => reset_n,
+				clk         => clk,
+				reset_n     => reset_n,
 
-				message   => msgin_data,
-				key       => key_e_d,
-				modulus   => key_n,
+				message     => msgin_data,
+				key         => key_e_d,
+				modulus     => key_n,
 
-				valid_in  => rl_valid(i),
-				ready_in  => ready_in(i),
-				ready_out => msgout_ready, -- ready_out(i),
-				valid_out => msgout_valid, -- rl_ready(i),
+				valid_in    => rl_valid(i),
+				ready_in    => ready_in(i),
+				ready_out   => not piso,
+				valid_out   => rl_ready(i),
 
 				msgin_last  => msgin_last,
-				msgout_last => msgout_last,
+				msgout_last => rl_last(i),
 
-				state     => state,
-
-				result    => rl_data
+				result      => rl_data(i)
 			);
 	end generate;
 

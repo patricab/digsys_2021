@@ -13,8 +13,6 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-use work.slv_arr_p.all;
-
 entity rsa_accelerator_tb is
 end rsa_accelerator_tb;
 
@@ -59,8 +57,6 @@ architecture struct of rsa_accelerator_tb is
 	signal msgout_data     : std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 	-- Indicates boundary of last packet
 	signal msgout_last     : std_logic;
-
-	signal state : state_t;
 
 	-----------------------------------------------------------------------------
 	-- Interface to the register block
@@ -588,8 +584,6 @@ u_rsa_core : entity work.rsa_core
 		msgout_ready           => msgout_ready,
 		msgout_data            => msgout_data,
 		msgout_last            => msgout_last,
-
-		state     => state,
 
 		-----------------------------------------------------------------------------
 		-- Interface to the register block
