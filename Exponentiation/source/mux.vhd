@@ -1,17 +1,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
--- use work.slv_arr_p.all;
 
 entity mux is
 	generic (
-		num : natural := 32
-		-- bit : natural :=  1
+		num    : natural := 16
 	);
 	port (
-		input  : in  std_logic_vector(num-1 downto 0);	-- input  : in  slv_array_t(0 to num-1)(bit-1 downto 0);
+		input  : in  std_logic_vector(num-1 downto 0);
 		sel    : in  natural range 0 to num-1;
-		output : out std_logic	-- output : out std_logic_vector(bit-1 downto 0)
+		output : out std_logic
 	);
 end mux;
 
@@ -31,13 +29,12 @@ use ieee.numeric_std.all;
 
 entity demux is
 	generic (
-		num : natural := 32
-		-- bit : natural :=  1
+		num    : natural := 16
 	);
 	port (
-		input  : in  std_logic;	-- input  : in  std_logic_vector(bit-1 downto 0);
+		input  : in  std_logic;
 		sel    : in  natural range 0 to num-1;
-		output : out std_logic_vector(num-1 downto 0)	-- output : out slv_array_t(0 to num-1)(bit-1 downto 0)
+		output : out std_logic_vector(num-1 downto 0)
 	);
 end demux;
 
@@ -45,6 +42,6 @@ architecture rtl of demux is
 
 begin
 
-	output(sel) <= input;
+	output <= (sel => input, others => '0');
 
 end architecture;

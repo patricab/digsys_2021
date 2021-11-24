@@ -46,15 +46,13 @@ architecture structural of rsa_control is
 
 	signal state                        : piso_t;
 
-	signal or_y, sr_en, sr_i, rst_cnt   : std_logic;
-	signal d_valid, d_last, ready, piso : std_logic;
+	signal sr_en, piso                  : std_logic;
 	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
 	signal piso_cnt                     : unsigned(7 downto 0);
 
 	signal rl_data  	                  : SR;
 	signal rl_valid_out, rl_valid_in    : std_logic_vector(CORES-1 downto 0);
-	signal ready_in, ready_out       	: std_logic_vector(CORES-1 downto 0);
-	signal rl_last	                     : std_logic_vector(CORES-1 downto 0);
+	signal ready_in, rl_last	         : std_logic_vector(CORES-1 downto 0);
 
 	component Exponentiation is
 		generic (
@@ -86,16 +84,16 @@ begin
 
 	rsa_status  <= (others => '0');
 
-	rst_cnt <= reset_n;
--- only exp 2 and 8 are not idle
+	-- rst_cnt <= reset_n;
+-- only exp 2 and 8 are not idle?
 
 	valid_sel_counter : entity work.counter(up)
 		generic map (
 			bit => LOG_CORES
 		)
 		port map (
-			clk => not clk,
-			rst => rst_cnt,
+			clk => clk,
+			rst => reset_n,
 			en  => msgin_valid,
 			val => cnt
 		);
@@ -105,8 +103,8 @@ begin
 			num => CORES
 		)
 		port map (
-			input => msgin_valid,
-			sel   => to_integer(cnt(LOG_CORES-1 downto 0)),
+			input  => msgin_valid,
+			sel    => to_integer(cnt),
 			output => rl_valid_in
 		);
 
@@ -136,15 +134,15 @@ begin
 	begin
 		if ( state = input ) then
 			sr_en <= '0';
-			piso  <= '0';
+			piso  <= '1';
 		elsif ( state = output ) then
 			sr_en <= msgout_ready;
-			piso  <= '1';
+			piso  <= '0';
 		end if;
 	end process ; -- PISO
 
 
-	sr_256: entity work.shift_register_256(rtl) -- parallel input?
+	sr_256: entity work.shift_register_256(rtl) -- parallel input
 		port map (
 			-- utility
 			clk     => clk,
@@ -176,7 +174,7 @@ begin
 
 				valid_in    => rl_valid_in(i),
 				ready_in    => ready_in(i),
-				ready_out   => not piso,
+				ready_out   => piso,
 				valid_out   => rl_valid_out(i),
 
 				msgin_last  => msgin_last,

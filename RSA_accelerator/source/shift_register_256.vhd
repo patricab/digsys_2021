@@ -19,12 +19,12 @@ end shift_register_256;
 architecture rtl of shift_register_256 is
 
 	signal q_i              : SR;
-	signal zero             : std_logic_vector(255 downto 0);
+	signal Z                : std_logic_vector(255 downto 0);
 	signal i_valid, i_last  : std_logic_vector(CORES-1 downto 0);
 
 begin
 
-	zero <= (others => '0');
+	Z <= (others => 'Z');
 
 	process (clk, en, rst) is
 	begin
@@ -36,7 +36,7 @@ begin
 			i_last     <= (others => '0');
 		elsif (rising_edge(clk)) then
 			if (en = '1') then
-				q_i     <= q_i    (REGISTER_WIDTH-2 downto 0) & zero;
+				q_i     <= q_i    (REGISTER_WIDTH-2 downto 0) & Z;
 				i_valid <= i_valid(REGISTER_WIDTH-2 downto 0) & '0';
 				i_last  <= i_last (REGISTER_WIDTH-2 downto 0) & '0';
 
