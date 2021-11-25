@@ -43,18 +43,19 @@ end entity rsa_control;
 
 architecture structural of rsa_control is
 
-	constant CORES     : natural := 16;
+	constant CORES     : natural := 16; --17
 	constant LOG_CORES : natural := 4;
 
 	signal piso_state                   : piso_t;
 
-	signal sr_en, piso, valid           : std_logic;
+	signal sr_en, piso, valid, ready    : std_logic;
 	signal cnt                          : unsigned(LOG_CORES-1 downto 0);
+	signal piso_output                  : unsigned(LOG_CORES downto 0);
 	signal piso_cnt                     : unsigned(7 downto 0);
 
-	signal rl_data  	                  : SR;
-	signal rl_valid_out, rl_last        : std_logic_vector(0 to CORES-1);
-	signal ready_in, rl_valid_in        : std_logic_vector(CORES-1 downto 0);
+	signal rl_data  	                  : SR_17;
+	signal rl_valid_out, rl_last        : std_logic_vector(0 to CORES);
+	signal ready_in, rl_valid_in        : std_logic_vector(CORES downto 0);
 
 	component Exponentiation is
 		generic (
@@ -79,7 +80,7 @@ architecture structural of rsa_control is
 		generic (
 			REGISTER_WIDTH : natural := 2);
 		 port (
-			x : in  std_logic_vector(REGISTER_WIDTH-1 downto 0);
+			x : in  std_logic_vector(REGISTER_WIDTH downto 0);
 			y : out std_logic);
 	end component;
 
@@ -105,7 +106,7 @@ begin
 		port map (
 			input  => msgin_valid,
 			sel    => to_integer(cnt),
-			output => rl_valid_in
+			output => rl_valid_in(16 downto 1)
 		);
 
 	readyin_OR_n : or_n
@@ -121,12 +122,27 @@ begin
 			piso_state <= input;
 			piso_cnt <= (others => '0');
 		elsif ( rising_edge(clk) ) then
-			piso_cnt <= piso_cnt + 1;
-			if ( piso_cnt(7) = '1') then
-				piso_state <= output;
-			else
-				piso_state <= input;
-			end if;
+			case( piso_state ) is
+
+				when input =>
+					if (rl_valid_out(to_integer(cnt-1)+1) = '1') then
+					-- piso_cnt <= piso_cnt + 1;
+					-- if (piso_cnt(7) = '1') then
+						piso_state <= lock;
+					end if;
+
+				when lock =>
+						piso_cnt <= (others => '0');
+						piso_state <= output;
+
+				when output =>
+					if (piso_output = 0) then
+						piso_state <= input;
+					end if;
+
+				when others =>
+						piso_state <= input;
+			end case ;
 		end if ;
 	end process ; -- PISO
 
@@ -135,13 +151,30 @@ begin
 		if ( piso_state = input ) then
 			sr_en <= '0';
 			piso  <= '1';
-			msgout_valid  <= '0';
+			-- msgout_valid  <= '0';
+			ready <= '0';
+			elsif ( piso_state = lock ) then
+			sr_en <= '0';
+			piso  <= '0';
+			-- msgout_valid <= '0';
+			ready <= '1';
+			-- msgin_ready <= ready;
 		elsif ( piso_state = output ) then
 			sr_en <= msgout_ready;
 			piso  <= '0';
-			msgout_valid <= valid;
+			-- msgout_valid <= valid;
+			ready <= '0';
 		end if;
 	end process ; -- PISO
+
+	down_cnt : entity work.counter(down)
+			generic map (bit => 5)
+			port map (
+				clk => clk,
+				rst => not ready,
+				en  => msgout_ready,
+				val => piso_output
+			);
 
 
 	sr_256: entity work.shift_register_256(rtl) -- parallel input
@@ -157,12 +190,19 @@ begin
 			d_last  => rl_last,
 			-- serial output
 			q       => msgout_data,
-			q_valid => valid,
+			q_valid => msgout_valid,
 			q_last  => msgout_last
 		);
 
-	exp_gen : for i in 0 to CORES-1 generate
-		element: Exponentiation
+		rl_data(0)      <= (others => 'Z');
+		rl_valid_in(0)  <= '0';
+		rl_valid_out(0) <= '0';
+		rl_last(0)      <= '0';
+		ready_in(0)     <= '0';
+
+
+	exp_gen : for i in 1 to CORES generate
+		core : Exponentiation
 			generic map (
 				C_BLOCK_SIZE => C_BLOCK_SIZE
 			)
@@ -176,16 +216,16 @@ begin
 
 				valid_in    => rl_valid_in(i),
 				ready_in    => ready_in(i),
-				ready_out   => not piso,
+				ready_out   => ready,
 				valid_out   => rl_valid_out(i),
 
 				msgin_last  => msgin_last,
 				msgout_last => rl_last(i),
-
-				-- state => state,
 
 				result      => rl_data(i)
 			);
 	end generate;
 
 end architecture structural;
+
+--missing 16th message
