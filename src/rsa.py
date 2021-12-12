@@ -147,6 +147,29 @@ def blakely(a, b, n):
                 p -= n
     return p
 
+
+def MonPro(ā, b̄):
+    t = ā * b̄
+    m = t * ñ % r
+    u = int((t + m * n) / r)
+    if (u >= n):
+        return u - n
+    else:
+        return u
+
+
+def montgomery(M, e, n):
+    e = format(e, '0'+ str(b) +'b')
+    M̄ = M * r % n
+    x̄ = 1 * r % n
+    for i in range(0, b):
+        x̄ = MonPro(x̄, x̄)
+        if (e[i] == '1'):
+            x̄ = MonPro(M̄, x̄)
+    x = MonPro(x̄, 1)
+    return x
+
+
 """m-ary method
 
  s = len(key) / r
@@ -234,6 +257,16 @@ print(q)
 
 n = p * q   # modulus
 
+# montgomery
+# ā = a * r % n
+# inv_r * r = 1 % n
+# r * inv_r - n * ¨ñ = 1
+r = 2**b
+(x, inv_r, ñ) = egcd(r, n)
+inv_r += n
+ñ = r - ñ
+#
+
 print(str(len(format(n, 'b'))) + 'bit encryption')
 
 message = "hello world!"    # message
@@ -271,10 +304,10 @@ print('decryption key: ' + str(d))
 # else:
 # c = m**e % n
 t0 = time()
-c = mary(m, e, n)     # encrypt message m
+c = montgomery(m, e, n)     # encrypt message m
 t1 = time()
 # m = c**d % n
-m = mary(c, d, n)     # decrypt cipher c
+m = montgomery(c, d, n)     # decrypt cipher c
 t2 = time()
 print('message# out: ' + str(m))
 

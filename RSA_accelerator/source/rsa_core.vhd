@@ -58,35 +58,35 @@ entity rsa_core is
 		-----------------------------------------------------------------------------
 		-- Interface to the register block
 		-----------------------------------------------------------------------------
-		key_e_d                 :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
-		key_n                   :  in std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+		key_e_d                 : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
+		key_n                   : in  std_logic_vector(C_BLOCK_SIZE-1 downto 0);
 		rsa_status              : out std_logic_vector(31 downto 0)
 
 	);
 end rsa_core;
 
 architecture rtl of rsa_core is
-	signal rl_data :std_logic_vector(255 downto 0);
-	signal rl_ready :std_logic_vector(47 downto 0);
-	signal rl_valid :std_logic_vector(47 downto 0);
-	signal ready_in :std_logic_vector(47 downto 0);
-	signal ready_out :std_logic_vector(47 downto 0);
-	
+	signal rl_data   : std_logic_vector(255 downto 0);
+	signal rl_ready  : std_logic_vector(47 downto 0);
+	signal rl_valid  : std_logic_vector(47 downto 0);
+	signal ready_in  : std_logic_vector(47 downto 0);
+	signal ready_out : std_logic_vector(47 downto 0);
+
 	component exponentiation is
 		generic (
 			C_block_size : integer := 256
 		);
 		port (
-			valid_in		: in  STD_LOGIC;
-			ready_in		: out STD_LOGIC;
-			message 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
-			key 			: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
+			valid_in 	: in  STD_LOGIC;
+			ready_in 	: out STD_LOGIC;
+			message  	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
+			key      	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0 );
 			ready_out	: in  STD_LOGIC;
 			valid_out	: out STD_LOGIC;
-			result		: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-			modulus 		: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
-			clk 			: in STD_LOGIC;
-			reset_n 		: in STD_LOGIC
+			result   	: out STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			modulus  	: in  STD_LOGIC_VECTOR(C_block_size-1 downto 0);
+			clk      	: in STD_LOGIC;
+			reset_n  	: in STD_LOGIC
 		);
 	end component;
 begin
@@ -107,17 +107,17 @@ begin
 	-- 		reset_n   => reset_n
 	-- 	);
 	gen: for i in 0 to 47 generate
-		
+
 		element: exponentiation port map(
-			message   => msgin_data  ,
-			key       => key_e_d     ,
-			valid_in  => rl_valid(i) ,
+			message   => msgin_data,
+			key       => key_e_d,
+			valid_in  => rl_valid(i),
 			ready_in  => ready_in(i),
 			ready_out => ready_out(i),
 			valid_out => rl_ready(i),
 			result    => rl_data,
-			modulus   => key_n       ,
-			clk       => clk         ,
+			modulus   => key_n,
+			clk       => clk,
 			reset_n   => reset_n
 		);
 	end generate;
