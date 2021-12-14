@@ -244,18 +244,23 @@ def lr_binary(m, key, n):
 
 
 b = 256     # bit size of n
-
-e = 65537   # encryption key
+b = 12
+# e = 65537   # encryption key
+e = 17
 
 # p, q = genprimes(b, e)   # randomly generate primes
 
-p = 1090660992520643446103273789680343
-q = 1162435056374824133712043309728653
+# p = 1090660992520643446103273789680343
+# q = 1162435056374824133712043309728653
 
-print(p)
-print(q)
+p = 61
+q = 53
+
+# print(p)
+# print(q)
 
 n = p * q   # modulus
+# n = 13
 
 # montgomery
 # ā = a * r % n
@@ -274,6 +279,8 @@ print('input:  ' + message)
 
 m = int.from_bytes(message.encode('utf-8'), 'little')   # message turned to int
 print('message# in: ' + str(m))
+
+m = 123
 
 if (m > n):
     print('message to large (max :' + str(n / 8) + 'characters)')
@@ -297,14 +304,15 @@ while d < 0:
 print(len(format(d, 'b')))
 print('decryption key: ' + str(d))
 
-# if (blakely(d, e, Φ) != 1) or (d > n) or (d <= e):
-#     print('should be equal to 1: ' + str(blakely(d, e, Φ)))
-#     print(Φ)
-#     print('creating decryption key failed')
+if (blakely(d, e, Φ) != 1) or (d > n) or (d <= e):
+    print('should be equal to 1: ' + str(blakely(d, e, Φ)))
+    print(Φ)
+    print('creating decryption key failed')
 # else:
 # c = m**e % n
 t0 = time()
 c = montgomery(m, e, n)     # encrypt message m
+print(c)
 t1 = time()
 # m = c**d % n
 m = montgomery(c, d, n)     # decrypt cipher c

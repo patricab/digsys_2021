@@ -72,7 +72,7 @@ architecture rtl of rsa_core is
 	signal ready_in  : std_logic_vector(47 downto 0);
 	signal ready_out : std_logic_vector(47 downto 0);
 
-	component exponentiation is
+	component Montgomery is
 		generic (
 			C_block_size : integer := 256
 		);
@@ -90,57 +90,59 @@ architecture rtl of rsa_core is
 		);
 	end component;
 begin
-	-- i_exponentiation : entity work.exponentiation
-	-- 	generic map (
-	-- 		C_block_size => C_BLOCK_SIZE
-	-- 	)
-	-- 	port map (
-	-- 		message   => msgin_data  ,
-	-- 		key       => key_e_d     ,
-	-- 		valid_in  => msgin_valid ,
-	-- 		ready_in  => msgin_ready ,
-	-- 		ready_out => msgout_ready,
-	-- 		valid_out => msgout_valid,
-	-- 		result    => rl_data,
-	-- 		modulus   => key_n       ,
-	-- 		clk       => clk         ,
-	-- 		reset_n   => reset_n
-	-- 	);
-	gen: for i in 0 to 47 generate
-
-		element: exponentiation port map(
-			message   => msgin_data,
-			key       => key_e_d,
-			valid_in  => rl_valid(i),
-			ready_in  => ready_in(i),
-			ready_out => ready_out(i),
-			valid_out => rl_ready(i),
-			result    => rl_data,
-			modulus   => key_n,
-			clk       => clk,
-			reset_n   => reset_n
-		);
-	end generate;
-
-	control : entity work.rsa_control
+	i_Montgomery : entity work.Montgomery(behavioral)
 		generic map (
-			C_BLOCK_SIZE => C_BLOCK_SIZE
+			C_block_size => C_BLOCK_SIZE
 		)
 		port map (
-			clk => clk,
-			msgin_valid => msgin_valid,
-			msgin_ready => msgin_ready,
-			msgin_data => msgin_data,
-			msgin_last => msgin_last,
-			msgout_valid => msgout_valid,
-			msgout_ready => msgout_ready,
-			msgout_data => msgout_data,
-			msgout_last => msgout_last,
-			rl_data => rl_data,
-			rl_ready => rl_ready,
-			rl_valid => rl_valid
+			message   => msgin_data  ,
+			key       => key_e_d     ,
+			valid_in  => msgin_valid ,
+			ready_in  => msgin_ready ,
+			ready_out => msgout_ready,
+			valid_out => msgout_valid,
+			result    => rl_data     ,
+			modulus   => key_n       ,
+			clk       => clk         ,
+			reset_n   => reset_n
 		);
 
-	msgout_last  <= msgin_last;
-	rsa_status   <= (others => '0');
+		msgout_last  <= msgin_last;
+		rsa_status   <= (others => '0');
+
+	-- gen: for i in 0 to 47 generate
+
+	-- 	element: Montgomery port map(
+	-- 		message   => msgin_data,
+	-- 		key       => key_e_d,
+	-- 		valid_in  => rl_valid(i),
+	-- 		ready_in  => ready_in(i),
+	-- 		ready_out => ready_out(i),
+	-- 		valid_out => rl_ready(i),
+	-- 		result    => rl_data,
+	-- 		modulus   => key_n,
+	-- 		clk       => clk,
+	-- 		reset_n   => reset_n
+	-- 	);
+	-- end generate;
+
+	-- control : entity work.rsa_control
+	-- 	generic map (
+	-- 		C_BLOCK_SIZE => C_BLOCK_SIZE
+	-- 	)
+	-- 	port map (
+	-- 		clk => clk,
+	-- 		msgin_valid => msgin_valid,
+	-- 		msgin_ready => msgin_ready,
+	-- 		msgin_data => msgin_data,
+	-- 		msgin_last => msgin_last,
+	-- 		msgout_valid => msgout_valid,
+	-- 		msgout_ready => msgout_ready,
+	-- 		msgout_data => msgout_data,
+	-- 		msgout_last => msgout_last,
+	-- 		rl_data => rl_data,
+	-- 		rl_ready => rl_ready,
+	-- 		rl_valid => rl_valid
+	-- 	);
+
 end rtl;
